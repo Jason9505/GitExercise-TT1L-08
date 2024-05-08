@@ -5,6 +5,7 @@ screen_width = 1280
 screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Character Movement")
+clock = pygame.time.Clock()
 
 black = (0,0,0)
 
@@ -38,6 +39,7 @@ character_x = (screen_width - character_width) // 2
 character_y = (screen_height - character_height) // 2
 character_speed = 5
 current_frames = frames_down
+is_moving = False
 
 running = True
 while running:
@@ -50,21 +52,35 @@ while running:
     if keys[pygame.K_a]:
         character_x -= character_speed
         current_frames = frames_left
-    if keys[pygame.K_d]:
+        is_moving = True
+    elif keys[pygame.K_d]:
         character_x += character_speed
         current_frames = frames_right
-    if keys[pygame.K_w]:
+        is_moving = True
+    elif keys[pygame.K_w]:
         character_y -= character_speed
         current_frames = frames_up
-    if keys[pygame.K_s]:
+        is_moving = True
+    elif keys[pygame.K_s]:
         character_y += character_speed
         current_frames = frames_down
+        is_moving = True
+    else :
+        is_moving = False
 
     screen.fill(black)
-
-    screen.blit(current_frames[int(pygame.time.get_ticks() / 100) % len(current_frames)], (character_x, character_y))
-
+    if is_moving:
+        screen.blit(current_frames[int(pygame.time.get_ticks() / 100) % len(current_frames)], (character_x, character_y))
+    else:
+        if current_frames == frames_left:
+            screen.blit(current_frames[0], (character_x, character_y))
+        elif current_frames == frames_right:
+            screen.blit(current_frames[0], (character_x, character_y))
+        elif current_frames == frames_up:
+            screen.blit(current_frames[0], (character_x, character_y))
+        elif current_frames == frames_down:
+            screen.blit(current_frames[0], (character_x, character_y))
     pygame.display.flip()
-    pygame.time.Clock().tick(60)
+    clock.tick(60)
 
 pygame.quit()
