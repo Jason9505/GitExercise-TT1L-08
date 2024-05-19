@@ -1,12 +1,13 @@
 import pygame
 import math
 import sys
+import os
 
 # Constants
 TILESIZE = 128
 PLAYER_LAYER = 4
 
-class Game: 
+class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((800, 600))
@@ -15,6 +16,8 @@ class Game:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
+
+        # Ensure the correct path to the spritesheet
         self.attack_spritesheet = Spritesheet('img/mc spritesheet.png')
 
         self.player = Player(self)  # Assuming there is a Player class
@@ -46,11 +49,16 @@ class Game:
         self.all_sprites.draw(self.screen)
         pygame.display.flip()
 
+    def transition_to_battle(self):
+        battle_screen = BattleScreen(self)
+        battle_screen.run()
+
     def show_start_screen(self):
         pass
 
     def show_go_screen(self):
         pass
+
 
 class Spritesheet:
     def __init__(self, file):
@@ -126,6 +134,8 @@ class Attack(pygame.sprite.Sprite):
 
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.enemies, True)
+        if hits:
+            self.game.transition_to_battle()
 
     def animate(self):
         direction = self.game.player.facing
