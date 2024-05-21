@@ -7,6 +7,9 @@ pygame.init()
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
 
 # Create screen in full screen mode
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -18,8 +21,8 @@ background_image = pygame.image.load('img/forest.jpeg').convert()
 background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Character and Enemy placeholders
-character = pygame.Surface((100, 150))
-character.fill(BLACK)
+character_image = pygame.image.load('img/mc.jpeg').convert()
+character_image = pygame.transform.scale(character_image, (100, 150))  # Adjust the size as needed
 
 enemy = pygame.Surface((100, 150))
 enemy.fill(BLACK)
@@ -35,7 +38,7 @@ def draw_health_bar(screen, x, y, current_hp, max_hp):
     fill = (current_hp / max_hp) * BAR_WIDTH
     border = pygame.Rect(x, y, BAR_WIDTH, BAR_HEIGHT)
     fill = pygame.Rect(x, y, fill, BAR_HEIGHT)
-    pygame.draw.rect(screen, (255, 0, 0), fill)
+    pygame.draw.rect(screen, RED, fill)
     pygame.draw.rect(screen, BLACK, border, 2)
 
 # Main game loop with interactions
@@ -46,11 +49,15 @@ while running:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
-            if mid_screen_x - 150 < x < mid_screen_x - 50 and mid_screen_y < y < mid_screen_y + 50:
+            if SCREEN_WIDTH // 2 - 150 < x < SCREEN_WIDTH // 2 - 50 and SCREEN_HEIGHT - 100 < y < SCREEN_HEIGHT - 50:
+                # Attack button clicked
                 enemy_hp -= 10
-            elif mid_screen_x + 50 < x < mid_screen_x + 150 and mid_screen_y < y < mid_screen_y + 50:
-                player_hp += 10
-        
+            elif SCREEN_WIDTH // 2 + 50 < x < SCREEN_WIDTH // 2 + 150 and SCREEN_HEIGHT - 100 < y < SCREEN_HEIGHT - 50:
+                if player_hp == 100:
+                    player_hp += 0
+                    # Defend button clicked
+                else:
+                    player_hp += 10
 
 
     # Draw background
@@ -61,19 +68,15 @@ while running:
     draw_health_bar(screen, SCREEN_WIDTH - 150, 30, enemy_hp, 100)
 
     # Draw character at the bottom left
-    screen.blit(character, (50, SCREEN_HEIGHT - 200))
+    screen.blit(character_image, (50, SCREEN_HEIGHT - 200))
     draw_health_bar(screen, 50, SCREEN_HEIGHT - 220, player_hp, 100)
 
-# Action buttons (placeholders)
-# Action buttons (placeholders)
-    mid_screen_x = SCREEN_WIDTH // 2
-    mid_screen_y = SCREEN_HEIGHT // 2
-    pygame.draw.rect(screen, (0, 0, 255), (mid_screen_x - 150, mid_screen_y, 100, 50))  # Attack button
-    pygame.draw.rect(screen, (0, 255, 0), (mid_screen_x + 50, mid_screen_y, 100, 50))  # Defend button
+    # Action buttons (placeholders)
+    pygame.draw.rect(screen, BLUE, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT - 100, 100, 50))  # Attack button
+    pygame.draw.rect(screen, GREEN, (SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 100, 100, 50))  # Defend button
 
-
-# Update display
-pygame.display.flip()
+    # Update display
+    pygame.display.flip()
 
 # Quit Pygame
 pygame.quit()
