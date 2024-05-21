@@ -21,7 +21,7 @@ background_image = pygame.image.load('img/forest.jpeg').convert()
 background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Character and Enemy placeholders
-character_image = pygame.image.load('img/mc.jpeg').convert()
+character_image = pygame.image.load('img/mc.png').convert_alpha()
 character_image = pygame.transform.scale(character_image, (100, 150))  # Adjust the size as needed
 
 enemy = pygame.Surface((100, 150))
