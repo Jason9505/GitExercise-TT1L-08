@@ -5,7 +5,7 @@ import os
 
 # Constants
 TILESIZE = 128
-PLAYER_LAYER = 4
+PLAYER_LAYER = 1
 
 class Game:
     def __init__(self):

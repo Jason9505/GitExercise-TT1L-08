@@ -9,10 +9,10 @@ clock = pygame.time.Clock()
 
 black = (0,0,0)
 
-sprite_sheet_up = pygame.image.load("character_sheet_up.png")
-sprite_sheet_down = pygame.image.load("character_sheet_down.png")
-sprite_sheet_left = pygame.image.load("character_sheet_left.png")
-sprite_sheet_right = pygame.image.load("character_sheet_right.png")
+sprite_sheet_up = pygame.image.load("img/character_sheet_up.png")
+sprite_sheet_down = pygame.image.load("img/character_sheet_down.png")
+sprite_sheet_left = pygame.image.load("img/character_sheet_left.png")
+sprite_sheet_right = pygame.image.load("img/character_sheet_right.png")
 
 #define frame
 frames_up = []
