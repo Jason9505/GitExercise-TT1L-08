@@ -15,4 +15,5 @@ character_height = 50
 
 character_speed = 5
 
-
+TILESIZE = 50
+PLAYER_LAYER = 1
