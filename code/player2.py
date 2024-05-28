@@ -1,78 +1,6 @@
 import pygame
 from settings import *
 
-# Constants
-TILESIZE = 50  # Set to the same size as your character frame
-PLAYER_LAYER = 1
-
-class Game:
-    def __init__(self):
-        pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.clock = pygame.time.Clock()
-        self.running = True
-        self.all_sprites = pygame.sprite.LayeredUpdates()
-        self.attacks = pygame.sprite.Group()
-        self.obstacle_sprites = pygame.sprite.Group()
-        self.enemies = pygame.sprite.Group()
-
-        # Load sprite sheets
-        self.sprite_sheet_up = self.load_image("img/character_sheet_up.png")
-        self.sprite_sheet_down = self.load_image("img/character_sheet_down.png")
-        self.sprite_sheet_left = self.load_image("img/character_sheet_left.png")
-        self.sprite_sheet_right = self.load_image("img/character_sheet_right.png")
-        self.attack_spritesheet_up = Spritesheet('img/mc attack spritesheet up.png')
-        self.attack_spritesheet_down = Spritesheet('img/mc attack spritesheet down.png')
-        self.attack_spritesheet_left = Spritesheet('img/mc attack spritesheet left.png')
-        self.attack_spritesheet_right = Spritesheet('img/mc attack spritesheet right.png')
-
-        # Extract frames for animations
-        self.frames_up = self.extract_frames(self.sprite_sheet_up)
-        self.frames_down = self.extract_frames(self.sprite_sheet_down)
-        self.frames_left = self.extract_frames(self.sprite_sheet_left)
-        self.frames_right = self.extract_frames(self.sprite_sheet_right)
-        self.attack_frames_up = self.extract_frames(self.attack_spritesheet_up.sheet)
-        self.attack_frames_down = self.extract_frames(self.attack_spritesheet_down.sheet)
-        self.attack_frames_left = self.extract_frames(self.attack_spritesheet_left.sheet)
-        self.attack_frames_right = self.extract_frames(self.attack_spritesheet_right.sheet)
-
-        self.player = Player((SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), self.all_sprites, self.obstacle_sprites, self)
-        self.all_sprites.add(self.player)
-
-    def load_image(self, path):
-        return pygame.image.load(path).convert()
-
-    def extract_frames(self, sheet):
-        frames = []
-        frame_width, frame_height = TILESIZE, TILESIZE
-        for i in range(8):
-            frame = sheet.subsurface((i * frame_width, 0), (frame_width, frame_height))
-            frame.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
-            frames.append(frame)
-        return frames
-
-    def run(self):
-        while self.running:
-            self.clock.tick(60)
-            self.handle_events()
-            self.update()
-            self.draw()
-
-    def update(self):
-        self.all_sprites.update()
-
-    def handle_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                self.player.attack()
-
-    def draw(self):
-        self.screen.fill((0, 0, 0))
-        self.all_sprites.draw(self.screen)
-        pygame.display.flip()
-
 class Spritesheet:
     def __init__(self, file):
         self.sheet = pygame.image.load(file).convert()
@@ -81,6 +9,7 @@ class Spritesheet:
         sprite = pygame.Surface((width, height), pygame.SRCALPHA)
         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
         sprite.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
+        sprite = pygame.transform.scale(sprite, (TILESIZE, TILESIZE))
         return sprite
 
 class Player(pygame.sprite.Sprite):
@@ -89,7 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.image = self.game.frames_down[0]
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(0, -18)
+        self.hitbox = self.rect.inflate(0, -4)
 
         self.direction = pygame.math.Vector2()
         self.speed = 3
@@ -172,17 +101,11 @@ class Player(pygame.sprite.Sprite):
 
 class Attack(pygame.sprite.Sprite):
     def __init__(self, game, x, y, direction):
-        self._layer = PLAYER_LAYER
-        self.groups = game.all_sprites, game.attacks
-        pygame.sprite.Sprite.__init__(self, self.groups)
+        super().__init__(game.all_sprites, game.attacks)
         self.game = game
         self.x = x
         self.y = y
-        self.width = TILESIZE
-        self.height = TILESIZE
         self.direction = direction
-
-        self.animation_loop = 0
 
         if direction == 'up':
             self.current_frames = self.game.attack_frames_up
@@ -194,9 +117,9 @@ class Attack(pygame.sprite.Sprite):
             self.current_frames = self.game.attack_frames_right
 
         self.image = self.current_frames[0]
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+
+        self.animation_loop = 0
 
     def update(self):
         self.animate()
@@ -212,9 +135,3 @@ class Attack(pygame.sprite.Sprite):
         self.animation_loop += 0.5
         if self.animation_loop >= len(self.current_frames):
             self.kill()
-
-# Main execution
-game = Game()
-game.run()
-pygame.quit()
-sys.exit()

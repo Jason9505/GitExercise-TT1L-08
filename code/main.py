@@ -1,13 +1,13 @@
-import pygame, sys
+import pygame
+import sys
 from settings import *
 from level import Level
 
 class Game:
     def __init__(self):
-
         # general setup
         pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH,HEIGTH))
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption('Realm Redeemers: The Last Stand')
         self.clock = pygame.time.Clock()
 
