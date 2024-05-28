@@ -38,8 +38,8 @@ def draw_player_health_bar(screen, x, y, current_hp, max_hp):
     fill = (current_hp / max_hp) * BAR_WIDTH
     border = pygame.Rect(x, y, BAR_WIDTH, BAR_HEIGHT)
     fill = pygame.Rect(x, y, fill, BAR_HEIGHT)
-    pygame.draw.rect(screen, RED, fill)  # Red for player health bar
-    pygame.draw.rect(screen, WHITE, border, 2)
+    pygame.draw.rect(screen, GREEN, fill)  # Red for player health bar
+    pygame.draw.rect(screen, BLACK, border, 2)
 
 # Function to draw enemy health bar
 def draw_enemy_health_bar(screen, x, y, current_hp, max_hp):
