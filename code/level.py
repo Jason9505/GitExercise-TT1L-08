@@ -1,44 +1,47 @@
 import pygame
 from settings import *
 from tile import Tile
-from player2 import Player, Attack, Spritesheet
+from player import Player, Spritesheet
 from support import import_csv_layout, import_folder
 from random import choice
 
 class Level:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game  # Reference to the main game object
+
         # get the display surface
         self.display_surface = pygame.display.get_surface()
 
         # sprite group setup
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
+        self.attacks = pygame.sprite.Group()  # Add this line
 
         # Load sprite sheets
         self.sprite_sheet_up = self.load_image("../graphics/img/character_sheet_up.png")
         self.sprite_sheet_down = self.load_image("../graphics/img/character_sheet_down.png")
         self.sprite_sheet_left = self.load_image("../graphics/img/character_sheet_left.png")
         self.sprite_sheet_right = self.load_image("../graphics/img/character_sheet_right.png")
-        self.attack_spritesheet_up = Spritesheet('../graphics/img/mc attack spritesheet up.png')
-        self.attack_spritesheet_down = Spritesheet('../graphics/img/mc attack spritesheet down.png')
-        self.attack_spritesheet_left = Spritesheet('../graphics/img/mc attack spritesheet left.png')
-        self.attack_spritesheet_right = Spritesheet('../graphics/img/mc attack spritesheet right.png')
+        self.attack_spritesheet_up = self.load_image('../graphics/img/mc attack spritesheet up.png')
+        self.attack_spritesheet_down = self.load_image('../graphics/img/mc attack spritesheet down.png')
+        self.attack_spritesheet_left = self.load_image('../graphics/img/mc attack spritesheet left.png')
+        self.attack_spritesheet_right = self.load_image('../graphics/img/mc attack spritesheet right.png')
 
         # Extract and scale frames for animations
         self.frames_up = self.extract_and_scale_frames(self.sprite_sheet_up)
         self.frames_down = self.extract_and_scale_frames(self.sprite_sheet_down)
         self.frames_left = self.extract_and_scale_frames(self.sprite_sheet_left)
         self.frames_right = self.extract_and_scale_frames(self.sprite_sheet_right)
-        self.attack_frames_up = self.extract_and_scale_frames(self.attack_spritesheet_up.sheet)
-        self.attack_frames_down = self.extract_and_scale_frames(self.attack_spritesheet_down.sheet)
-        self.attack_frames_left = self.extract_and_scale_frames(self.attack_spritesheet_left.sheet)
-        self.attack_frames_right = self.extract_and_scale_frames(self.attack_spritesheet_right.sheet)
+        self.attack_frames_up = self.extract_and_scale_frames(self.attack_spritesheet_up)
+        self.attack_frames_down = self.extract_and_scale_frames(self.attack_spritesheet_down)
+        self.attack_frames_left = self.extract_and_scale_frames(self.attack_spritesheet_left)
+        self.attack_frames_right = self.extract_and_scale_frames(self.attack_spritesheet_right)
 
         # sprite setup
         self.create_map()
 
     def load_image(self, path):
-        return pygame.image.load(path).convert()
+        return pygame.image.load(path).convert_alpha()  # Use convert_alpha to keep transparency
 
     def extract_and_scale_frames(self, sheet):
         frames = []
@@ -76,7 +79,8 @@ class Level:
                             surf = graphics['objects'][int(col)]
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
 
-        self.player = Player((WIDTH // 2, HEIGHT // 2), [self.visible_sprites], self.obstacle_sprites)
+        frames = (self.frames_up, self.frames_down, self.frames_left, self.frames_right)
+        self.player = Player(self.game, (WIDTH // 2, HEIGHT // 2), [self.visible_sprites], self.obstacle_sprites, frames)  # Add self.game
 
     def run(self):
         # update and draw the game
