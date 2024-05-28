@@ -1,14 +1,12 @@
 import pygame
 from settings import *
 from tile import Tile
-from player import Player
-from debug import debug
-from support import *
+from player2 import Player, Attack, Spritesheet
+from support import import_csv_layout, import_folder
 from random import choice
 
 class Level:
-    def __init__(self): 
-
+    def __init__(self):
         # get the display surface
         self.display_surface = pygame.display.get_surface()
 
@@ -16,9 +14,42 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
 
+        # Load sprite sheets
+        self.sprite_sheet_up = self.load_image("../graphics/img/character_sheet_up.png")
+        self.sprite_sheet_down = self.load_image("../graphics/img/character_sheet_down.png")
+        self.sprite_sheet_left = self.load_image("../graphics/img/character_sheet_left.png")
+        self.sprite_sheet_right = self.load_image("../graphics/img/character_sheet_right.png")
+        self.attack_spritesheet_up = Spritesheet('../graphics/img/mc attack spritesheet up.png')
+        self.attack_spritesheet_down = Spritesheet('../graphics/img/mc attack spritesheet down.png')
+        self.attack_spritesheet_left = Spritesheet('../graphics/img/mc attack spritesheet left.png')
+        self.attack_spritesheet_right = Spritesheet('../graphics/img/mc attack spritesheet right.png')
+
+        # Extract and scale frames for animations
+        self.frames_up = self.extract_and_scale_frames(self.sprite_sheet_up)
+        self.frames_down = self.extract_and_scale_frames(self.sprite_sheet_down)
+        self.frames_left = self.extract_and_scale_frames(self.sprite_sheet_left)
+        self.frames_right = self.extract_and_scale_frames(self.sprite_sheet_right)
+        self.attack_frames_up = self.extract_and_scale_frames(self.attack_spritesheet_up.sheet)
+        self.attack_frames_down = self.extract_and_scale_frames(self.attack_spritesheet_down.sheet)
+        self.attack_frames_left = self.extract_and_scale_frames(self.attack_spritesheet_left.sheet)
+        self.attack_frames_right = self.extract_and_scale_frames(self.attack_spritesheet_right.sheet)
+
         # sprite setup
         self.create_map()
-        
+
+    def load_image(self, path):
+        return pygame.image.load(path).convert()
+
+    def extract_and_scale_frames(self, sheet):
+        frames = []
+        frame_width, frame_height = 50, 50  # Original frame size
+        for i in range(8):
+            frame = sheet.subsurface((i * frame_width, 0), (frame_width, frame_height))
+            frame = pygame.transform.scale(frame, (TILESIZE, TILESIZE))
+            frame.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
+            frames.append(frame)
+        return frames
+
     def create_map(self):
         layouts = {
             'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
@@ -30,34 +61,30 @@ class Level:
             'objects': import_folder('../graphics/objects')
         }
 
-        for style,layout in layouts.items():
-            for row_index,row in enumerate(layout):
+        for style, layout in layouts.items():
+            for row_index, row in enumerate(layout):
                 for col_index, col in enumerate(row):
                     if col != '-1':
                         x = col_index * TILESIZE
                         y = row_index * TILESIZE
                         if style == 'boundary':
-                            Tile((x,y),[self.obstacle_sprites],'invisible')
+                            Tile((x, y), [self.obstacle_sprites], 'invisible')
                         if style == 'grass':
                             random_grass_image = choice(graphics['grass'])
-                            Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'grass',random_grass_image)
-                            
+                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'grass', random_grass_image)
                         if style == 'object':
                             surf = graphics['objects'][int(col)]
-                            Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'object',surf)
+                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
 
-                        
+        self.player = Player((WIDTH // 2, HEIGHT // 2), [self.visible_sprites], self.obstacle_sprites)
 
-        self.player = Player((1320,2180),[self.visible_sprites],self.obstacle_sprites)  
     def run(self):
         # update and draw the game
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
 
-
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
-
         # general setup
         super().__init__()
         self.display_surface = pygame.display.get_surface()
@@ -67,19 +94,18 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         # creating the floor
         self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
-        self.floor_rect = self.floor_surf.get_rect(topleft = (0,0))
+        self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
 
-    def custom_draw(self,player):
-
+    def custom_draw(self, player):
         # getting the offset
         self.offset.x = player.rect.centerx - self.half_width
         self.offset.y = player.rect.centery - self.half_height
 
         # drawing the floor
         floor_offset_pos = self.floor_rect.topleft - self.offset
-        self.display_surface.blit(self.floor_surf,floor_offset_pos)
+        self.display_surface.blit(self.floor_surf, floor_offset_pos)
         
-        # for sprite in self.sprites():
-        for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):
+        # draw sprites
+        for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
-            self.display_surface.blit(sprite.image,offset_pos)
+            self.display_surface.blit(sprite.image, offset_pos)
