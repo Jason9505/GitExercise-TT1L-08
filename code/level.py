@@ -27,15 +27,15 @@ class Level:
         self.attack_spritesheet_left = self.load_image('../graphics/img/mc attack spritesheet left.png')
         self.attack_spritesheet_right = self.load_image('../graphics/img/mc attack spritesheet right.png')
 
-        # Extract and scale frames for animations
-        self.frames_up = self.extract_and_scale_frames(self.sprite_sheet_up)
-        self.frames_down = self.extract_and_scale_frames(self.sprite_sheet_down)
-        self.frames_left = self.extract_and_scale_frames(self.sprite_sheet_left)
-        self.frames_right = self.extract_and_scale_frames(self.sprite_sheet_right)
-        self.attack_frames_up = self.extract_and_scale_frames(self.attack_spritesheet_up)
-        self.attack_frames_down = self.extract_and_scale_frames(self.attack_spritesheet_down)
-        self.attack_frames_left = self.extract_and_scale_frames(self.attack_spritesheet_left)
-        self.attack_frames_right = self.extract_and_scale_frames(self.attack_spritesheet_right)
+        # Extract frames for animations without scaling
+        self.frames_up = self.extract_frames(self.sprite_sheet_up)
+        self.frames_down = self.extract_frames(self.sprite_sheet_down)
+        self.frames_left = self.extract_frames(self.sprite_sheet_left)
+        self.frames_right = self.extract_frames(self.sprite_sheet_right)
+        self.attack_frames_up = self.extract_frames(self.attack_spritesheet_up)
+        self.attack_frames_down = self.extract_frames(self.attack_spritesheet_down)
+        self.attack_frames_left = self.extract_frames(self.attack_spritesheet_left)
+        self.attack_frames_right = self.extract_frames(self.attack_spritesheet_right)
 
         # sprite setup
         self.create_map()
@@ -43,12 +43,11 @@ class Level:
     def load_image(self, path):
         return pygame.image.load(path).convert_alpha()  # Use convert_alpha to keep transparency
 
-    def extract_and_scale_frames(self, sheet):
+    def extract_frames(self, sheet):
         frames = []
-        frame_width, frame_height = 50, 50  # Original frame size
+        frame_width, frame_height = 32, 32  # Original frame size
         for i in range(8):
             frame = sheet.subsurface((i * frame_width, 0), (frame_width, frame_height))
-            frame = pygame.transform.scale(frame, (TILESIZE, TILESIZE))
             frame.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
             frames.append(frame)
         return frames

@@ -9,7 +9,6 @@ class Spritesheet:
         sprite = pygame.Surface((width, height), pygame.SRCALPHA)  # Use SRCALPHA for transparency
         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
         sprite.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
-        sprite = pygame.transform.scale(sprite, (TILESIZE, TILESIZE))
         return sprite
 
 class Player(pygame.sprite.Sprite):
