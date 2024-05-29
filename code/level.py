@@ -80,7 +80,7 @@ class Level:
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
 
         frames = (self.frames_up, self.frames_down, self.frames_left, self.frames_right)
-        self.player = Player(self.game, (WIDTH // 2, HEIGHT // 2), [self.visible_sprites], self.obstacle_sprites, frames)  # Add self.game
+        self.player = Player(self.game, (1320, 2180), [self.visible_sprites], self.obstacle_sprites, frames)  # Add self.game
 
     def run(self):
         # update and draw the game

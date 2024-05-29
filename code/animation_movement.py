@@ -17,14 +17,14 @@ class Game:
         self.enemies = pygame.sprite.Group()
 
         # Load sprite sheets
-        self.sprite_sheet_up = pygame.image.load("img/character_sheet_up.png")
-        self.sprite_sheet_down = pygame.image.load("img/character_sheet_down.png")
-        self.sprite_sheet_left = pygame.image.load("img/character_sheet_left.png")
-        self.sprite_sheet_right = pygame.image.load("img/character_sheet_right.png")
-        self.attack_spritesheet_up = Spritesheet('img/mc attack spritesheet up.png')
-        self.attack_spritesheet_down = Spritesheet('img/mc attack spritesheet down.png')
-        self.attack_spritesheet_left = Spritesheet('img/mc attack spritesheet left.png')
-        self.attack_spritesheet_right = Spritesheet('img/mc attack spritesheet right.png')
+        self.sprite_sheet_up = pygame.image.load("../graphics/img/character_sheet_up.png")
+        self.sprite_sheet_down = pygame.image.load("../graphics/img/character_sheet_down.png")
+        self.sprite_sheet_left = pygame.image.load("../graphics/img/character_sheet_left.png")
+        self.sprite_sheet_right = pygame.image.load("../graphics/img/character_sheet_right.png")
+        self.attack_spritesheet_up = Spritesheet('../graphics/img/mc attack spritesheet up.png')
+        self.attack_spritesheet_down = Spritesheet('../graphics/img/mc attack spritesheet down.png')
+        self.attack_spritesheet_left = Spritesheet('../graphics/img/mc attack spritesheet left.png')
+        self.attack_spritesheet_right = Spritesheet('../graphics/img/mc attack spritesheet right.png')
 
         # Extract frames for animations
         self.frames_up = self.extract_frames(self.sprite_sheet_up)
@@ -46,7 +46,7 @@ class Game:
         frame_height = 50
         for i in range(8):
             frame = sheet.subsurface((i * frame_width, 0), (frame_width, frame_height))
-            frame.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
+            frame.set_colorkey((0, 0, 0))  # Assuming (255, 0, 255) is the transparent color
             frames.append(frame)
         return frames
 
@@ -83,7 +83,7 @@ class Spritesheet:
     def get_sprite(self, x, y, width, height):
         sprite = pygame.Surface((width, height), pygame.SRCALPHA)
         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
-        sprite.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
+        sprite.set_colorkey((0, 0, 0))  # Assuming (255, 0, 255) is the transparent color
         return sprite
 
 class Player(pygame.sprite.Sprite):
