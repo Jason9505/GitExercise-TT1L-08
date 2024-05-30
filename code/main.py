@@ -11,7 +11,7 @@ class Game:
         pygame.display.set_caption('Realm Redeemers: The Last Stand')
         self.clock = pygame.time.Clock()
 
-        self.level = Level(self)
+        self.level = Level()
 
     def run(self):
         while True:
