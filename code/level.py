@@ -45,7 +45,7 @@ class Level:
 
     def extract_frames(self, sheet):
         frames = []
-        frame_width, frame_height = 32, 32  # Original frame size
+        frame_width, frame_height = 50, 50  # Original frame size
         for i in range(8):
             frame = sheet.subsurface((i * frame_width, 0), (frame_width, frame_height))
             frame.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
