@@ -6,12 +6,20 @@ from support import import_folder
 #     def __init__(self, file):
 #         self.sheet = pygame.image.load(file).convert_alpha()  # Use convert_alpha to keep transparency
 
+<<<<<<< HEAD
 #     def get_sprite(self, x, y, width, height):
 #         sprite = pygame.Surface((width, height), pygame.SRCALPHA)  # Use SRCALPHA for transparency
 #         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
 #         sprite.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
 #         sprite = pygame.transform.scale(sprite, (TILESIZE, TILESIZE))
 #         return sprite
+=======
+    def get_sprite(self, x, y, width, height):
+        sprite = pygame.Surface((width, height), pygame.SRCALPHA)  # Use SRCALPHA for transparency
+        sprite.blit(self.sheet, (0, 0), (x, y, width, height))
+        sprite.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
+        return sprite
+>>>>>>> aaa3a9280b359aa4d2e953608f3b0c7c5d144469
 
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites):
