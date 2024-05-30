@@ -21,13 +21,13 @@ class Level:
         
     def create_map(self):
         layouts = {
-            'boundary': import_csv_layout('../pygame_project/map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('../pygame_project/map/map_Grass.csv'),
-            'object': import_csv_layout('../pygame_project/map/map_Objects.csv'),
+            'boundary': import_csv_layout('C:/Users/GF66/pygame_project/map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('C:/Users/GF66/pygame_project/map/map_Grass.csv'),
+            'object': import_csv_layout('C:/Users/GF66/pygame_project/map/map_Objects.csv'),
         }
         graphics = {
-            'grass': import_folder('../pygame_project/graphics/Grass'),
-            'objects': import_folder('../pygame_project/graphics/objects')
+            'grass': import_folder('C:/Users/GF66/pygame_project/graphics/Grass'),
+            'objects': import_folder('C:/Users/GF66/pygame_project/graphics/objects')
         }
 
         for style,layout in layouts.items():
@@ -45,14 +45,14 @@ class Level:
                         if style == 'object':
                             surf = graphics['objects'][int(col)]
                             Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'object',surf)
-
-                        
-
+        
         self.player = Player((1320,2180),[self.visible_sprites],self.obstacle_sprites)  
+
     def run(self):
         # update and draw the game
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
+        debug(self.player.status)
 
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -66,7 +66,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
         # creating the floor
-        self.floor_surf = pygame.image.load('../pygame_project/graphics/tilemap/ground.png').convert()
+        self.floor_surf = pygame.image.load('C:/Users/GF66/pygame_project/graphics/tilemap/ground.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft = (0,0))
 
     def custom_draw(self,player):
