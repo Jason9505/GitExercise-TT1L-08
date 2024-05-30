@@ -16,6 +16,7 @@
 #         self.attacks = pygame.sprite.Group()
 #         self.enemies = pygame.sprite.Group()
 
+<<<<<<< HEAD
 #         # Load sprite sheets
 #         self.sprite_sheet_up = pygame.image.load("C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/character_sheet_up.png")
 #         self.sprite_sheet_down = pygame.image.load("C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/character_sheet_down.png")
@@ -25,6 +26,17 @@
 #         self.attack_spritesheet_down = Spritesheet('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/mc attack spritesheet down.png')
 #         self.attack_spritesheet_left = Spritesheet('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/mc attack spritesheet left.png')
 #         self.attack_spritesheet_right = Spritesheet('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/mc attack spritesheet right.png')
+=======
+        # Load sprite sheets
+        self.sprite_sheet_up = pygame.image.load("../graphics/img/character_sheet_up.png")
+        self.sprite_sheet_down = pygame.image.load("../graphics/img/character_sheet_down.png")
+        self.sprite_sheet_left = pygame.image.load("../graphics/img/character_sheet_left.png")
+        self.sprite_sheet_right = pygame.image.load("../graphics/img/character_sheet_right.png")
+        self.attack_spritesheet_up = Spritesheet('../graphics/img/mc attack spritesheet up.png')
+        self.attack_spritesheet_down = Spritesheet('../graphics/img/mc attack spritesheet down.png')
+        self.attack_spritesheet_left = Spritesheet('../graphics/img/mc attack spritesheet left.png')
+        self.attack_spritesheet_right = Spritesheet('../graphics/img/mc attack spritesheet right.png')
+>>>>>>> aaa3a9280b359aa4d2e953608f3b0c7c5d144469
 
 #         # Extract frames for animations
 #         self.frames_up = self.extract_frames(self.sprite_sheet_up)
@@ -40,6 +52,7 @@
 #         self.player = Player(self)
 #         self.all_sprites.add(self.player)
 
+<<<<<<< HEAD
 #     def extract_frames(self, sheet):
 #         frames = []
 #         frame_width = 50
@@ -49,6 +62,17 @@
 #             frame.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
 #             frames.append(frame)
 #         return frames
+=======
+    def extract_frames(self, sheet):
+        frames = []
+        frame_width = 50
+        frame_height = 50
+        for i in range(8):
+            frame = sheet.subsurface((i * frame_width, 0), (frame_width, frame_height))
+            frame.set_colorkey((0, 0, 0))  # Assuming (255, 0, 255) is the transparent color
+            frames.append(frame)
+        return frames
+>>>>>>> aaa3a9280b359aa4d2e953608f3b0c7c5d144469
 
 #     def new(self):
 #         # Start a new game
@@ -80,11 +104,19 @@
 #     def __init__(self, file):
 #         self.sheet = pygame.image.load(file).convert()
 
+<<<<<<< HEAD
 #     def get_sprite(self, x, y, width, height):
 #         sprite = pygame.Surface((width, height), pygame.SRCALPHA)
 #         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
 #         sprite.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
 #         return sprite
+=======
+    def get_sprite(self, x, y, width, height):
+        sprite = pygame.Surface((width, height), pygame.SRCALPHA)
+        sprite.blit(self.sheet, (0, 0), (x, y, width, height))
+        sprite.set_colorkey((0, 0, 0))  # Assuming (255, 0, 255) is the transparent color
+        return sprite
+>>>>>>> aaa3a9280b359aa4d2e953608f3b0c7c5d144469
 
 # class Player(pygame.sprite.Sprite):
 #     def __init__(self, game):
