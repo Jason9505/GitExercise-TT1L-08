@@ -1,13 +1,14 @@
 import pygame
 from settings import *
 from tile import Tile
-from player import Player, Spritesheet
-from support import import_csv_layout, import_folder
+from player import Player
+from support import *
 from random import choice
+from debug import debug
 
 class Level:
-    def __init__(self, game):
-        self.game = game  # Reference to the main game object
+    def __init__(self):
+        # self.game = game  # Reference to the main game object
 
         # get the display surface
         self.display_surface = pygame.display.get_surface()
@@ -15,53 +16,34 @@ class Level:
         # sprite group setup
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
-        self.attacks = pygame.sprite.Group()  # Add this line
+        # self.attacks = pygame.sprite.Group()  # Add this line
 
-        # Load sprite sheets
-        self.sprite_sheet_up = self.load_image("../graphics/img/character_sheet_up.png")
-        self.sprite_sheet_down = self.load_image("../graphics/img/character_sheet_down.png")
-        self.sprite_sheet_left = self.load_image("../graphics/img/character_sheet_left.png")
-        self.sprite_sheet_right = self.load_image("../graphics/img/character_sheet_right.png")
-        self.attack_spritesheet_up = self.load_image('../graphics/img/mc attack spritesheet up.png')
-        self.attack_spritesheet_down = self.load_image('../graphics/img/mc attack spritesheet down.png')
-        self.attack_spritesheet_left = self.load_image('../graphics/img/mc attack spritesheet left.png')
-        self.attack_spritesheet_right = self.load_image('../graphics/img/mc attack spritesheet right.png')
-
-        # Extract and scale frames for animations
-        self.frames_up = self.extract_and_scale_frames(self.sprite_sheet_up)
-        self.frames_down = self.extract_and_scale_frames(self.sprite_sheet_down)
-        self.frames_left = self.extract_and_scale_frames(self.sprite_sheet_left)
-        self.frames_right = self.extract_and_scale_frames(self.sprite_sheet_right)
-        self.attack_frames_up = self.extract_and_scale_frames(self.attack_spritesheet_up)
-        self.attack_frames_down = self.extract_and_scale_frames(self.attack_spritesheet_down)
-        self.attack_frames_left = self.extract_and_scale_frames(self.attack_spritesheet_left)
-        self.attack_frames_right = self.extract_and_scale_frames(self.attack_spritesheet_right)
 
         # sprite setup
         self.create_map()
 
-    def load_image(self, path):
-        return pygame.image.load(path).convert_alpha()  # Use convert_alpha to keep transparency
+    # def load_image(self, path):
+    #     return pygame.image.load(path).convert_alpha()  # Use convert_alpha to keep transparency
 
-    def extract_and_scale_frames(self, sheet):
-        frames = []
-        frame_width, frame_height = 50, 50  # Original frame size
-        for i in range(8):
-            frame = sheet.subsurface((i * frame_width, 0), (frame_width, frame_height))
-            frame = pygame.transform.scale(frame, (TILESIZE, TILESIZE))
-            frame.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
-            frames.append(frame)
-        return frames
+    # def extract_and_scale_frames(self, sheet):
+    #     frames = []
+    #     frame_width, frame_height = 50, 50  # Original frame size
+    #     for i in range(8):
+    #         frame = sheet.subsurface((i * frame_width, 0), (frame_width, frame_height))
+    #         frame = pygame.transform.scale(frame, (TILESIZE, TILESIZE))
+    #         frame.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
+    #         frames.append(frame)
+    #     return frames
 
     def create_map(self):
         layouts = {
-            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('../map/map_Grass.csv'),
-            'object': import_csv_layout('../map/map_Objects.csv'),
+            'boundary': import_csv_layout('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/map/map_Grass.csv'),
+            'object': import_csv_layout('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/map/map_Objects.csv'),
         }
         graphics = {
-            'grass': import_folder('../graphics/Grass'),
-            'objects': import_folder('../graphics/objects')
+            'grass': import_folder('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/Grass'),
+            'objects': import_folder('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/objects')
         }
 
         for style, layout in layouts.items():
@@ -79,13 +61,15 @@ class Level:
                             surf = graphics['objects'][int(col)]
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
 
-        frames = (self.frames_up, self.frames_down, self.frames_left, self.frames_right)
-        self.player = Player(self.game, (WIDTH // 2, HEIGHT // 2), [self.visible_sprites], self.obstacle_sprites, frames)  # Add self.game
+        self.player = Player((1320,2180),[self.visible_sprites],self.obstacle_sprites)
+
 
     def run(self):
         # update and draw the game
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
+        debug(self.player.status)
+
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
@@ -97,7 +81,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
         # creating the floor
-        self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
+        self.floor_surf = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/tilemap/ground.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
 
     def custom_draw(self, player):
