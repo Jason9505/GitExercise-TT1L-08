@@ -16,7 +16,7 @@ from support import import_folder
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites):
         super().__init__(groups)
-        self.image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/test/player.png').convert_alpha()
+        self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-18) #try to figure out this number (dkaljsdlkajlksdjlkjaldjljaljdla)
 
@@ -36,7 +36,7 @@ class Player(pygame.sprite.Sprite):
         self.obstacle_sprites = obstacle_sprites
 
     def import_player_assets(self):
-        character_path = 'C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/player/'
+        character_path = '../graphics/player/'
         self.animations = {'up': [],'down': [],'left': [],'right': [],
 			'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[],
 			'right_attack':[],'left_attack':[],'up_attack':[],'down_attack':[]}

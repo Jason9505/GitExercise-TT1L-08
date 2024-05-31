@@ -18,6 +18,7 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
         # self.attacks = pygame.sprite.Group()  # Add this line
 
+<<<<<<< HEAD
 
         # Load sprite sheets
         # self.sprite_sheet_up = self.load_image("../graphics/img/character_sheet_up.png")
@@ -38,6 +39,8 @@ class Level:
         # self.attack_frames_down = self.extract_frames(self.attack_spritesheet_down)
         # self.attack_frames_left = self.extract_frames(self.attack_spritesheet_left)
         # self.attack_frames_right = self.extract_frames(self.attack_spritesheet_right)
+=======
+>>>>>>> b892a386e29c0f2888f1d5f0fd0746c3bf1ebc0b
 
         # sprite setup
         self.create_map()
@@ -57,13 +60,13 @@ class Level:
 
     def create_map(self):
         layouts = {
-            'boundary': import_csv_layout('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/map/map_Grass.csv'),
-            'object': import_csv_layout('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/map/map_Objects.csv'),
+            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('../map/map_Grass.csv'),
+            'object': import_csv_layout('../map/map_Objects.csv'),
         }
         graphics = {
-            'grass': import_folder('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/Grass'),
-            'objects': import_folder('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/objects')
+            'grass': import_folder('../graphics/Grass'),
+            'objects': import_folder('../graphics/objects')
         }
 
         for style, layout in layouts.items():
@@ -101,7 +104,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
         # creating the floor
-        self.floor_surf = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/tilemap/ground.png').convert()
+        self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
 
     def custom_draw(self, player):
