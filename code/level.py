@@ -18,6 +18,29 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
         # self.attacks = pygame.sprite.Group()  # Add this line
 
+<<<<<<< HEAD
+
+        # Load sprite sheets
+        # self.sprite_sheet_up = self.load_image("../graphics/img/character_sheet_up.png")
+        # self.sprite_sheet_down = self.load_image("../graphics/img/character_sheet_down.png")
+        # self.sprite_sheet_left = self.load_image("../graphics/img/character_sheet_left.png")
+        # self.sprite_sheet_right = self.load_image("../graphics/img/character_sheet_right.png")
+        # self.attack_spritesheet_up = self.load_image('../graphics/img/mc attack spritesheet up.png')
+        # self.attack_spritesheet_down = self.load_image('../graphics/img/mc attack spritesheet down.png')
+        # self.attack_spritesheet_left = self.load_image('../graphics/img/mc attack spritesheet left.png')
+        # self.attack_spritesheet_right = self.load_image('../graphics/img/mc attack spritesheet right.png')
+
+        # # Extract frames for animations without scaling
+        # self.frames_up = self.extract_frames(self.sprite_sheet_up)
+        # self.frames_down = self.extract_frames(self.sprite_sheet_down)
+        # self.frames_left = self.extract_frames(self.sprite_sheet_left)
+        # self.frames_right = self.extract_frames(self.sprite_sheet_right)
+        # self.attack_frames_up = self.extract_frames(self.attack_spritesheet_up)
+        # self.attack_frames_down = self.extract_frames(self.attack_spritesheet_down)
+        # self.attack_frames_left = self.extract_frames(self.attack_spritesheet_left)
+        # self.attack_frames_right = self.extract_frames(self.attack_spritesheet_right)
+=======
+>>>>>>> b892a386e29c0f2888f1d5f0fd0746c3bf1ebc0b
 
         # sprite setup
         self.create_map()
