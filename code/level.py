@@ -18,7 +18,6 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
         # self.attacks = pygame.sprite.Group()  # Add this line
 
-<<<<<<< HEAD
 
         # Load sprite sheets
         # self.sprite_sheet_up = self.load_image("../graphics/img/character_sheet_up.png")
@@ -39,8 +38,6 @@ class Level:
         # self.attack_frames_down = self.extract_frames(self.attack_spritesheet_down)
         # self.attack_frames_left = self.extract_frames(self.attack_spritesheet_left)
         # self.attack_frames_right = self.extract_frames(self.attack_spritesheet_right)
-=======
->>>>>>> b892a386e29c0f2888f1d5f0fd0746c3bf1ebc0b
 
         # sprite setup
         self.create_map()
