@@ -6,20 +6,12 @@ from support import import_folder
 #     def __init__(self, file):
 #         self.sheet = pygame.image.load(file).convert_alpha()  # Use convert_alpha to keep transparency
 
-<<<<<<< HEAD
 #     def get_sprite(self, x, y, width, height):
 #         sprite = pygame.Surface((width, height), pygame.SRCALPHA)  # Use SRCALPHA for transparency
 #         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
 #         sprite.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
 #         sprite = pygame.transform.scale(sprite, (TILESIZE, TILESIZE))
 #         return sprite
-=======
-    def get_sprite(self, x, y, width, height):
-        sprite = pygame.Surface((width, height), pygame.SRCALPHA)  # Use SRCALPHA for transparency
-        sprite.blit(self.sheet, (0, 0), (x, y, width, height))
-        sprite.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
-        return sprite
->>>>>>> aaa3a9280b359aa4d2e953608f3b0c7c5d144469
 
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos,groups,obstacle_sprites):
@@ -58,19 +50,19 @@ class Player(pygame.sprite.Sprite):
             keys = pygame.key.get_pressed()
 
             # movement input
-            if keys[pygame.K_w]:
+            if keys[pygame.K_UP]:
                 self.direction.y = -1
                 self.status = 'up'
-            elif keys[pygame.K_s]:
+            elif keys[pygame.K_DOWN]:
                 self.direction.y = 1
                 self.status = 'down'
             else:
                 self.direction.y = 0
 
-            if keys[pygame.K_d]:
+            if keys[pygame.K_RIGHT]:
                 self.direction.x = 1
                 self.status = 'right'
-            elif keys[pygame.K_a]:
+            elif keys[pygame.K_LEFT]:
                 self.direction.x = -1
                 self.status = 'left'
             else:
