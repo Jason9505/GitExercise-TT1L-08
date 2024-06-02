@@ -30,24 +30,37 @@ enemy_image = pygame.image.load('../graphics/img/monster lvl 1 solo.png').conver
 enemy_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
 
 # Load option button images
-option1_image = pygame.image.load('../graphics/img/sword1.png').convert_alpha()
-option1_image = pygame.transform.scale(option1_image, (150, 100))  # Increase size
-option2_image = pygame.image.load('../graphics/img/spear.png').convert_alpha()
-option2_image = pygame.transform.scale(option2_image, (150, 100))  # Increase size
-option3_image = pygame.image.load('../graphics/img/scythe.png').convert_alpha()
-option3_image = pygame.transform.scale(option3_image, (150, 100))  # Increase size
-option4_image = pygame.image.load('../graphics/img/catalyst.png').convert_alpha()
-option4_image = pygame.transform.scale(option4_image, (150, 100))  # Increase size
+attack1_image = pygame.image.load('../graphics/img/weapon/sword1.png').convert_alpha()
+attack1_image = pygame.transform.scale(attack1_image, (150, 100))  # Increase size
+attack2_image = pygame.image.load('../graphics/img/weapon/spear.png').convert_alpha()
+attack2_image = pygame.transform.scale(attack2_image, (150, 100))  # Increase size
+attack3_image = pygame.image.load('../graphics/img/weapon/scythe.png').convert_alpha()
+attack3_image = pygame.transform.scale(attack3_image, (150, 100))  # Increase size
+attack4_image = pygame.image.load('../graphics/img/weapon/catalyst.png').convert_alpha()
+attack4_image = pygame.transform.scale(attack4_image, (150, 100))  # Increase size
 
 # Load attack options images (Example images)
-attack1_image = pygame.image.load('../graphics/img/sword.png').convert_alpha()
-attack1_image = pygame.transform.scale(attack1_image, (100, 50))  # Adjust size
-attack2_image = pygame.image.load('../graphics/img/shield.png').convert_alpha()
-attack2_image = pygame.transform.scale(attack2_image, (100, 50))  # Adjust size
+option1_image = pygame.image.load('../graphics/img/sword.png').convert_alpha()
+option1_image = pygame.transform.scale(option1_image, (100, 50))  # Adjust size
+option2_image = pygame.image.load('../graphics/img/shield.png').convert_alpha()
+option2_image = pygame.transform.scale(option2_image, (100, 50))  # Adjust size
+
+# Load tutorial image
+tutorial_image = pygame.image.load('../graphics/img/tutorial.jpg').convert_alpha()  # Adjust the path
+tutorial_image = pygame.transform.scale(tutorial_image, (600, 400))  # Adjust size as needed
 
 # Player and Enemy HP
 player_hp = 100
 enemy_hp = 100
+
+# Font for displaying damage
+font = pygame.font.SysFont(None, 36)
+
+# Damage display variables
+player_damage_text = ""
+player_damage_time = 0
+enemy_damage_text = ""
+enemy_damage_time = 0
 
 # Function to draw player health bar
 def draw_player_health_bar(screen, x, y, current_hp, max_hp):
@@ -81,36 +94,16 @@ selected_option = None
 
 # Function for enemy attack
 def enemy_attack():
-    global player_hp
+    global player_hp, player_damage_text, player_damage_time
     damage = random.randint(5, 15)
     player_hp -= damage
-    print(f"Enemy attacks! Player takes {damage} damage.")
+    player_damage_text = f"-{damage}"
+    player_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
 
 # Function to end the game
 def end_game():
     pygame.quit()
     sys.exit()
-
-# Function to display tutorial window
-def show_tutorial():
-    tutorial_screen = pygame.display.set_mode((600, 400))
-    pygame.display.set_caption("Tutorial")
-    running_tutorial = True
-    while running_tutorial:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running_tutorial = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                running_tutorial = False
-
-        tutorial_screen.fill(WHITE)
-        font = pygame.font.SysFont(None, 36)
-        tutorial_text = font.render('Use the attack options to defeat the enemy!', True, BLACK)
-        tutorial_screen.blit(tutorial_text, (30, 180))
-        pygame.display.flip()
-
-    pygame.display.quit()
-    pygame.display.init()
 
 # Define button areas outside the main loop
 attack1_rect = pygame.Rect(SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT - 150, 150, 100)
@@ -118,6 +111,11 @@ attack2_rect = pygame.Rect(SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT - 150, 150, 10
 attack3_rect = pygame.Rect(SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 150, 150, 100)
 attack4_rect = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150, 150, 100)
 tutorial_button_rect = pygame.Rect(10, 10, 150, 50)
+exit_tutorial_button_rect = pygame.Rect(350, 350, 100, 50)
+
+# Load and play background music
+pygame.mixer.music.load('../graphics/img/battle music.mp3')  # Adjust the path to your music file
+pygame.mixer.music.play(-1)  # The -1 argument makes the music loop indefinitely
 
 # Main game loop with interactions
 running = True
@@ -127,13 +125,10 @@ while running:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
-            if tutorial_button_rect.collidepoint(x, y):
-                current_state = TUTORIAL
-                show_tutorial()
-                current_state = NORMAL
             if current_state == NORMAL:
-                # Check if buttons are clicked
-                if attack1_rect.collidepoint(x, y):
+                if tutorial_button_rect.collidepoint(x, y):
+                    current_state = TUTORIAL
+                elif attack1_rect.collidepoint(x, y):
                     selected_option = 1
                     current_state = ATTACK_SELECTION
                 elif attack2_rect.collidepoint(x, y):
@@ -154,23 +149,36 @@ while running:
                 if option1_rect.collidepoint(x, y):
                     if selected_option == 1:
                         enemy_hp -= 10  # Option 1 attack 1 effect
+                        enemy_damage_text = "-10"
                     elif selected_option == 2:
                         enemy_hp -= 20  # Option 1 attack 2 effect
+                        enemy_damage_text = "-20"
                     elif selected_option == 3:
                         enemy_hp -= 15  # Option 1 attack 3 effect
+                        enemy_damage_text = "-15"
                     elif selected_option == 4:
                         enemy_hp -= 5   # Option 1 attack 4 effect
+                        enemy_damage_text = "-5"
+                    enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
                     current_state = ENEMY_TURN
                 elif option2_rect.collidepoint(x, y):
                     if selected_option == 1:
                         enemy_hp -= 15  # Option 2 attack 1 effect
+                        enemy_damage_text = "-15"
                     elif selected_option == 2:
                         enemy_hp -= 25  # Option 2 attack 2 effect
+                        enemy_damage_text = "-25"
                     elif selected_option == 3:
                         enemy_hp -= 20  # Option 2 attack 3 effect
+                        enemy_damage_text = "-20"
                     elif selected_option == 4:
                         enemy_hp -= 10  # Option 2 attack 4 effect
+                        enemy_damage_text = "-10"
+                    enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
                     current_state = ENEMY_TURN
+            elif current_state == TUTORIAL:
+                if exit_tutorial_button_rect.collidepoint(x, y):
+                    current_state = NORMAL
 
     if current_state == ENEMY_TURN:
         enemy_attack()
@@ -197,21 +205,37 @@ while running:
     draw_player_health_bar(screen, character_x + 50, character_y - 20, player_hp, 100)  # Centered above the player
 
     # Action buttons
-    screen.blit(option1_image, (SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT - 150))
-    screen.blit(option2_image, (SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT - 150))
-    screen.blit(option3_image, (SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 150))
-    screen.blit(option4_image, (SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150))
+    screen.blit(attack1_image, (SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT - 150))
+    screen.blit(attack2_image, (SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT - 150))
+    screen.blit(attack3_image, (SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 150))
+    screen.blit(attack4_image, (SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150))
     
     if current_state == ATTACK_SELECTION:
         # Attack options
-        screen.blit(attack1_image, (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 25))
-        screen.blit(attack2_image, (SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT // 2 - 25))
+        screen.blit(option1_image, (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 25))
+        screen.blit(option2_image, (SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT // 2 - 25))
 
     # Tutorial button
     pygame.draw.rect(screen, BLUE, tutorial_button_rect)
-    font = pygame.font.SysFont(None, 36)
     tutorial_button_text = font.render('Tutorial', True, WHITE)
     screen.blit(tutorial_button_text, (20, 20))
+
+    if current_state == TUTORIAL:
+        # Draw tutorial image
+        screen.blit(tutorial_image, (SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT // 2 - 200))
+        # Draw exit tutorial button
+        pygame.draw.rect(screen, RED, exit_tutorial_button_rect)
+        exit_text = font.render('Exit', True, WHITE)
+        screen.blit(exit_text, (360, 360))
+
+    # Display damage numbers
+    current_time = pygame.time.get_ticks()
+    if player_damage_text and current_time - player_damage_time < 1000:  # Display for 1 second
+        player_damage_surface = font.render(player_damage_text, True, RED)
+        screen.blit(player_damage_surface, (character_x + 100, character_y - 50))
+    if enemy_damage_text and current_time - enemy_damage_time < 1000:  # Display for 1 second
+        enemy_damage_surface = font.render(enemy_damage_text, True, RED)
+        screen.blit(enemy_damage_surface, (enemy_x + 100, enemy_y - 50))
 
     # Update display
     pygame.display.flip()
