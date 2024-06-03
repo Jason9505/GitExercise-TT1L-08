@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 # import pygame
 # import sys
 # import math
@@ -188,3 +190,4 @@
 # game.new()
 # pygame.quit()
 # sys.exit()
+>>>>>>> 435eb47272d64eb648bd661baad06ea1edaabc6d
