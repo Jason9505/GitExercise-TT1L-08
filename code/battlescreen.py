@@ -29,7 +29,7 @@ character_image = pygame.transform.scale(character_image, (200, 300))  # Increas
 enemy_image = pygame.image.load('../graphics/img/monster lvl 1 solo.png').convert_alpha()  # Adjust the path
 enemy_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
 
-# Load option button images
+# Load attack button images
 attack1_image = pygame.image.load('../graphics/img/weapon/sword1.png').convert_alpha()
 attack1_image = pygame.transform.scale(attack1_image, (150, 100))  # Increase size
 attack2_image = pygame.image.load('../graphics/img/weapon/spear.png').convert_alpha()
@@ -39,15 +39,47 @@ attack3_image = pygame.transform.scale(attack3_image, (150, 100))  # Increase si
 attack4_image = pygame.image.load('../graphics/img/weapon/catalyst.png').convert_alpha()
 attack4_image = pygame.transform.scale(attack4_image, (150, 100))  # Increase size
 
-# Load attack options images (Example images)
-option1_image = pygame.image.load('../graphics/img/sword.png').convert_alpha()
-option1_image = pygame.transform.scale(option1_image, (100, 50))  # Adjust size
-option2_image = pygame.image.load('../graphics/img/shield.png').convert_alpha()
-option2_image = pygame.transform.scale(option2_image, (100, 50))  # Adjust size
+# Load attack option images for each attack type and make them square
+option_size = 100  # Size of square buttons
+attack1_option1_image = pygame.image.load('../graphics/img/weapon/sword basic.png').convert_alpha()
+attack1_option1_image = pygame.transform.scale(attack1_option1_image, (option_size, option_size))  # Adjust size
+attack1_option2_image = pygame.image.load('../graphics/img/weapon/sword ult.png').convert_alpha()
+attack1_option2_image = pygame.transform.scale(attack1_option2_image, (option_size, option_size))  # Adjust size
+attack1_option3_image = pygame.image.load('../graphics/img/weapon/sword skill.png').convert_alpha()  # New option button
+attack1_option3_image = pygame.transform.scale(attack1_option3_image, (option_size, option_size))  # Adjust size
+
+attack2_option1_image = pygame.image.load('../graphics/img/weapon/spear basic.png').convert_alpha()
+attack2_option1_image = pygame.transform.scale(attack2_option1_image, (option_size, option_size))  # Adjust size
+attack2_option2_image = pygame.image.load('../graphics/img/weapon/spear ult.png').convert_alpha()
+attack2_option2_image = pygame.transform.scale(attack2_option2_image, (option_size, option_size))  # Adjust size
+attack2_option3_image = pygame.image.load('../graphics/img/weapon/spear skill.png').convert_alpha()  # New option button
+attack2_option3_image = pygame.transform.scale(attack2_option3_image, (option_size, option_size))  # Adjust size
+
+attack3_option1_image = pygame.image.load('../graphics/img/weapon/scythe basic.png').convert_alpha()
+attack3_option1_image = pygame.transform.scale(attack3_option1_image, (option_size, option_size))  # Adjust size
+attack3_option2_image = pygame.image.load('../graphics/img/weapon/scythe ult.png').convert_alpha()
+attack3_option2_image = pygame.transform.scale(attack3_option2_image, (option_size, option_size))  # Adjust size
+attack3_option3_image = pygame.image.load('../graphics/img/weapon/scythe skill.png').convert_alpha()  # New option button
+attack3_option3_image = pygame.transform.scale(attack3_option3_image, (option_size, option_size))  # Adjust size
+
+attack4_option1_image = pygame.image.load('../graphics/img/weapon/catalyst basic.png').convert_alpha()
+attack4_option1_image = pygame.transform.scale(attack4_option1_image, (option_size, option_size))  # Adjust size
+attack4_option2_image = pygame.image.load('../graphics/img/weapon/catalyst ult.png').convert_alpha()
+attack4_option2_image = pygame.transform.scale(attack4_option2_image, (option_size, option_size))  # Adjust size
+attack4_option3_image = pygame.image.load('../graphics/img/weapon/catalyst skill.png').convert_alpha()  # New option button
+attack4_option3_image = pygame.transform.scale(attack4_option3_image, (option_size, option_size))  # Adjust size
 
 # Load tutorial image
 tutorial_image = pygame.image.load('../graphics/img/tutorial.jpg').convert_alpha()  # Adjust the path
 tutorial_image = pygame.transform.scale(tutorial_image, (600, 400))  # Adjust size as needed
+
+# Load tutorial button image
+tutorial_button_image = pygame.image.load('../graphics/img/tutorial button.png').convert_alpha()  # Adjust the path
+tutorial_button_image = pygame.transform.scale(tutorial_button_image, (150, 150))  # Adjust size as needed
+
+# Load exit tutorial button image
+exit_tutorial_button_image = pygame.image.load('../graphics/img/return game.png').convert_alpha()  # Adjust the path
+exit_tutorial_button_image = pygame.transform.scale(exit_tutorial_button_image, (100, 100))  # Adjust size as needed
 
 # Player and Enemy HP
 player_hp = 100
@@ -90,7 +122,7 @@ TUTORIAL = 3
 current_state = NORMAL
 
 # Selected attack type
-selected_option = None
+selected_attack = None
 
 # Function for enemy attack
 def enemy_attack():
@@ -114,7 +146,7 @@ tutorial_button_rect = pygame.Rect(10, 10, 150, 50)
 exit_tutorial_button_rect = pygame.Rect(350, 350, 100, 50)
 
 # Load and play background music
-pygame.mixer.music.load('../graphics/img/battle music.mp3')  # Adjust the path to your music file
+pygame.mixer.music.load('../graphics/img/battle-music.mp3')  # Adjust the path to your music file
 pygame.mixer.music.play(-1)  # The -1 argument makes the music loop indefinitely
 
 # Main game loop with interactions
@@ -129,51 +161,64 @@ while running:
                 if tutorial_button_rect.collidepoint(x, y):
                     current_state = TUTORIAL
                 elif attack1_rect.collidepoint(x, y):
-                    selected_option = 1
                     current_state = ATTACK_SELECTION
+                    selected_attack = 1
                 elif attack2_rect.collidepoint(x, y):
-                    selected_option = 2
                     current_state = ATTACK_SELECTION
+                    selected_attack = 2
                 elif attack3_rect.collidepoint(x, y):
-                    selected_option = 3
                     current_state = ATTACK_SELECTION
+                    selected_attack = 3
                 elif attack4_rect.collidepoint(x, y):
-                    selected_option = 4
                     current_state = ATTACK_SELECTION
+                    selected_attack = 4
             elif current_state == ATTACK_SELECTION:
-                # Define attack options areas
-                option1_rect = pygame.Rect(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 25, 100, 50)
-                option2_rect = pygame.Rect(SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT // 2 - 25, 100, 50)
-                
-                # Check if options are clicked
+                option1_rect = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 150, option_size, option_size)
+                option2_rect = pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 150, option_size, option_size)
+                option3_rect = pygame.Rect(SCREEN_WIDTH // 2 + 150, SCREEN_HEIGHT // 2 - 150, option_size, option_size)
                 if option1_rect.collidepoint(x, y):
-                    if selected_option == 1:
-                        enemy_hp -= 10  # Option 1 attack 1 effect
+                    if selected_attack == 1:
+                        enemy_hp -= 10
                         enemy_damage_text = "-10"
-                    elif selected_option == 2:
-                        enemy_hp -= 20  # Option 1 attack 2 effect
-                        enemy_damage_text = "-20"
-                    elif selected_option == 3:
-                        enemy_hp -= 15  # Option 1 attack 3 effect
+                    elif selected_attack == 2:
+                        enemy_hp -= 15
                         enemy_damage_text = "-15"
-                    elif selected_option == 4:
-                        enemy_hp -= 5   # Option 1 attack 4 effect
-                        enemy_damage_text = "-5"
+                    elif selected_attack == 3:
+                        enemy_hp -= 20
+                        enemy_damage_text = "-20"
+                    elif selected_attack == 4:
+                        enemy_hp -= 25
+                        enemy_damage_text = "-25"
                     enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
                     current_state = ENEMY_TURN
                 elif option2_rect.collidepoint(x, y):
-                    if selected_option == 1:
-                        enemy_hp -= 15  # Option 2 attack 1 effect
-                        enemy_damage_text = "-15"
-                    elif selected_option == 2:
-                        enemy_hp -= 25  # Option 2 attack 2 effect
-                        enemy_damage_text = "-25"
-                    elif selected_option == 3:
-                        enemy_hp -= 20  # Option 2 attack 3 effect
+                    if selected_attack == 1:
+                        enemy_hp -= 20
                         enemy_damage_text = "-20"
-                    elif selected_option == 4:
-                        enemy_hp -= 10  # Option 2 attack 4 effect
-                        enemy_damage_text = "-10"
+                    elif selected_attack == 2:
+                        enemy_hp -= 25
+                        enemy_damage_text = "-25"
+                    elif selected_attack == 3:
+                        enemy_hp -= 30
+                        enemy_damage_text = "-30"
+                    elif selected_attack == 4:
+                        enemy_hp -= 35
+                        enemy_damage_text = "-35"
+                    enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                    current_state = ENEMY_TURN
+                elif option3_rect.collidepoint(x, y):
+                    if selected_attack == 1:
+                        enemy_hp -= 25
+                        enemy_damage_text = "-25"
+                    elif selected_attack == 2:
+                        enemy_hp -= 30
+                        enemy_damage_text = "-30"
+                    elif selected_attack == 3:
+                        enemy_hp -= 35
+                        enemy_damage_text = "-35"
+                    elif selected_attack == 4:
+                        enemy_hp -= 40
+                        enemy_damage_text = "-40"
                     enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
                     current_state = ENEMY_TURN
             elif current_state == TUTORIAL:
@@ -211,22 +256,32 @@ while running:
     screen.blit(attack4_image, (SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150))
     
     if current_state == ATTACK_SELECTION:
-        # Attack options
-        screen.blit(option1_image, (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 25))
-        screen.blit(option2_image, (SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT // 2 - 25))
+        # Draw specific attack options based on selected attack
+        if selected_attack == 1:
+            screen.blit(attack1_option1_image, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 150))
+            screen.blit(attack1_option2_image, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 150))
+            screen.blit(attack1_option3_image, (SCREEN_WIDTH // 2 + 150, SCREEN_HEIGHT // 2 - 150))  # Draw new option button
+        elif selected_attack == 2:
+            screen.blit(attack2_option1_image, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 150))
+            screen.blit(attack2_option2_image, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 150))
+            screen.blit(attack2_option3_image, (SCREEN_WIDTH // 2 + 150, SCREEN_HEIGHT // 2 - 150))  # Draw new option button
+        elif selected_attack == 3:
+            screen.blit(attack3_option1_image, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 150))
+            screen.blit(attack3_option2_image, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 150))
+            screen.blit(attack3_option3_image, (SCREEN_WIDTH // 2 + 150, SCREEN_HEIGHT // 2 - 150))  # Draw new option button
+        elif selected_attack == 4:
+            screen.blit(attack4_option1_image, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 150))
+            screen.blit(attack4_option2_image, (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 150))
+            screen.blit(attack4_option3_image, (SCREEN_WIDTH // 2 + 150, SCREEN_HEIGHT // 2 - 150))  # Draw new option button
 
     # Tutorial button
-    pygame.draw.rect(screen, BLUE, tutorial_button_rect)
-    tutorial_button_text = font.render('Tutorial', True, WHITE)
-    screen.blit(tutorial_button_text, (20, 20))
+    screen.blit(tutorial_button_image, (10, 10))
 
     if current_state == TUTORIAL:
         # Draw tutorial image
         screen.blit(tutorial_image, (SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT // 2 - 200))
         # Draw exit tutorial button
-        pygame.draw.rect(screen, RED, exit_tutorial_button_rect)
-        exit_text = font.render('Exit', True, WHITE)
-        screen.blit(exit_text, (360, 360))
+        screen.blit(exit_tutorial_button_image, (350, 350))
 
     # Display damage numbers
     current_time = pygame.time.get_ticks()
