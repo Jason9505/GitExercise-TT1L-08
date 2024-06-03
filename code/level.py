@@ -32,48 +32,8 @@ class Level:
         # sprite group setup
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
-        # self.attacks = pygame.sprite.Group()  # Add this linez
+        # self.attacks = pygame.sprite.Group()  # Add this line
 
-        # Load sprite sheets
-        # self.sprite_sheet_up = self.load_image("../graphics/img/character_sheet_up.png")
-        # self.sprite_sheet_down = self.load_image("../graphics/img/character_sheet_down.png")
-        # self.sprite_sheet_left = self.load_image("../graphics/img/character_sheet_left.png")
-        # self.sprite_sheet_right = self.load_image("../graphics/img/character_sheet_right.png")
-        # self.attack_spritesheet_up = self.load_image('../graphics/img/mc attack spritesheet up.png')
-        # self.attack_spritesheet_down = self.load_image('../graphics/img/mc attack spritesheet down.png')
-        # self.attack_spritesheet_left = self.load_image('../graphics/img/mc attack spritesheet left.png')
-        # self.attack_spritesheet_right = self.load_image('../graphics/img/mc attack spritesheet right.png')
-
-        # # Extract frames for animations without scaling
-        # self.frames_up = self.extract_frames(self.sprite_sheet_up)
-        # self.frames_down = self.extract_frames(self.sprite_sheet_down)
-        # self.frames_left = self.extract_frames(self.sprite_sheet_left)
-        # self.frames_right = self.extract_frames(self.sprite_sheet_right)
-        # self.attack_frames_up = self.extract_frames(self.attack_spritesheet_up)
-        # self.attack_frames_down = self.extract_frames(self.attack_spritesheet_down)
-        # self.attack_frames_left = self.extract_frames(self.attack_spritesheet_left)
-        # self.attack_frames_right = self.extract_frames(self.attack_spritesheet_right)
-
-        # Load monster frames
-        self.load_monster_frames()
-
-        # Define the map dimensions
-        self.map_width = 3000  # Assuming a map width of 3000 pixels
-        self.map_height = 3000  # Assuming a map height of 3000 pixels
-
-        # Set up camera
-        self.camera = pygame.Rect(0, 0, WIDTH, HEIGHT)
-
-        # Define spawn areas
-        self.spawn_areas = [
-            pygame.Rect(500, 500, 750, 750),
-            pygame.Rect(100, 100, 200, 200),
-            pygame.Rect(600, 600, 300, 300)
-        ]
-        self.max_monsters = 1
-
-        # Initialize monsters
-        self.monsters = self.create_monsters()
 
         # sprite setup
         self.create_map()
