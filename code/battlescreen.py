@@ -86,7 +86,7 @@ exit_tutorial_button_image = pygame.image.load('../graphics/img/return game.png'
 exit_tutorial_button_image = pygame.transform.scale(exit_tutorial_button_image, (100, 100))  # Adjust size as needed
 
 # Player and Enemy HP
-player_hp = [100, 100, 100, 100]  # Health for each attack button
+player_hp = 100  # Overall health for player
 enemy_hp = 100
 max_player_hp = 100  # Maximum HP for player
 
@@ -99,14 +99,14 @@ player_damage_time = 0
 enemy_damage_text = ""
 enemy_damage_time = 0
 
-# Function to draw button health bar
-def draw_button_health_bar(screen, x, y, current_hp, max_hp):
+# Function to draw health bar
+def draw_health_bar(screen, x, y, current_hp, max_hp):
     BAR_WIDTH = 100
     BAR_HEIGHT = 10
     fill = (current_hp / max_hp) * BAR_WIDTH
     border = pygame.Rect(x, y, BAR_WIDTH, BAR_HEIGHT)
     fill = pygame.Rect(x, y, fill, BAR_HEIGHT)
-    pygame.draw.rect(screen, GREEN, fill)  # Green for button health bar
+    pygame.draw.rect(screen, GREEN, fill)  # Green for health bar
     pygame.draw.rect(screen, BLACK, border, 2)
 
 # Function to draw enemy health bar
@@ -141,8 +141,7 @@ max_points = 5
 def enemy_attack():
     global player_hp, player_damage_text, player_damage_time
     damage = random.randint(5, 15)
-    attack_index = random.randint(0, 3)
-    player_hp[attack_index] -= damage
+    player_hp -= damage
     player_damage_text = f"-{damage}"
     player_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
 
@@ -163,12 +162,23 @@ attack4_rect = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150, 150, 10
 tutorial_button_rect = pygame.Rect(10, 10, 150, 150)  # Updated to match the image size
 exit_tutorial_button_rect = pygame.Rect(350, 350, 100, 100)  # Updated to match the image size
 
-# Main game loop with interactions
+# Attack damage ranges for each type of attack
+attack_damage = {
+    0: {'basic': (5, 10), 'ult': (20, 30), 'skill': (10, 20)},
+    1: {'basic': (6, 12), 'ult': (18, 28), 'skill': (12, 22)},
+    2: {'basic': (7, 14), 'ult': (22, 32), 'skill': (14, 24)},
+    3: {'basic': (8, 16), 'ult': (24, 34), 'skill': (16, 26)},
+}
+
+# Main game loop
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             if current_state == NORMAL:
@@ -188,34 +198,51 @@ while running:
                     current_state = TUTORIAL
 
             elif current_state == ATTACK_SELECTION:
-                basic_rect = pygame.Rect(SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 - 50, basic_size, basic_size)
-                skill_rect = pygame.Rect(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 75, skill_size, skill_size)
-                ult_rect = pygame.Rect(SCREEN_WIDTH // 2 + 100, SCREEN_HEIGHT // 2 - 100, ult_size, ult_size)
+                basic_rect = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 50, basic_size, basic_size)
+                ult_rect = pygame.Rect(SCREEN_WIDTH // 2 - 50 + basic_size + 5, SCREEN_HEIGHT // 2 - 50, ult_size, ult_size)
+                skill_rect = pygame.Rect(SCREEN_WIDTH // 2 + 100 + basic_size + ult_size + 10, SCREEN_HEIGHT // 2 - 50, skill_size, skill_size)
 
-                if basic_rect.collidepoint(mouse_pos) and points >= 1:
-                    damage = random.randint(5, 15)
-                    enemy_hp -= damage
-                    points -= 1
-                    enemy_damage_text = f"-{damage}"
+                if basic_rect.collidepoint(mouse_pos):
+                    damage = random.randint(*attack_damage[selected_attack]['basic'])
+                    if selected_attack == 3:
+                        player_hp = min(player_hp + damage, max_player_hp)  # Heal the player
+                        player_damage_text = f"+{damage}"
+                    else:
+                        enemy_hp -= damage
+                        enemy_damage_text = f"-{damage}"
+                    points = min(points + 1, max_points)  # Gain 1 point
                     enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
                     current_state = ENEMY_TURN
                     enemy_attack_timer = pygame.time.get_ticks()  # Start enemy attack timer
-                elif skill_rect.collidepoint(mouse_pos) and points >= 2:
-                    damage = random.randint(10, 20)
-                    enemy_hp -= damage
-                    points -= 2
-                    enemy_damage_text = f"-{damage}"
-                    enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
-                    current_state = ENEMY_TURN
-                    enemy_attack_timer = pygame.time.get_ticks()  # Start enemy attack timer
+
                 elif ult_rect.collidepoint(mouse_pos) and points >= 3:
-                    damage = random.randint(20, 30)
-                    enemy_hp -= damage
-                    points -= 3
-                    enemy_damage_text = f"-{damage}"
+                    if selected_attack == 3:
+                        heal = random.randint(*attack_damage[selected_attack]['ult'])
+                        player_hp = min(player_hp + heal, max_player_hp)
+                        player_damage_text = f"+{heal}"
+                    else:
+                        damage = random.randint(*attack_damage[selected_attack]['ult'])
+                        enemy_hp -= damage
+                        enemy_damage_text = f"-{damage}"
+                    points -= 3  # Consume 3 points
                     enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
                     current_state = ENEMY_TURN
                     enemy_attack_timer = pygame.time.get_ticks()  # Start enemy attack timer
+
+                elif skill_rect.collidepoint(mouse_pos) and points >= 2:
+                    if selected_attack == 3:
+                        heal = random.randint(*attack_damage[selected_attack]['skill'])
+                        player_hp = min(player_hp + heal, max_player_hp)
+                        player_damage_text = f"+{heal}"
+                    else:
+                        damage = random.randint(*attack_damage[selected_attack]['skill'])
+                        enemy_hp -= damage
+                        enemy_damage_text = f"-{damage}"
+                    points -= 2  # Consume 2 points
+                    enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                    current_state = ENEMY_TURN
+                    enemy_attack_timer = pygame.time.get_ticks()  # Start enemy attack timer
+
                 elif tutorial_button_rect.collidepoint(mouse_pos):
                     current_state = TUTORIAL
 
@@ -237,42 +264,38 @@ while running:
         screen.blit(character_image, (50, SCREEN_HEIGHT - 350))
         screen.blit(enemy_image, (SCREEN_WIDTH - 250, 50))
 
-        # Draw buttons with health bars
+        # Draw player health bar aligned in the middle of the character
+        draw_health_bar(screen, 50 + character_image.get_width() // 2 - 50, SCREEN_HEIGHT - 380, player_hp, max_player_hp)
+
+        # Draw buttons without health bars
         screen.blit(attack1_image, attack1_rect)
-        draw_button_health_bar(screen, attack1_rect.x, attack1_rect.y - 15, player_hp[0], max_player_hp)
-
         screen.blit(attack2_image, attack2_rect)
-        draw_button_health_bar(screen, attack2_rect.x, attack2_rect.y - 15, player_hp[1], max_player_hp)
-
         screen.blit(attack3_image, attack3_rect)
-        draw_button_health_bar(screen, attack3_rect.x, attack3_rect.y - 15, player_hp[2], max_player_hp)
-
         screen.blit(attack4_image, attack4_rect)
-        draw_button_health_bar(screen, attack4_rect.x, attack4_rect.y - 15, player_hp[3], max_player_hp)
 
-        # Draw enemy health bar
-        draw_enemy_health_bar(screen, SCREEN_WIDTH - 250, 30, enemy_hp, 100)
+        # Draw enemy health bar aligned in the middle of the enemy
+        draw_enemy_health_bar(screen, SCREEN_WIDTH - 250 + enemy_image.get_width() // 2 - 50, 20, enemy_hp, 100)
 
         if current_state == ATTACK_SELECTION:
-            basic_rect = pygame.Rect(SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 - 50, basic_size, basic_size)
-            skill_rect = pygame.Rect(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 75, skill_size, skill_size)
-            ult_rect = pygame.Rect(SCREEN_WIDTH // 2 + 100, SCREEN_HEIGHT // 2 - 100, ult_size, ult_size)
+            basic_rect = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 50, basic_size, basic_size)
+            ult_rect = pygame.Rect(SCREEN_WIDTH // 2 - 50 + basic_size + 5, SCREEN_HEIGHT // 2 - 50, ult_size, ult_size)
+            skill_rect = pygame.Rect(SCREEN_WIDTH // 2 + 100 + basic_size + ult_size + 10, SCREEN_HEIGHT // 2 - 50, skill_size, skill_size)
             if selected_attack == 0:
                 screen.blit(attack1_basic_image, basic_rect)
-                screen.blit(attack1_skill_image, skill_rect)
                 screen.blit(attack1_ult_image, ult_rect)
+                screen.blit(attack1_skill_image, skill_rect)
             elif selected_attack == 1:
                 screen.blit(attack2_basic_image, basic_rect)
-                screen.blit(attack2_skill_image, skill_rect)
                 screen.blit(attack2_ult_image, ult_rect)
+                screen.blit(attack2_skill_image, skill_rect)
             elif selected_attack == 2:
                 screen.blit(attack3_basic_image, basic_rect)
-                screen.blit(attack3_skill_image, skill_rect)
                 screen.blit(attack3_ult_image, ult_rect)
+                screen.blit(attack3_skill_image, skill_rect)
             elif selected_attack == 3:
                 screen.blit(attack4_basic_image, basic_rect)
-                screen.blit(attack4_skill_image, skill_rect)
                 screen.blit(attack4_ult_image, ult_rect)
+                screen.blit(attack4_skill_image, skill_rect)
 
         # Display damage text for player
         if player_damage_text:
@@ -292,13 +315,12 @@ while running:
             current_state = NORMAL
 
     # Check for game over conditions
-    if any(hp <= 0 for hp in player_hp):
+    if player_hp <= 0:
         end_game()
     elif enemy_hp <= 0:
         end_game()
 
     # Update points and display
-    points = min(points + 0.01, max_points)  # Increment points gradually, capped at max_points
     screen.blit(font.render(f"Points: {int(points)}", True, YELLOW), (SCREEN_WIDTH - 150, SCREEN_HEIGHT - 50))
 
     pygame.display.flip()
