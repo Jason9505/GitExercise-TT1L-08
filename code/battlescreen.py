@@ -28,6 +28,12 @@ character_image = pygame.transform.scale(character_image, (200, 300))  # Increas
 
 enemy_image = pygame.image.load('../graphics/img/monster lvl 1 solo.png').convert_alpha()  # Adjust the path
 enemy_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
+enemylvl2_image = pygame.image.load('../graphics/img/monster lvl 3 solo.png').convert_alpha()  # Adjust the path
+enemylvl2_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
+enemylvl3_image = pygame.image.load('../graphics/img/monster lvl 4 solo.png').convert_alpha()  # Adjust the path
+enemylvl3_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
+enemyboss_image = pygame.image.load('../graphics/img/final boss.png').convert_alpha()  # Adjust the path
+enemyboss_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
 
 # Load attack button images
 attack1_image = pygame.image.load('../graphics/img/weapon/sword1.png').convert_alpha()
@@ -131,7 +137,7 @@ selected_attack = None
 
 # Timers for delaying enemy attack
 enemy_attack_timer = 0
-enemy_attack_delay = 3000  # 3 seconds delay
+enemy_attack_delay = 2000  # 3 seconds delay
 
 # Points system
 points = 3
@@ -159,38 +165,14 @@ attack1_rect = pygame.Rect(SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT - 150, 150, 10
 attack2_rect = pygame.Rect(SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT - 150, 150, 100)
 attack3_rect = pygame.Rect(SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 150, 150, 100)
 attack4_rect = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150, 150, 100)
-tutorial_button_rect = pygame.Rect(10, 10, 150, 150)  # Updated to match the image size
-exit_tutorial_button_rect = pygame.Rect(350, 350, 100, 100)  # Updated to match the image size
 
-# Attack damage ranges for each type of attack
-attack_damage = {
-    0: {'basic': (5, 10), 'ult': (20, 30), 'skill': (10, 20)},
-    1: {'basic': (6, 12), 'ult': (18, 28), 'skill': (12, 22)},
-    2: {'basic': (7, 14), 'ult': (22, 32), 'skill': (14, 24)},
-    3: {'basic': (8, 16), 'ult': (24, 34), 'skill': (16, 26)}
-}
+basic_rect = pygame.Rect(SCREEN_WIDTH // 2 - (basic_size + skill_size + ult_size + 10) // 2,
+                         SCREEN_HEIGHT // 2 - basic_size // 2, basic_size, basic_size)
+skill_rect = pygame.Rect(basic_rect.right + 5, SCREEN_HEIGHT // 2 - skill_size // 2, skill_size, skill_size)
+ult_rect = pygame.Rect(skill_rect.right + 5, SCREEN_HEIGHT // 2 - ult_size // 2, ult_size, ult_size)
 
-# Function to handle player attacks
-def player_attack(attack_type):
-    global enemy_hp, enemy_damage_text, enemy_damage_time, points
-
-    if selected_attack is not None:
-        damage_range = attack_damage[selected_attack][attack_type]
-        damage = random.randint(*damage_range)
-        enemy_hp -= damage
-        enemy_damage_text = f"-{damage}"
-        enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
-
-        # Update points based on attack type
-        if attack_type == 'ult':
-            points -= 3
-        elif attack_type == 'skill':
-            points -= 2
-        elif attack_type == 'basic':
-            points -= 1
-
-        return True
-    return False
+tutorial_button_rect = pygame.Rect(20, 20, 150, 150)
+exit_tutorial_button_rect = pygame.Rect(SCREEN_WIDTH - 120, 20, 100, 100)
 
 # Main game loop
 while True:
@@ -200,113 +182,116 @@ while True:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 end_game()
-            if current_state == NORMAL:
-                if event.key == pygame.K_1:
-                    selected_attack = 0
-                elif event.key == pygame.K_2:
-                    selected_attack = 1
-                elif event.key == pygame.K_3:
-                    selected_attack = 2
-                elif event.key == pygame.K_4:
-                    selected_attack = 3
-                if selected_attack is not None:
-                    current_state = ATTACK_SELECTION
-
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            if current_state == NORMAL:
-                if attack1_rect.collidepoint(mouse_pos):
-                    selected_attack = 0
-                    current_state = ATTACK_SELECTION
-                elif attack2_rect.collidepoint(mouse_pos):
-                    selected_attack = 1
-                    current_state = ATTACK_SELECTION
-                elif attack3_rect.collidepoint(mouse_pos):
-                    selected_attack = 2
-                    current_state = ATTACK_SELECTION
-                elif attack4_rect.collidepoint(mouse_pos):
-                    selected_attack = 3
-                    current_state = ATTACK_SELECTION
-                elif tutorial_button_rect.collidepoint(mouse_pos):
-                    current_state = TUTORIAL
-            elif current_state == ATTACK_SELECTION:
-                if basic_button_rect.collidepoint(mouse_pos):
-                    if points >= 1:
-                        if player_attack('basic'):
+            if event.button == 1:  # Left mouse button
+                mouse_pos = event.pos
+                if current_state == NORMAL:
+                    if attack1_rect.collidepoint(mouse_pos):
+                        selected_attack = "attack1"
+                        current_state = ATTACK_SELECTION
+                    elif attack2_rect.collidepoint(mouse_pos):
+                        selected_attack = "attack2"
+                        current_state = ATTACK_SELECTION
+                    elif attack3_rect.collidepoint(mouse_pos):
+                        selected_attack = "attack3"
+                        current_state = ATTACK_SELECTION
+                    elif attack4_rect.collidepoint(mouse_pos):
+                        selected_attack = "attack4"
+                        current_state = ATTACK_SELECTION
+                    elif tutorial_button_rect.collidepoint(mouse_pos):
+                        current_state = TUTORIAL
+                elif current_state == ATTACK_SELECTION:
+                    if basic_rect.collidepoint(mouse_pos):
+                        damage = random.randint(10, 20)
+                        enemy_hp -= damage
+                        enemy_damage_text = f"-{damage}"
+                        enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                        points = min(points + 1, max_points)  # Increase points, maxing out at max_points
+                        current_state = ENEMY_TURN
+                        enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay  # Set timer for enemy attack
+                    elif skill_rect.collidepoint(mouse_pos):
+                        if points >= 1:
+                            damage = random.randint(30, 50)
+                            enemy_hp -= damage
+                            enemy_damage_text = f"-{damage}"
+                            enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            points -= 1  # Decrease points by 1
                             current_state = ENEMY_TURN
-                            enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay
-                elif ult_button_rect.collidepoint(mouse_pos):
-                    if points >= 3:
-                        if player_attack('ult'):
+                            enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay  # Set timer for enemy attack
+                    elif ult_rect.collidepoint(mouse_pos):
+                        if points >= 3:
+                            damage = random.randint(50, 70)
+                            enemy_hp -= damage
+                            enemy_damage_text = f"-{damage}"
+                            enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            points -= 3  # Decrease points by 3
                             current_state = ENEMY_TURN
-                            enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay
-                elif skill_button_rect.collidepoint(mouse_pos):
-                    if points >= 2:
-                        if player_attack('skill'):
-                            current_state = ENEMY_TURN
-                            enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay
-            elif current_state == TUTORIAL:
-                if exit_tutorial_button_rect.collidepoint(mouse_pos):
-                    current_state = NORMAL
+                            enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay  # Set timer for enemy attack
+                elif current_state == TUTORIAL:
+                    if exit_tutorial_button_rect.collidepoint(mouse_pos):
+                        current_state = NORMAL
 
+    # Clear the screen and draw the background
     screen.blit(background_image, (0, 0))
 
-    if current_state == NORMAL:
-        screen.blit(character_image, (50, SCREEN_HEIGHT - character_image.get_height() - 50))
-        screen.blit(enemy_image, (SCREEN_WIDTH - enemy_image.get_width() - 50, SCREEN_HEIGHT - enemy_image.get_height() - 50))
-        screen.blit(attack1_image, attack1_rect.topleft)
-        screen.blit(attack2_image, attack2_rect.topleft)
-        screen.blit(attack3_image, attack3_rect.topleft)
-        screen.blit(attack4_image, attack4_rect.topleft)
-        screen.blit(tutorial_button_image, tutorial_button_rect.topleft)
-    elif current_state == ATTACK_SELECTION:
-        attack1_selected_rect = pygame.Rect(SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT - 300, 150, 100)
-        attack2_selected_rect = pygame.Rect(SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT - 300, 150, 100)
-        attack3_selected_rect = pygame.Rect(SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 300, 150, 100)
-        attack4_selected_rect = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 300, 150, 100)
-        
-        if selected_attack == 0:
-            screen.blit(attack1_basic_image, attack1_selected_rect.topleft)
-            screen.blit(attack1_ult_image, attack1_selected_rect.move(0, -basic_size - 5).topleft)
-            screen.blit(attack1_skill_image, attack1_selected_rect.move(0, -basic_size - ult_size - 10).topleft)
-        elif selected_attack == 1:
-            screen.blit(attack2_basic_image, attack2_selected_rect.topleft)
-            screen.blit(attack2_ult_image, attack2_selected_rect.move(0, -basic_size - 5).topleft)
-            screen.blit(attack2_skill_image, attack2_selected_rect.move(0, -basic_size - ult_size - 10).topleft)
-        elif selected_attack == 2:
-            screen.blit(attack3_basic_image, attack3_selected_rect.topleft)
-            screen.blit(attack3_ult_image, attack3_selected_rect.move(0, -basic_size - 5).topleft)
-            screen.blit(attack3_skill_image, attack3_selected_rect.move(0, -basic_size - ult_size - 10).topleft)
-        elif selected_attack == 3:
-            screen.blit(attack4_basic_image, attack4_selected_rect.topleft)
-            screen.blit(attack4_ult_image, attack4_selected_rect.move(0, -basic_size - 5).topleft)
-            screen.blit(attack4_skill_image, attack4_selected_rect.move(0, -basic_size - ult_size - 10).topleft)
-    elif current_state == TUTORIAL:
-        screen.blit(tutorial_image, (SCREEN_WIDTH // 2 - tutorial_image.get_width() // 2, SCREEN_HEIGHT // 2 - tutorial_image.get_height() // 2))
-        screen.blit(exit_tutorial_button_image, exit_tutorial_button_rect.topleft)
+    # Draw the character and enemy images
+    screen.blit(character_image, (50, SCREEN_HEIGHT - character_image.get_height() - 50))  # Adjusted for positioning
+    screen.blit(enemy_image, (SCREEN_WIDTH - enemy_image.get_width() - 50, 50))  # Adjusted for positioning
 
+    # Draw attack buttons
+    screen.blit(attack1_image, attack1_rect)
+    screen.blit(attack2_image, attack2_rect)
+    screen.blit(attack3_image, attack3_rect)
+    screen.blit(attack4_image, attack4_rect)
+
+    # Draw tutorial button
+    screen.blit(tutorial_button_image, tutorial_button_rect)
+
+    # Draw player and enemy health bars
+    draw_health_bar(screen, 50, SCREEN_HEIGHT - character_image.get_height() - 60, player_hp, max_player_hp)  # Adjusted for positioning
+    draw_enemy_health_bar(screen, SCREEN_WIDTH - enemy_image.get_width() - 50, 30, enemy_hp, 100)  # Adjusted for positioning
+
+    # Draw damage text for player and enemy
+    current_time = pygame.time.get_ticks()
+    if current_time - player_damage_time < 1000:  # Display player damage for 1 second
+        player_damage_surface = font.render(player_damage_text, True, RED)
+        screen.blit(player_damage_surface, (50, SCREEN_HEIGHT - character_image.get_height() - 90))  # Adjusted for positioning
+    if current_time - enemy_damage_time < 1000:  # Display enemy damage for 1 second
+        enemy_damage_surface = font.render(enemy_damage_text, True, RED)
+        screen.blit(enemy_damage_surface, (SCREEN_WIDTH - enemy_image.get_width() - 50, 10))  # Adjusted for positioning
+
+    # Handle enemy turn
     if current_state == ENEMY_TURN and pygame.time.get_ticks() >= enemy_attack_timer:
         enemy_attack()
         current_state = NORMAL
-        points = min(points + 1, max_points)  # Increase points by 1, up to the maximum limit
 
-    draw_health_bar(screen, 50, 50, player_hp, max_player_hp)
-    draw_enemy_health_bar(screen, SCREEN_WIDTH - 150, 50, enemy_hp, 100)
+    # Draw points text
+    points_surface = font.render(f"Points: {points}/{max_points}", True, YELLOW)
+    screen.blit(points_surface, (SCREEN_WIDTH - 150, SCREEN_HEIGHT - 50))
 
-    if player_damage_time > 0 and pygame.time.get_ticks() - player_damage_time < 1000:
-        damage_text = font.render(player_damage_text, True, RED)
-        screen.blit(damage_text, (50, 100))
-    else:
-        player_damage_text = ""
+    # Draw attack selection options
+    if current_state == ATTACK_SELECTION:
+        if selected_attack == "attack1":
+            screen.blit(attack1_basic_image, basic_rect)
+            screen.blit(attack1_skill_image, skill_rect)
+            screen.blit(attack1_ult_image, ult_rect)
+        elif selected_attack == "attack2":
+            screen.blit(attack2_basic_image, basic_rect)
+            screen.blit(attack2_skill_image, skill_rect)
+            screen.blit(attack2_ult_image, ult_rect)
+        elif selected_attack == "attack3":
+            screen.blit(attack3_basic_image, basic_rect)
+            screen.blit(attack3_skill_image, skill_rect)
+            screen.blit(attack3_ult_image, ult_rect)
+        elif selected_attack == "attack4":
+            screen.blit(attack4_basic_image, basic_rect)
+            screen.blit(attack4_skill_image, skill_rect)
+            screen.blit(attack4_ult_image, ult_rect)
 
-    if enemy_damage_time > 0 and pygame.time.get_ticks() - enemy_damage_time < 1000:
-        damage_text = font.render(enemy_damage_text, True, RED)
-        screen.blit(damage_text, (SCREEN_WIDTH - 150, 100))
-    else:
-        enemy_damage_text = ""
+    # Draw tutorial screen
+    if current_state == TUTORIAL:
+        screen.blit(tutorial_image, ((SCREEN_WIDTH - tutorial_image.get_width()) // 2, (SCREEN_HEIGHT - tutorial_image.get_height()) // 2))
+        screen.blit(exit_tutorial_button_image, exit_tutorial_button_rect)
 
-    if player_hp <= 0 or enemy_hp <= 0:
-        end_game()
-
-    pygame.display.flip()
-    pygame.time.delay(100)
+    # Update the display
+    pygame.display.update()
