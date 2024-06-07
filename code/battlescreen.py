@@ -46,7 +46,7 @@ attack4_image = pygame.image.load('../graphics/img/weapon/catalyst.png').convert
 attack4_image = pygame.transform.scale(attack4_image, (150, 100))  # Increase size
 
 # Define sizes for buttons
-basic_size = 100  # Size of basic buttons
+basic_size = 10  # Size of basic buttons
 skill_size = 150  # Size of skill buttons
 ult_size = 200  # Size of ult buttons
 
