@@ -166,11 +166,16 @@ attack2_rect = pygame.Rect(SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT - 150, 150, 10
 attack3_rect = pygame.Rect(SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 150, 150, 100)
 attack4_rect = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150, 150, 100)
 
-basic_rect = pygame.Rect(SCREEN_WIDTH // 2 - (basic_size + skill_size + ult_size + 10) // 2,
-                         SCREEN_HEIGHT // 2 - basic_size // 2, basic_size, basic_size)
-skill_rect = pygame.Rect(basic_rect.right + 5, SCREEN_HEIGHT // 2 - skill_size // 2, skill_size, skill_size)
-ult_rect = pygame.Rect(skill_rect.right + 5, SCREEN_HEIGHT // 2 - ult_size // 2, ult_size, ult_size)
-
+basic_rect = pygame.Rect(
+    SCREEN_WIDTH // 2 - (basic_size + ult_size + skill_size + 10) // 2,
+    SCREEN_HEIGHT - 250, basic_size, basic_size)
+ult_rect = pygame.Rect(
+    SCREEN_WIDTH // 2 - (ult_size + skill_size + 10) // 2 + basic_size + 5,
+    SCREEN_HEIGHT - 250, ult_size, ult_size)
+skill_rect = pygame.Rect(
+    SCREEN_WIDTH // 2 + (ult_size - skill_size) // 2 + 5,
+    SCREEN_HEIGHT - 250, skill_size, skill_size)
+    
 tutorial_button_rect = pygame.Rect(20, 20, 150, 150)
 exit_tutorial_button_rect = pygame.Rect(SCREEN_WIDTH - 120, 20, 100, 100)
 
@@ -202,7 +207,14 @@ while True:
                         current_state = TUTORIAL
                 elif current_state == ATTACK_SELECTION:
                     if basic_rect.collidepoint(mouse_pos):
-                        damage = random.randint(10, 20)
+                        if selected_attack == "attack1":
+                            damage = random.randint(10, 20)
+                        elif selected_attack == "attack2":
+                            damage = random.randint(15, 25)
+                        elif selected_attack == "attack3":
+                            damage = random.randint(20, 30)
+                        elif selected_attack == "attack4":
+                            damage = random.randint(5, 15)
                         enemy_hp -= damage
                         enemy_damage_text = f"-{damage}"
                         enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
@@ -211,25 +223,61 @@ while True:
                         enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay  # Set timer for enemy attack
                     elif skill_rect.collidepoint(mouse_pos):
                         if points >= 1:
-                            damage = random.randint(30, 50)
-                            enemy_hp -= damage
-                            enemy_damage_text = f"-{damage}"
-                            enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            if selected_attack == "attack1":
+                                damage = random.randint(30, 50)
+                                enemy_hp -= damage
+                                enemy_damage_text = f"-{damage}"
+                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            elif selected_attack == "attack2":
+                                damage = random.randint(35, 55)
+                                enemy_hp -= damage
+                                enemy_damage_text = f"-{damage}"
+                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            elif selected_attack == "attack3":
+                                damage = random.randint(40, 60)
+                                enemy_hp -= damage
+                                enemy_damage_text = f"-{damage}"
+                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            elif selected_attack == "attack4":
+                                heal = random.randint(10, 20)
+                                player_hp = min(player_hp + heal, max_player_hp)
+                                player_damage_text = f"+{heal}"
+                                player_damage_time = pygame.time.get_ticks()  # Record the time when healed
                             points -= 1  # Decrease points by 1
                             current_state = ENEMY_TURN
                             enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay  # Set timer for enemy attack
                     elif ult_rect.collidepoint(mouse_pos):
                         if points >= 3:
-                            damage = random.randint(50, 70)
-                            enemy_hp -= damage
-                            enemy_damage_text = f"-{damage}"
-                            enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            if selected_attack == "attack1":
+                                damage = random.randint(50, 70)
+                                enemy_hp -= damage
+                                enemy_damage_text = f"-{damage}"
+                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            elif selected_attack == "attack2":
+                                damage = random.randint(55, 75)
+                                enemy_hp -= damage
+                                enemy_damage_text = f"-{damage}"
+                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            elif selected_attack == "attack3":
+                                damage = random.randint(60, 80)
+                                enemy_hp -= damage
+                                enemy_damage_text = f"-{damage}"
+                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+                            elif selected_attack == "attack4":
+                                heal = random.randint(20, 40)
+                                player_hp = min(player_hp + heal, max_player_hp)
+                                player_damage_text = f"+{heal}"
+                                player_damage_time = pygame.time.get_ticks()  # Record the time when healed
                             points -= 3  # Decrease points by 3
                             current_state = ENEMY_TURN
                             enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay  # Set timer for enemy attack
                 elif current_state == TUTORIAL:
                     if exit_tutorial_button_rect.collidepoint(mouse_pos):
                         current_state = NORMAL
+
+    # Check if player or monster is dead
+    if player_hp <= 0 or enemy_hp <= 0:
+        end_game()
 
     # Clear the screen and draw the background
     screen.blit(background_image, (0, 0))
@@ -273,20 +321,20 @@ while True:
     if current_state == ATTACK_SELECTION:
         if selected_attack == "attack1":
             screen.blit(attack1_basic_image, basic_rect)
-            screen.blit(attack1_skill_image, skill_rect)
             screen.blit(attack1_ult_image, ult_rect)
+            screen.blit(attack1_skill_image, skill_rect)
         elif selected_attack == "attack2":
             screen.blit(attack2_basic_image, basic_rect)
-            screen.blit(attack2_skill_image, skill_rect)
             screen.blit(attack2_ult_image, ult_rect)
+            screen.blit(attack2_skill_image, skill_rect)
         elif selected_attack == "attack3":
             screen.blit(attack3_basic_image, basic_rect)
-            screen.blit(attack3_skill_image, skill_rect)
             screen.blit(attack3_ult_image, ult_rect)
+            screen.blit(attack3_skill_image, skill_rect)
         elif selected_attack == "attack4":
             screen.blit(attack4_basic_image, basic_rect)
-            screen.blit(attack4_skill_image, skill_rect)
             screen.blit(attack4_ult_image, ult_rect)
+            screen.blit(attack4_skill_image, skill_rect)
 
     # Draw tutorial screen
     if current_state == TUTORIAL:
