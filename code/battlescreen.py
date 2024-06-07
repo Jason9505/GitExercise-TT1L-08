@@ -19,66 +19,66 @@ SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
 pygame.display.set_caption("Battle Screen")
 
 # Load background image
-background_image = pygame.image.load('../graphics/img/forest.jpeg').convert()
+background_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/forest.jpeg').convert()
 background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Character and Enemy images
-character_image = pygame.image.load('../graphics/img/mc.png').convert_alpha()
+character_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/mc.png').convert_alpha()
 character_image = pygame.transform.scale(character_image, (200, 300))  # Increase size
 
-enemy_image = pygame.image.load('../graphics/img/monster lvl 1 solo.png').convert_alpha()  # Adjust the path
+enemy_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/monster lvl 1 solo.png').convert_alpha()  # Adjust the path
 enemy_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
 
 # Load attack button images
-attack1_image = pygame.image.load('../graphics/img/weapon/sword1.png').convert_alpha()
+attack1_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/sword1.png').convert_alpha()
 attack1_image = pygame.transform.scale(attack1_image, (150, 100))  # Increase size
-attack2_image = pygame.image.load('../graphics/img/weapon/spear.png').convert_alpha()
+attack2_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/spear.png').convert_alpha()
 attack2_image = pygame.transform.scale(attack2_image, (150, 100))  # Increase size
-attack3_image = pygame.image.load('../graphics/img/weapon/scythe.png').convert_alpha()
+attack3_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/scythe.png').convert_alpha()
 attack3_image = pygame.transform.scale(attack3_image, (150, 100))  # Increase size
-attack4_image = pygame.image.load('../graphics/img/weapon/catalyst.png').convert_alpha()
+attack4_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/catalyst.png').convert_alpha()
 attack4_image = pygame.transform.scale(attack4_image, (150, 100))  # Increase size
 
 # Load attack option images for each attack type and make them square
 option_size = 100  # Size of square buttons
-attack1_option1_image = pygame.image.load('../graphics/img/weapon/sword basic.png').convert_alpha()
+attack1_option1_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/sword basic.png').convert_alpha()
 attack1_option1_image = pygame.transform.scale(attack1_option1_image, (option_size, option_size))  # Adjust size
-attack1_option2_image = pygame.image.load('../graphics/img/weapon/sword ult.png').convert_alpha()
+attack1_option2_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/sword ult.png').convert_alpha()
 attack1_option2_image = pygame.transform.scale(attack1_option2_image, (option_size, option_size))  # Adjust size
-attack1_option3_image = pygame.image.load('../graphics/img/weapon/sword skill.png').convert_alpha()  # New option button
+attack1_option3_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/sword skill.png').convert_alpha()  # New option button
 attack1_option3_image = pygame.transform.scale(attack1_option3_image, (option_size, option_size))  # Adjust size
 
-attack2_option1_image = pygame.image.load('../graphics/img/weapon/spear basic.png').convert_alpha()
+attack2_option1_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/spear basic.png').convert_alpha()
 attack2_option1_image = pygame.transform.scale(attack2_option1_image, (option_size, option_size))  # Adjust size
-attack2_option2_image = pygame.image.load('../graphics/img/weapon/spear ult.png').convert_alpha()
+attack2_option2_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/spear ult.png').convert_alpha()
 attack2_option2_image = pygame.transform.scale(attack2_option2_image, (option_size, option_size))  # Adjust size
-attack2_option3_image = pygame.image.load('../graphics/img/weapon/spear skill.png').convert_alpha()  # New option button
+attack2_option3_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/spear skill.png').convert_alpha()  # New option button
 attack2_option3_image = pygame.transform.scale(attack2_option3_image, (option_size, option_size))  # Adjust size
 
-attack3_option1_image = pygame.image.load('../graphics/img/weapon/scythe basic.png').convert_alpha()
+attack3_option1_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/scythe basic.png').convert_alpha()
 attack3_option1_image = pygame.transform.scale(attack3_option1_image, (option_size, option_size))  # Adjust size
-attack3_option2_image = pygame.image.load('../graphics/img/weapon/scythe ult.png').convert_alpha()
+attack3_option2_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/scythe ult.png').convert_alpha()
 attack3_option2_image = pygame.transform.scale(attack3_option2_image, (option_size, option_size))  # Adjust size
-attack3_option3_image = pygame.image.load('../graphics/img/weapon/scythe skill.png').convert_alpha()  # New option button
+attack3_option3_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/scythe skill.png').convert_alpha()  # New option button
 attack3_option3_image = pygame.transform.scale(attack3_option3_image, (option_size, option_size))  # Adjust size
 
-attack4_option1_image = pygame.image.load('../graphics/img/weapon/catalyst basic.png').convert_alpha()
+attack4_option1_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/catalyst basic.png').convert_alpha()
 attack4_option1_image = pygame.transform.scale(attack4_option1_image, (option_size, option_size))  # Adjust size
-attack4_option2_image = pygame.image.load('../graphics/img/weapon/catalyst ult.png').convert_alpha()
+attack4_option2_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/catalyst ult.png').convert_alpha()
 attack4_option2_image = pygame.transform.scale(attack4_option2_image, (option_size, option_size))  # Adjust size
-attack4_option3_image = pygame.image.load('../graphics/img/weapon/catalyst skill.png').convert_alpha()  # New option button
+attack4_option3_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/weapon/catalyst skill.png').convert_alpha()  # New option button
 attack4_option3_image = pygame.transform.scale(attack4_option3_image, (option_size, option_size))  # Adjust size
 
 # Load tutorial image
-tutorial_image = pygame.image.load('../graphics/img/tutorial.jpg').convert_alpha()  # Adjust the path
+tutorial_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/tutorial.jpg').convert_alpha()  # Adjust the path
 tutorial_image = pygame.transform.scale(tutorial_image, (600, 400))  # Adjust size as needed
 
 # Load tutorial button image
-tutorial_button_image = pygame.image.load('../graphics/img/tutorial button.png').convert_alpha()  # Adjust the path
+tutorial_button_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/tutorial button.png').convert_alpha()  # Adjust the path
 tutorial_button_image = pygame.transform.scale(tutorial_button_image, (150, 150))  # Adjust size as needed
 
 # Load exit tutorial button image
-exit_tutorial_button_image = pygame.image.load('../graphics/img/return game.png').convert_alpha()  # Adjust the path
+exit_tutorial_button_image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/return game.png').convert_alpha()  # Adjust the path
 exit_tutorial_button_image = pygame.transform.scale(exit_tutorial_button_image, (100, 100))  # Adjust size as needed
 
 # Player and Enemy HP
@@ -146,7 +146,7 @@ tutorial_button_rect = pygame.Rect(10, 10, 150, 50)
 exit_tutorial_button_rect = pygame.Rect(350, 350, 100, 50)
 
 # Load and play background music
-pygame.mixer.music.load('../graphics/img/battle-music.mp3')  # Adjust the path to your music file
+pygame.mixer.music.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/img/battle-music.mp3')  # Adjust the path to your music file
 pygame.mixer.music.play(-1)  # The -1 argument makes the music loop indefinitely
 
 # Main game loop with interactions
