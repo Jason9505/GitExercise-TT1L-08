@@ -1,7 +1,10 @@
 import pygame
 from settings import *
 from support import import_folder
+<<<<<<< HEAD
 from entity import Entity
+=======
+>>>>>>> 9b5facad412aa665d519353824cb37cb6f624886
 
 # class Spritesheet:
 #     def __init__(self, file):
@@ -14,18 +17,33 @@ from entity import Entity
 #         sprite = pygame.transform.scale(sprite, (TILESIZE, TILESIZE))
 #         return sprite
 
+<<<<<<< HEAD
 class Player(Entity):
     def __init__(self,pos,groups,obstacle_sprites):
         super().__init__(groups)
         self.image = pygame.image.load('C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/test/player.png').convert_alpha()
+=======
+class Player(pygame.sprite.Sprite):
+    def __init__(self,pos,groups,obstacle_sprites):
+        super().__init__(groups)
+        self.image = pygame.image.load('C:/Users/User/Projects/GitExercise-TT1L-08/graphics/test/player.png').convert_alpha()
+>>>>>>> 9b5facad412aa665d519353824cb37cb6f624886
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-18) #try to figure out this number (dkaljsdlkajlksdjlkjaldjljaljdla)
 
         # graphics setup
         self.import_player_assets()
         self.status = 'down'
+<<<<<<< HEAD
 
         # movement
+=======
+        self.frame_index = 0
+        self.animation_speed = 0.15
+
+        # movement
+        self.direction = pygame.math.Vector2()
+>>>>>>> 9b5facad412aa665d519353824cb37cb6f624886
         self.speed = 2
         self.attacking = False
         self.attack_cooldown = 400
@@ -34,7 +52,11 @@ class Player(Entity):
         self.obstacle_sprites = obstacle_sprites
 
     def import_player_assets(self):
+<<<<<<< HEAD
         character_path = 'C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/player/'
+=======
+        character_path = 'C:/Users/User/Projects/GitExercise-TT1L-08/graphics/player/'
+>>>>>>> 9b5facad412aa665d519353824cb37cb6f624886
         self.animations = {'up': [],'down': [],'left': [],'right': [],
 			'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[],
 			'right_attack':[],'left_attack':[],'up_attack':[],'down_attack':[]}
@@ -97,6 +119,35 @@ class Player(Entity):
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack','')
 
+<<<<<<< HEAD
+=======
+    def move(self,speed):
+        if self.direction.magnitude() != 0:
+            self.direction = self.direction.normalize()
+
+        self.hitbox.x += self.direction.x * speed
+        self.collision('horizontal')
+        self.hitbox.y += self.direction.y * speed
+        self.collision('vertical')
+        self.rect.center = self.hitbox.center
+
+    def collision(self,direction):
+        if direction == 'horizontal':
+            for sprite in self.obstacle_sprites:
+                if sprite.hitbox.colliderect(self.hitbox):
+                    if self.direction.x > 0: # moving right
+                        self.hitbox.right = sprite.hitbox.left
+                    if self.direction.x < 0: # moving left
+                        self.hitbox.left = sprite.hitbox.right
+
+        if direction == 'vertical':
+            for sprite in self.obstacle_sprites:
+                if sprite.hitbox.colliderect(self.hitbox):
+                    if self.direction.y > 0: # moving down
+                        self.hitbox.bottom = sprite.hitbox.top
+                    if self.direction.y < 0: # moving up
+                        self.hitbox.top = sprite.hitbox.bottom
+>>>>>>> 9b5facad412aa665d519353824cb37cb6f624886
 
     def cooldowns(self):
         current_time = pygame.time.get_ticks()

@@ -7,6 +7,7 @@ FPS = 60
 WIDTH = SCREEN_WIDTH
 HEIGHT = SCREEN_HEIGHT
 FRAME_WIDTH = 64
+<<<<<<< HEAD
 FRAME_HEIGHT = 64
 
 # enemy
@@ -15,3 +16,6 @@ monster_data = {
 	'raccoon': {'health': 300,'exp':250,'damage':40,'attack_type': 'claw',  'attack_sound':'C:/Users/GF66/pygame_project/GitExercise-TT1L-08/audio/attack/claw.wav','speed': 2, 'resistance': 3, 'attack_radius': 120, 'notice_radius': 400},
 	'spirit': {'health': 100,'exp':110,'damage':8,'attack_type': 'thunder', 'attack_sound':'C:/Users/GF66/pygame_project/GitExercise-TT1L-08/audio/attack/fireball.wav', 'speed': 4, 'resistance': 3, 'attack_radius': 60, 'notice_radius': 350},
 	'bamboo': {'health': 70,'exp':120,'damage':6,'attack_type': 'leaf_attack', 'attack_sound':'C:/Users/GF66/pygame_project/GitExercise-TT1L-08/audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 50, 'notice_radius': 300}}
+=======
+FRAME_HEIGHT = 64
+>>>>>>> 9b5facad412aa665d519353824cb37cb6f624886
