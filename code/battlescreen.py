@@ -24,31 +24,31 @@ background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREE
 
 # Character and Enemy images
 character_image = pygame.image.load('../graphics/img/mc.png').convert_alpha()
-character_image = pygame.transform.scale(character_image, (200, 300))  # Increase size
+character_image = pygame.transform.scale(character_image, (300, 300))  # Increase size
 
 enemy_image = pygame.image.load('../graphics/img/monster lvl 1 solo.png').convert_alpha()  # Adjust the path
-enemy_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
+enemy_image = pygame.transform.scale(enemy_image, (300, 300))  # Increase size
 enemylvl2_image = pygame.image.load('../graphics/img/monster lvl 3 solo.png').convert_alpha()  # Adjust the path
-enemylvl2_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
+enemylvl2_image = pygame.transform.scale(enemy_image, (300, 300))  # Increase size
 enemylvl3_image = pygame.image.load('../graphics/img/monster lvl 4 solo.png').convert_alpha()  # Adjust the path
-enemylvl3_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
+enemylvl3_image = pygame.transform.scale(enemy_image, (300, 300))  # Increase size
 enemyboss_image = pygame.image.load('../graphics/img/final boss.png').convert_alpha()  # Adjust the path
-enemyboss_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
+enemyboss_image = pygame.transform.scale(enemy_image, (300, 300))  # Increase size
 
 # Load attack button images
 attack1_image = pygame.image.load('../graphics/img/weapon/sword1.png').convert_alpha()
-attack1_image = pygame.transform.scale(attack1_image, (150, 100))  # Increase size
+attack1_image = pygame.transform.scale(attack1_image, (200, 200))  # Increase size
 attack2_image = pygame.image.load('../graphics/img/weapon/spear.png').convert_alpha()
-attack2_image = pygame.transform.scale(attack2_image, (150, 100))  # Increase size
+attack2_image = pygame.transform.scale(attack2_image, (200, 200))  # Increase size
 attack3_image = pygame.image.load('../graphics/img/weapon/scythe.png').convert_alpha()
-attack3_image = pygame.transform.scale(attack3_image, (150, 100))  # Increase size
+attack3_image = pygame.transform.scale(attack3_image, (200, 200))  # Increase size
 attack4_image = pygame.image.load('../graphics/img/weapon/catalyst.png').convert_alpha()
-attack4_image = pygame.transform.scale(attack4_image, (150, 100))  # Increase size
+attack4_image = pygame.transform.scale(attack4_image, (200, 200))  # Increase size
 
 # Define sizes for buttons
-basic_size = 100  # Size of basic buttons
-skill_size = 150  # Size of skill buttons
-ult_size = 200  # Size of ult buttons
+basic_size = 200  # Size of basic buttons
+skill_size = 300  # Size of skill buttons
+ult_size = 400  # Size of ult buttons
 
 # Load attack option images for each attack type with different sizes
 attack1_basic_image = pygame.image.load('../graphics/img/weapon/sword basic.png').convert_alpha()
@@ -161,20 +161,18 @@ pygame.mixer.music.load('../graphics/img/battle-music.mp3')  # Adjust the path t
 pygame.mixer.music.play(-1)  # The -1 argument makes the music loop indefinitely
 
 # Define button areas outside the main loop
-attack1_rect = pygame.Rect(SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT - 150, 150, 100)
-attack2_rect = pygame.Rect(SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT - 150, 150, 100)
-attack3_rect = pygame.Rect(SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 150, 150, 100)
-attack4_rect = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150, 150, 100)
+attack1_rect = pygame.Rect(SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT - 150, 200, 200)
+attack2_rect = pygame.Rect(SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT - 150, 200, 200)
+attack3_rect = pygame.Rect(SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 150, 200, 200)
+attack4_rect = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150, 200, 200)
 
 basic_rect = pygame.Rect(
-    SCREEN_WIDTH // 2 - (basic_size + ult_size + skill_size + 10) // 2,
-    SCREEN_HEIGHT - 250, basic_size, basic_size)
-ult_rect = pygame.Rect(
-    SCREEN_WIDTH // 2 - (ult_size + skill_size + 10) // 2 + basic_size + 5,
-    SCREEN_HEIGHT - 250, ult_size, ult_size)
-skill_rect = pygame.Rect(
-    SCREEN_WIDTH // 2 + (ult_size - skill_size) // 2 + 5,
-    SCREEN_HEIGHT - 250, skill_size, skill_size)
+    SCREEN_WIDTH // 2 - (basic_size + skill_size + ult_size + 10) // 2,
+    SCREEN_HEIGHT // 2 - basic_size // 2, basic_size, basic_size
+)
+ult_rect = pygame.Rect(basic_rect.right + 5, SCREEN_HEIGHT // 2 - ult_size // 2, ult_size, ult_size)
+skill_rect = pygame.Rect(ult_rect.right + 5, SCREEN_HEIGHT // 2 - skill_size // 2, skill_size, skill_size)
+
     
 tutorial_button_rect = pygame.Rect(20, 20, 150, 150)
 exit_tutorial_button_rect = pygame.Rect(SCREEN_WIDTH - 120, 20, 100, 100)
@@ -296,8 +294,8 @@ while True:
     screen.blit(tutorial_button_image, tutorial_button_rect)
 
     # Draw player and enemy health bars
-    draw_health_bar(screen, 50, SCREEN_HEIGHT - character_image.get_height() - 60, player_hp, max_player_hp)  # Adjusted for positioning
-    draw_enemy_health_bar(screen, SCREEN_WIDTH - enemy_image.get_width() - 50, 30, enemy_hp, 100)  # Adjusted for positioning
+    draw_health_bar(screen, 150, SCREEN_HEIGHT - character_image.get_height() - 60, player_hp, max_player_hp)  # Adjusted for positioning
+    draw_enemy_health_bar(screen, SCREEN_WIDTH - enemy_image.get_width() - 50, 50, enemy_hp, 100)  # Adjusted for positioning
 
     # Draw damage text for player and enemy
     current_time = pygame.time.get_ticks()
