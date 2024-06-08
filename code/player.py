@@ -2,6 +2,7 @@ import pygame
 from settings import *
 from support import import_folder
 from entity import Entity
+from battlescreen import BattleScreen
 
 class Player(Entity):
     def __init__(self,pos,groups,obstacle_sprites):
@@ -105,10 +106,17 @@ class Player(Entity):
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center = self.hitbox.center)
 
+    def check_enemy_collision(self, enemies):
+        for enemy in enemies:
+            if self.rect.colliderect(enemy.rect) and self.attacking:
+                return True
+        return False
+
     def update(self):
         self.input()
         self.cooldowns()
         self.get_status()
         self.animate()
         self.move(self.speed)
+
 

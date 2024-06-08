@@ -2,6 +2,7 @@ import pygame
 import math
 import sys
 import os
+import subprocess
 
 # Constants
 TILESIZE = 128
@@ -136,6 +137,7 @@ class Attack(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, self.game.enemies, True)
         if hits:
             self.game.transition_to_battle()
+            subprocess.call(["python", "battle_screen.py"])
 
     def animate(self):
         direction = self.game.player.facing

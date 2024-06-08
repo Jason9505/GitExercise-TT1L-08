@@ -39,6 +39,7 @@ class Enemy(Entity):
 		self.attack_cooldown = 400
 
 
+
 	def import_graphics(self,name):
 		self.animations = {'idle':[],'move':[],'attack':[]}
 		main_path = f'../graphics/monsters/{name}/'
