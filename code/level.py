@@ -40,9 +40,9 @@ class Level:
 
         # NPC setup
         self.npcs = pygame.sprite.Group()
-        geopard_image = pygame.image.load("../GitExercise/character/geo.png")
-        nurse_image = pygame.image.load("../GitExercise/character/nurse1.png")
-        angel_image = pygame.image.load("../GitExercise/character/angel1.png")
+        geopard_image = pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/npc/geo.png")
+        nurse_image = pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/npc/nurse1.png")
+        angel_image = pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/npc/angel1.png")
         
         scale_factor = 0.5
         self.npcs.add(NPC(600, 400, [
