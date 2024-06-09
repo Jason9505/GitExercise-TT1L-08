@@ -2,8 +2,6 @@ import pygame
 import sys
 import random
 
-# Initialize Pygame
-pygame.init()
 
 # Colors
 WHITE = (255, 255, 255)
@@ -15,6 +13,7 @@ YELLOW = (255, 255, 0)
 
 class BattleScreen:
     def __init__(self):
+        pygame.init()
         # Create main screen in full screen mode
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = self.screen.get_size()
@@ -96,6 +95,9 @@ class BattleScreen:
         # Define button areas outside the main loop
         self.define_button_areas()
 
+        # Battle state
+        self.battle_over = False
+
         # Load and play background music
         pygame.mixer.music.load('../graphics/img/battle-music.mp3')
         pygame.mixer.music.play(-1)
@@ -171,18 +173,12 @@ class BattleScreen:
 
     def draw_health_bar(self):
         # Draw player HP bar
-        pygame.draw.rect(self.screen, RED, (50, self.SCREEN_HEIGHT - 75, 300, 25))
-        pygame.draw.rect(self.screen, GREEN, (50, self.SCREEN_HEIGHT - 75, 300 * (self.player_hp / self.max_player_hp), 25))
-
-        # Draw player HP text above the player picture
-        player_hp_text = self.font.render(f"Player HP: {self.player_hp}/{self.max_player_hp}", True, WHITE)
-        player_hp_text_rect = player_hp_text.get_rect()
-        player_hp_text_rect.center = (200, self.SCREEN_HEIGHT - 400)
-        self.screen.blit(player_hp_text, player_hp_text_rect)
+        pygame.draw.rect(self.screen, YELLOW, (50, self.SCREEN_HEIGHT - 400, 300, 25))
+        pygame.draw.rect(self.screen, GREEN, (50, self.SCREEN_HEIGHT - 400, 300 * (self.player_hp / self.max_player_hp), 25))
 
     def draw_enemy_health_bar(self):
-        pygame.draw.rect(self.screen, RED, (self.SCREEN_WIDTH - 400, 20, 300, 25))
-        pygame.draw.rect(self.screen, GREEN, (self.SCREEN_WIDTH - 400, 20, 300 * (self.enemy_hp / self.max_player_hp), 25))
+        pygame.draw.rect(self.screen, YELLOW, (self.SCREEN_WIDTH - 400, 20, 300, 25))
+        pygame.draw.rect(self.screen, RED, (self.SCREEN_WIDTH - 400, 20, 300 * (self.enemy_hp / self.max_player_hp), 25))
 
     def draw_points_indicator(self):
         points_text = self.font.render(f"Points: {self.points}", True, YELLOW)
@@ -194,8 +190,10 @@ class BattleScreen:
 
     def handle_event(self, event):
         if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+            self.battle_over = True
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.battle_over = True
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
             if self.current_state == self.NORMAL:
@@ -308,7 +306,7 @@ class BattleScreen:
                 self.current_state = self.NORMAL
 
         if self.player_hp <= 0 or self.enemy_hp <= 0:
-            self.current_state = self.NORMAL  # Reset to normal state after battle ends
+            self.battle_over = True
 
     def draw(self):
         # Draw the background first to keep it unchanged
@@ -354,16 +352,19 @@ class BattleScreen:
 
 
     def run(self):
-        clock = pygame.time.Clock()
-        while True:
+        while not self.battle_over:
             for event in pygame.event.get():
                 self.handle_event(event)
 
             self.update()
             self.draw()
-            pygame.display.flip()
-            clock.tick(60)
+            
+            pygame.display.flip()  # Update the display
+            
+            # Add a small delay to control the frame rate
+            pygame.time.delay(30)
 
-if __name__ == "__main__":
-    battle_screen = BattleScreen()
-    battle_screen.run()
+        # Stop music and quit Pygame
+        pygame.mixer.music.stop()
+        
+

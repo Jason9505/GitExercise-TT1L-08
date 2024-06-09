@@ -8,7 +8,7 @@ class Game:
         # general setup
         pygame.init()
         info = pygame.display.Info()  # Get current display info
-        self.screen = pygame.display.set_mode((info.current_w, info.current_h))
+        self.screen = pygame.display.set_mode((info.current_w, info.current_h), pygame.FULLSCREEN)
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT),pygame.FULLSCREEN)
         pygame.display.set_caption('Realm Redeemers: The Last Stand')
         self.clock = pygame.time.Clock()

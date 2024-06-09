@@ -56,10 +56,10 @@ class Level:
                                     [self.visible_sprites],
                                     self.obstacle_sprites)
                             else:
-                                if col == '54': monster_name = 'bamboo'
-                                elif col == '56': monster_name = 'spirit'
-                                elif col == '100': monster_name = 'raccoon'
-                                else: monster_name = 'squid'
+                                if col == '54': monster_name = 'monster lvl 1'
+                                elif col == '56': monster_name = 'monster lvl 2'
+                                elif col == '100': monster_name = 'boss'
+                                else: monster_name = 'monster lvl 3'
                                 Enemy(monster_name, (x, y), [self.visible_sprites], self.obstacle_sprites)
 
                         if style == 'npc':
@@ -71,11 +71,16 @@ class Level:
                                 
     def run(self):
         # update and draw the game
-        self.visible_sprites.custom_draw(self.player)
-        self.visible_sprites.update()
-        self.visible_sprites.enemy_update(self.player)
-        debug(self.player.status)
-
+        if not self.player.in_battle:
+            self.visible_sprites.custom_draw(self.player)
+            self.visible_sprites.update()
+            self.visible_sprites.enemy_update(self.player)
+            debug(self.player.status)
+            self.player.check_enemy_collision([sprite for sprite in self.visible_sprites if isinstance(sprite, Enemy)])
+        else:
+            self.player.battle_screen.run()
+            if self.player.battle_screen.battle_over:
+                self.player.exit_battle_mode()
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
@@ -107,6 +112,6 @@ class YSortCameraGroup(pygame.sprite.Group):
             self.display_surface.blit(sprite.image, offset_pos)
 
     def enemy_update(self, player):
-        enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']
+        enemy_sprites = [sprite for sprite in self.sprites() if isinstance(sprite, Enemy)]
         for enemy in enemy_sprites:
             enemy.enemy_update(player)
