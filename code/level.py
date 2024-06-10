@@ -60,6 +60,18 @@ class Level:
 							surf = graphics['objects'][int(col)]
 							Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
 
+                        if style == 'entities':
+                            if col == '72':
+                                self.player = Player(
+                                    (x, y),
+                                    [self.visible_sprites],
+                                    self.obstacle_sprites)
+                            else:
+                                if col == '54': monster_name = 'monster lvl 1'
+                                elif col == '56': monster_name = 'monster lvl 2'
+                                elif col == '100': monster_name = 'boss'
+                                else: monster_name = 'monster lvl 3'
+                                Enemy(monster_name, (x, y), [self.visible_sprites], self.obstacle_sprites)
 						if style == 'entities':
 							if col == '72':
 								self.player = Player(
@@ -81,6 +93,25 @@ class Level:
 									scale_factor = 0.5
 								Enemy(monster_name, (x, y), [self.visible_sprites], self.obstacle_sprites)
 
+                        if style == 'npc':
+                            if col == '997': npc_name = 'angel_one'
+                            elif col == '998': npc_name = 'nurse'
+                            elif col == '999': npc_name = 'geo'
+                            else: npc_name = 'angel_two'
+                            Npc(npc_name, (x, y), [self.visible_sprites])
+                                
+    def run(self):
+        # update and draw the game
+        if not self.player.in_battle:
+            self.visible_sprites.custom_draw(self.player)
+            self.visible_sprites.update()
+            self.visible_sprites.enemy_update(self.player)
+            debug(self.player.status)
+            self.player.check_enemy_collision([sprite for sprite in self.visible_sprites if isinstance(sprite, Enemy)])
+        else:
+            self.player.battle_screen.run()
+            if self.player.battle_screen.battle_over:
+                self.player.exit_battle_mode()
 						if style == 'npc':
 							if col == '997':
 								npc_name = 'angel_one'
@@ -237,6 +268,11 @@ class YSortCameraGroup(pygame.sprite.Group):
 		scaled_rect = scaled_surf.get_rect(center = (self.half_width, self.half_height))
 	
 		self.display_surface.blit (scaled_surf, scaled_rect)
+
+    def enemy_update(self, player):
+        enemy_sprites = [sprite for sprite in self.sprites() if isinstance(sprite, Enemy)]
+        for enemy in enemy_sprites:
+            enemy.enemy_update(player)
 
 	def enemy_update(self, player):
 		enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']
