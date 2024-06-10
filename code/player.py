@@ -110,15 +110,17 @@ class Player(Entity):
     def check_enemy_collision(self, enemies):
         for enemy in enemies:
             if self.rect.colliderect(enemy.rect) and self.attacking and not self.in_battle:
-                self.enter_battle_mode()
+                self.enter_battle_mode(enemy)
                 return True
         return False
 
-    def enter_battle_mode(self):
+    def enter_battle_mode(self, enemy):
         self.saved_position = self.rect.topleft
         self.in_battle = True
-        self.battle_screen = BattleScreen()
+        self.battle_screen = BattleScreen(player=self, enemy=enemy)
         self.battle_screen.run()
+        if self.battle_screen.enemy_hp <= 0:
+            enemy.kill()
         self.exit_battle_mode()
 
     def exit_battle_mode(self):
@@ -135,3 +137,5 @@ class Player(Entity):
             self.move(self.speed)
         elif self.battle_screen and self.battle_screen.battle_over:
             self.exit_battle_mode()
+        if self.battle_screen and self.battle_screen.player_hp <= 0:
+            self.game_over()
