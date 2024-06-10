@@ -232,7 +232,7 @@ class BattleScreen:
             elif self.selected_attack == 2:
                 damage = random.randint(15, 25)
             elif self.selected_attack == 3:
-                damage = random.randint(20, 30)
+                damage = random.randint(10, 20)
             elif self.selected_attack == 4:
                 damage = random.randint(5, 15)
             self.enemy_hp -= damage
@@ -250,7 +250,7 @@ class BattleScreen:
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
                 elif self.selected_attack == 2:
-                    damage = random.randint(35, 55)
+                    damage = random.randint(35, 60)
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
@@ -260,7 +260,7 @@ class BattleScreen:
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
                 elif self.selected_attack == 4:
-                    heal = random.randint(10, 20)
+                    heal = random.randint(10, 30)
                     self.player_hp = min(self.player_hp + heal, self.max_player_hp)
                     self.player_damage_text = f"+{heal}"
                     self.player_damage_time = pygame.time.get_ticks()
@@ -276,7 +276,7 @@ class BattleScreen:
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
                 elif self.selected_attack == 2:
-                    damage = random.randint(55, 75)
+                    damage = random.randint(60, 80)
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
@@ -286,7 +286,7 @@ class BattleScreen:
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
                 elif self.selected_attack == 4:
-                    heal = random.randint(20, 40)
+                    heal = random.randint(30, 70)
                     self.player_hp = min(self.player_hp + heal, self.max_player_hp)
                     self.player_damage_text = f"+{heal}"
                     self.player_damage_time = pygame.time.get_ticks()
@@ -322,7 +322,7 @@ class BattleScreen:
 
         # Display damage texts if applicable
         if self.player_damage_text and pygame.time.get_ticks() - self.player_damage_time < 1000:
-            self.display_damage_text(self.player_damage_text, 150, 350)
+            self.display_damage_text(self.player_damage_text, 150, 400)
         if self.enemy_damage_text and pygame.time.get_ticks() - self.enemy_damage_time < 1000:
             self.display_damage_text(self.enemy_damage_text, self.SCREEN_WIDTH - 400, 50)
 
