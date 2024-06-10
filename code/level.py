@@ -1,252 +1,244 @@
 import pygame
-import random
 from settings import *
 from tile import Tile
 from player import Player
+from debug import debug
 from support import *
 from random import choice
-from debug import debug
-from monster import Monster
-
-character_width = 50
-character_height = 50
-
-class NPC(pygame.sprite.Sprite):
-    def __init__(self, x, y, dialogues, image, name, scale_factor=0.5):
-        super().__init__()  
-        self.original_image = image
-        self.image = pygame.transform.scale(image, (int(image.get_width() * scale_factor), int(image.get_height() * scale_factor)))
-        self.rect = self.image.get_rect(topleft=(x, y))
-        self.dialogues = dialogues
-        self.current_dialogue_index = 0
-        self.dialogue_index = 0
-        self.name = name
+from enemy import Enemy
+from npc import Npc
 
 class Level:
-    def __init__(self):
-        # self.game = game  # Reference to the main game object
+	def __init__(self): 
 
-        # get the display surface
-        self.display_surface = pygame.display.get_surface()
+		# get the display surface
+		self.display_surface = pygame.display.get_surface()
 
-        # sprite group setup
-        self.visible_sprites = YSortCameraGroup()
-        self.obstacle_sprites = pygame.sprite.Group()
-        # self.attacks = pygame.sprite.Group()  # Add this line
+		# sprite group setup
+		self.visible_sprites = YSortCameraGroup()
+		self.obstacle_sprites = pygame.sprite.Group()
+		self.npcs = []
 
+		# sprite setup
+		self.create_map()
 
-        # sprite setup
-        self.create_map()
+		# dialogue variables
+		self.show_dialogue = False
+		self.active_npc = None
+		self.text_position = 0
+		self.scroll_speed = 1
+		self.font = pygame.font.Font(None, 36)
+		self.mouse_clicked = False
+		self.e_key_pressed = False
+		
+	def create_map(self):
+		layouts = {
+			'boundary': import_csv_layout('../GitExercise-TT1L-08/map/map_FloorBlocks.csv'),
+			'grass': import_csv_layout('../GitExercise-TT1L-08/map/map_Grass.csv'),
+			'object': import_csv_layout('../GitExercise-TT1L-08/map/map_Objects.csv'),
+			'entities': import_csv_layout('../GitExercise-TT1L-08/map/map_Entities.csv'),
+			'npc': import_csv_layout('../GitExercise-TT1L-08/map/map_Npc.csv')
+		}
+		graphics = {
+			'grass': import_folder('../GitExercise-TT1L-08/graphics/Grass'),
+			'objects': import_folder('../GitExercise-TT1L-08/graphics/objects')
+		}
 
-        # NPC setup
-        self.npcs = pygame.sprite.Group()
-        geopard_image = pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/npc/geo.png")
-        nurse_image = pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/npc/nurse1.png")
-        angel_image = pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/npc/angel1.png")
-        
-        scale_factor = 0.5
-        self.npcs.add(NPC(600, 400, [
-            ["", "There used to be almost an infinite amount village through out this world.", "Everything changes when the Demon Lord, Zoltraak arise from the underworld.", 
-            "And so began the age of chaos. He and his army sweep the land.", "Burning down villages and basically destroying every land he steps on.",
-            "Some try to fight the demon lord but never return.", "Many choose to run away to seek for a safer place to hide but it’s no use.", 
-            "And now we’re the last ones standing but we’re not safe either.", "Cause it’s only a matter of time before the demon lord found us and claim this realm once."],
-            ["", "Unfortunately, I have no clue also.", "It could be a couple of days, to a couple of months.", "But everything is alright now. Now that you are here. "]
-        ], geopard_image, "Geopard", scale_factor))
+		for style, layout in layouts.items():
+			for row_index, row in enumerate(layout):
+				for col_index, col in enumerate(row):
+					if col != '-1':
+						x = col_index * TILESIZE
+						y = row_index * TILESIZE
+						if style == 'boundary':
+							Tile((x, y), [self.obstacle_sprites], 'invisible')
+						if style == 'grass':
+							random_grass_image = choice(graphics['grass'])
+							Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'grass', random_grass_image)
+							
+						if style == 'object':
+							surf = graphics['objects'][int(col)]
+							Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
 
-        self.npcs.add(NPC(800, 400, [
-            ["", "You should know better than to face Zoltraak when you’re not even at your full potential."]
-        ], nurse_image, "Nurse", scale_factor))
+						if style == 'entities':
+							if col == '72':
+								self.player = Player(
+									(x, y),
+									[self.visible_sprites],
+									self.obstacle_sprites)
+							else:
+								if col == '54':
+									monster_name = 'bamboo'
+									scale_factor = 0.5
+								elif col == '56':
+									monster_name = 'spirit'
+									scale_factor = 0.5
+								elif col == '100':
+									monster_name = 'raccoon'
+									scale_factor = 0.5
+								else:
+									monster_name = 'squid'
+									scale_factor = 0.5
+								Enemy(monster_name, (x, y), [self.visible_sprites], self.obstacle_sprites)
 
-        self.npcs.add(NPC(600, 500, [
-            ["", "Follow the path to the village to seek your purpose of this realm.", "Press w to go forward, press a to go left, press d to go right and press s to go backward."]
-        ], angel_image, "???", scale_factor))
+						if style == 'npc':
+							if col == '997':
+								npc_name = 'angel_one'
+								dialogues = [["Follow the path to the village to seek your purpose of this realm.", "Press w to go forward, press a to go left, press d to go right and press s to go backward.", 
+											  ""]]
+								image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/angel_one/idle/0.png")
+								name = 'Angel'
+							elif col == '998':
+								npc_name = 'nurse'
+								dialogues = [["You should know better than to face Zoltraak when you’re not even at your full potential."]]
+								image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/nurse/idle/0.png")
+								name = 'Nurse'
+							elif col == '999':
+								npc_name = 'geo'
+								dialogues = [["LAlalalalalalala"]]
+								image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/geo/idle/0.png")
+								name = 'Geopard'
+							else:
+								npc_name = 'angel_two'
+								dialogues = [["Are you ready?", "Lets defeat the final boss, Zoltraak!"], ["Congraturation!!", "You defeat the boss and save the world!"]]
+								image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/angel_two/idle/0.png")
+								name = 'Angel'
+							npc = Npc(npc_name, (x, y), [self.visible_sprites], dialogues, image, name)
+							self.npcs.append(npc)
+							  
+	def run(self):
+		# update and draw the game
+		self.visible_sprites.custom_draw(self.player)
+		self.visible_sprites.enemy_update(self.player)
+		self.visible_sprites.update()
+		debug(self.player.status)
 
-        self.font = pygame.font.Font(None, 36)
-        self.show_dialogue = False
-        self.show_press_e = False
-        self.e_key_pressed = False
-        self.text_position = 0
-        self.active_npc = None
+		# Handle dialogue
+		keys = pygame.key.get_pressed()
+		if keys[pygame.K_e] and not self.e_key_pressed:
+			self.e_key_pressed = True
+			if not self.show_dialogue:
+				for npc in self.npcs:
+					if npc.rect.colliderect(self.player.rect):
+						self.active_npc = npc
+						self.show_dialogue = True
+						self.active_npc.dialogue_index = 0
+						self.text_position = 0
+						break
+			else:
+				self.next_dialogue_text()
+		elif not keys[pygame.K_e]:
+			self.e_key_pressed = False
 
-    def load_monster_frames(self):
-        def load_frames(sheet, count, scale):
-            frames = [sheet.subsurface((i * FRAME_WIDTH, 0, FRAME_WIDTH, FRAME_HEIGHT)) for i in range(count)]
-            return [pygame.transform.scale(frame, (FRAME_WIDTH // scale, FRAME_HEIGHT // scale)) for frame in frames]
-        
-        scale_factor = 2  # Adjust this factor to scale the monsters smaller
+		self.handle_dialogue()
 
-        self.monster_frames = {
-            'monster1': {
-                'up': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/monster_up.png"), 9,scale_factor),
-                'down': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/monster_down.png"), 9,scale_factor),
-                'left': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/monster_left.png"), 9,scale_factor),
-                'right': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/monster_right.png"), 9,scale_factor)
-            },
-            'monster2': {
-                'up': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/mon2_up.png"), 9,scale_factor),
-                'down': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/mon2_down.png"), 9,scale_factor),
-                'left': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/mon2_left.png"), 9,scale_factor),
-                'right': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/mon2_right.png"), 9,scale_factor)
-            },
-            'monster3': {
-                'up': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/mon3_up.png"), 9,scale_factor),
-                'down': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/mon3_down.png"), 9,scale_factor),
-                'left': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/mon3_left.png"), 9,scale_factor),
-                'right': load_frames(pygame.image.load("C:/Users/User/Projects/GitExercise-TT1L-08/graphics/monster/mon3_right.png"), 9,scale_factor)
-            }
-        }
+		for event in pygame.event.get():
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				if event.button == 1:  # Left mouse button
+					self.next_dialogue_text()
+			elif event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_e:
+					self.e_key_pressed = True
+				else:
+					self.e_key_pressed = False
+	
+	def next_dialogue_text(self):
+		if self.show_dialogue and self.active_npc:
+			if self.active_npc.dialogue_index < len(self.active_npc.dialogues[self.active_npc.current_dialogue_index]) - 1:
+				self.active_npc.dialogue_index += 1
+				self.text_position = 0  # Reset text position for new dialogue
+			else:
+				self.show_dialogue = False
+				self.active_npc.dialogue_index = 0
+				# Switch to the next dialogue sequence
+				self.active_npc.current_dialogue_index = (self.active_npc.current_dialogue_index + 1) % len(self.active_npc.dialogues)
+				self.text_position = 0  # Reset text position for new dialogue
 
-    def create_monsters(self):
-        monsters = []
-        for i, spawn_area in enumerate(self.spawn_areas):
-            monster_type = f'monster{i + 1}'
-            frames = self.monster_frames[monster_type]
-            for _ in range(self.max_monsters):
-                x = random.randint(spawn_area.left, spawn_area.right - FRAME_WIDTH)
-                y = random.randint(spawn_area.top, spawn_area.bottom - FRAME_HEIGHT)
-                monsters.append(Monster(x, y, spawn_area, frames))
-        return monsters
+	def handle_dialogue(self):
+		if self.show_dialogue and self.active_npc:
+			if not self.mouse_clicked:  
+				self.text_position += self.scroll_speed
+				if self.text_position >= len(self.active_npc.get_current_dialogue()):
+					self.text_position = len(self.active_npc.get_current_dialogue())
+			else:
+				self.active_npc.advance_dialogue()
+				self.text_position = 0
+				self.mouse_clicked = False
 
-    # def load_image(self, path):
-    #     return pygame.image.load(path).convert_alpha()  # Use convert_alpha to keep transparency
+			self.draw_dialogue(self.active_npc.get_current_dialogue())
 
-    # def extract_and_scale_frames(self, sheet):
-    #     frames = []
-    #     frame_width, frame_height = 50, 50  # Original frame size
-    #     for i in range(8):
-    #         frame = sheet.subsurface((i * frame_width, 0), (frame_width, frame_height))
-    #         frame = pygame.transform.scale(frame, (TILESIZE, TILESIZE))
-    #         frame.set_colorkey((255, 0, 255))  # Assuming (255, 0, 255) is the transparent color
-    #         frames.append(frame)
-    #     return frames
+	def draw_dialogue(self, dialogue_text):
+		dialogue_box_width = 1500
+		dialogue_box_height = 100
+		dialogue_box_x = 50
+		dialogue_box_y = self.display_surface.get_height() - dialogue_box_height - 50
+		pygame.draw.rect(self.display_surface, (0, 0, 0), (dialogue_box_x, dialogue_box_y, dialogue_box_width, dialogue_box_height))
+		pygame.draw.rect(self.display_surface, (255, 255, 255), (dialogue_box_x, dialogue_box_y, dialogue_box_width, dialogue_box_height), 2)
 
-    def create_map(self):
-        layouts = {
-            'boundary': import_csv_layout('C:/Users/User/Projects/GitExercise-TT1L-08/map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('C:/Users/User/Projects/GitExercise-TT1L-08/map/map_Grass.csv'),
-            'object': import_csv_layout('C:/Users/User/Projects/GitExercise-TT1L-08/map/map_Objects.csv'),
-        }
-        graphics = {
-            'grass': import_folder('C:/Users/User/Projects/GitExercise-TT1L-08/graphics/Grass'),
-            'objects': import_folder('C:/Users/User/Projects/GitExercise-TT1L-08/graphics/objects')
-        }
+		npc_image_x = dialogue_box_x + 5
+		npc_image_y = dialogue_box_y - self.active_npc.image.get_height() - 30
+		scaled_npc_image = pygame.transform.scale(self.active_npc.image, (self.active_npc.image.get_width() * 2, self.active_npc.image.get_height() * 2))
+		self.display_surface.blit(scaled_npc_image, (npc_image_x, npc_image_y))
 
-        for style, layout in layouts.items():
-            for row_index, row in enumerate(layout):
-                for col_index, col in enumerate(row):
-                    if col != '-1':
-                        x = col_index * TILESIZE
-                        y = row_index * TILESIZE
-                        if style == 'boundary':
-                            Tile((x, y), [self.obstacle_sprites], 'invisible')
-                        if style == 'grass':
-                            random_grass_image = choice(graphics['grass'])
-                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'grass', random_grass_image)
-                        if style == 'object':
-                            surf = graphics['objects'][int(col)]
-                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
+		npc_name_x = npc_image_x + scaled_npc_image.get_width() - 20
+		npc_name_y = npc_image_y + 90
+		self.draw_text(self.display_surface, self.active_npc.name, (npc_name_x, npc_name_y), self.font, (0, 0, 0), len(self.active_npc.name))
 
-        self.player = Player((1320,2190),[self.visible_sprites],self.obstacle_sprites)
-        
-    def draw_text(self, surface, text, position, font, color, max_length):
-        text_surface = font.render(text[:max_length], True, color)
-        surface.blit(text_surface, position)
-        return text_surface
+		draw_text = dialogue_text[:self.text_position]
+		self.draw_text(self.display_surface, draw_text, (dialogue_box_x + 10, dialogue_box_y + 10), self.font, (255, 255, 255), len(draw_text))
 
-    def check_collision(self):
-        if self.active_npc is None:
-            for npc in self.npcs:
-                if self.player.rect.colliderect(npc.rect):
-                    self.active_npc = npc
-                    self.show_press_e = True
-                    break
-        else:
-            if not self.player.rect.colliderect(self.active_npc.rect):
-                self.show_dialogue = False
-                self.show_press_e = False
-                self.e_key_pressed = False
-                self.text_position = 0
-                self.active_npc = None
-
-    def handle_dialogue(self):
-        if self.active_npc and self.e_key_pressed and not self.show_dialogue:
-            self.show_dialogue = True
-
-        if self.show_dialogue and self.active_npc:
-            npc = self.active_npc
-            dialogue = npc.dialogues[npc.current_dialogue_index][self.text_position]
-            self.draw_text(self.display_surface, dialogue, (100, 100), self.font, (255, 255, 255), 100)       
-
-
-    def run(self):
-        # update and draw the game
-        self.visible_sprites.custom_draw(self.player)
-        self.visible_sprites.update()
-        debug(self.player.status)
-
-        for npc in self.npcs:
-            self.display_surface.blit(npc.image, npc.rect.topleft)
-
-        if self.show_press_e:
-            self.draw_text(self.display_surface, "Press E to talk", (100, 50), self.font, (255, 255, 255), 50)
-        
-        self.handle_dialogue()
-
-    def handle_events(self, event):
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
-            self.e_key_pressed = True
-            if self.active_npc:
-                if self.show_dialogue:
-                    self.text_position += 1
-                    if self.text_position >= len(self.active_npc.dialogues[self.active_npc.current_dialogue_index]):
-                        self.text_position = 0
-                        self.active_npc.current_dialogue_index += 1
-                        self.show_dialogue = False
-                        self.e_key_pressed = False
-                else:
-                    self.show_dialogue = True
-
-        # Update monsters
-        for monster in self.monsters:
-            monster.move()
-            monster.animate()
-            if random.random() < 0.01:
-                monster.direction = random.choice(['left', 'right', 'up', 'down'])
-
-        # Draw monsters
-        for monster in self.monsters:
-            monster.draw(self.display_surface, self.camera)
+	def draw_text(self, surface, text, position, font, color, max_length):
+		text_surface = font.render(text[:max_length], True, color)
+		surface.blit(text_surface, position)
 
 class YSortCameraGroup(pygame.sprite.Group):
-    def __init__(self):
-        # general setup
-        super().__init__()
-        self.display_surface = pygame.display.get_surface()
-        self.half_width = self.display_surface.get_size()[0] // 2
-        self.half_height = self.display_surface.get_size()[1] // 2
-        self.offset = pygame.math.Vector2()
+	def __init__(self):
 
-        # creating the floor
-        self.floor_surf = pygame.image.load('C:/Users/User/Projects/GitExercise-TT1L-08/graphics/tilemap/ground.png').convert()
-        self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
+		# general setup
+		super().__init__()
+		self.display_surface = pygame.display.get_surface()
+		self.half_width = self.display_surface.get_size()[0] // 2
+		self.half_height = self.display_surface.get_size()[1] // 2
+		self.offset = pygame.math.Vector2()
 
-    def custom_draw(self, player):
+		# creating the floor
+		self.floor_surf = pygame.image.load('../GitExercise-TT1L-08/graphics/tilemap/ground.png').convert()
+		self.floor_rect = self.floor_surf.get_rect(topleft = (0,0))
 
-        # Getting the offset
-        if player:
-            self.offset.x = player.rect.centerx - self.half_width
-            self.offset.y = player.rect.centery - self.half_height
-        else:
-            self.offset = pygame.math.Vector2(0, 0)  # Centered view
+		# zoom 
+		self.zoom_scale = 2
+		self.internal_surf_size = (1200,1200)	
+		self.internal_surf = pygame.Surface(self.internal_surf_size, pygame.SRCALPHA)
+		self.internal_rect = self.internal_surf.get_rect(center = (self.half_width,self.half_height))
+		self.internal_surface_size_vector = pygame.math.Vector2(self.internal_surf_size)
+		self.internal_offset = pygame.math.Vector2()
+		self.internal_offset.x = self.internal_surf_size[0] // 2 - self.half_width
+		self.internal_offset.y = self.internal_surf_size[1] // 2 - self.half_height
 
-        # drawing the floor
-        floor_offset_pos = self.floor_rect.topleft - self.offset
-        self.display_surface.blit(self.floor_surf, floor_offset_pos)
-        
-        # draw sprites
-        for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            offset_pos = sprite.rect.topleft - self.offset
-            self.display_surface.blit(sprite.image, offset_pos)
+	def custom_draw(self, player):
+
+		self.internal_surf.fill((80,167,232))
 
 
+		# getting the offset
+		self.offset.x = player.rect.centerx - self.half_width
+		self.offset.y = player.rect.centery - self.half_height
 
+		# drawing the floor
+		floor_offset_pos = self.floor_rect.topleft - self.offset + self.internal_offset
+		self.internal_surf.blit(self.floor_surf, floor_offset_pos)
+		
+		# for sprite in self.sprites():
+		for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
+			offset_pos = sprite.rect.topleft - self.offset  + self.internal_offset
+			self.internal_surf.blit(sprite.image, offset_pos)
+
+		scaled_surf = pygame.transform.smoothscale(self.internal_surf, self.internal_surface_size_vector * self.zoom_scale)
+		scaled_rect = scaled_surf.get_rect(center = (self.half_width, self.half_height))
+	
+		self.display_surface.blit (scaled_surf, scaled_rect)
+
+	def enemy_update(self, player):
+		enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']
+		for enemy in enemy_sprites:
+			enemy.enemy_update(player)
