@@ -104,10 +104,12 @@ class Player(Entity):
         if self.frame_index >= len(animation):
             self.frame_index = 0
 
-        # set the image
-        self.frame_index = int(self.frame_index) % len(animation)
-        # Debug print statements
-        print(f"Animating: frame_index = {self.frame_index}, animation_length = {len(animation)}")
+        # Ensure frame index is within bounds
+        if 0 <= self.frame_index < len(animation):
+            self.image = animation[int(self.frame_index)]
+        else:
+            # Handle out-of-bounds frame index
+            print("Frame index out of bounds:", self.frame_index)
 
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)

@@ -49,7 +49,7 @@ class BattleScreen:
 
         # Load tutorial image
         self.tutorial_image = pygame.image.load('../graphics/img/tutorial.jpg').convert_alpha()
-        self.tutorial_image = pygame.transform.scale(self.tutorial_image, (600, 400))
+        self.tutorial_image = pygame.transform.scale(self.tutorial_image, (600, 600))
 
         # Load tutorial button image
         self.tutorial_button_image = pygame.image.load('../graphics/img/tutorial button.png').convert_alpha()
