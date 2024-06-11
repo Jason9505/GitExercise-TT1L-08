@@ -7,7 +7,7 @@ from battlescreen import BattleScreen
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
-        self.image = pygame.image.load('../GitExercise-TT1L-08/graphics/test/player.png').convert_alpha()
+        self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0,-18) #try to figure out this number (dkaljsdlkajlksdjlkjaldjljaljdla)
 

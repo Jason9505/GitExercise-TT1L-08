@@ -8,19 +8,19 @@ from level import Level
 pygame.init()
 
 # Load assets
-background_music_path = "../GitExercise-TT1L-08/audio/background_music.mp3"
-sound_effect_path = "../GitExercise-TT1L-08/audio/sound_effect.wav"
-background_img_path = "../GitExercise-TT1L-08/graphics/img/background.png"
-options_bg_img_path = "../GitExercise-TT1L-08/graphics/img/options_bg.png"
-game_title_img_path = "../GitExercise-TT1L-08/graphics/img/game_title.png"
-start_btn_img_path = "../GitExercise-TT1L-08/graphics/img/start_btn.png"
-exit_btn_img_path = "../GitExercise-TT1L-08/graphics/img/exit_btn.png"
-options_btn_img_path = "../GitExercise-TT1L-08/graphics/img/options_btn.png"
-start_an_btn_img_path = "../GitExercise-TT1L-08/graphics/img/start_an_btn.png"
-exit_an_btn_img_path = "../GitExercise-TT1L-08/graphics/img/exit_an_btn.png"
-options_an_btn_img_path = "../GitExercise-TT1L-08/graphics/img/options_an_btn.png"
-volume_up_img_path = "../GitExercise-TT1L-08/graphics/img/volume_up.png"
-volume_down_img_path = "../GitExercise-TT1L-08/graphics/img/volume_down.png"
+background_music_path = "../audio/background_music.mp3"
+sound_effect_path = "../audio/sound_effect.wav"
+background_img_path = "../graphics/img/background.png"
+options_bg_img_path = "../graphics/img/options_bg.png"
+game_title_img_path = "../graphics/img/game_title.png"
+start_btn_img_path = "../graphics/img/start_btn.png"
+exit_btn_img_path = "../graphics/img/exit_btn.png"
+options_btn_img_path = "../graphics/img/options_btn.png"
+start_an_btn_img_path = "../graphics/img/start_an_btn.png"
+exit_an_btn_img_path = "../graphics/img/exit_an_btn.png"
+options_an_btn_img_path = "../graphics/img/options_an_btn.png"
+volume_up_img_path = "../graphics/img/volume_up.png"
+volume_down_img_path = "../graphics/img/volume_down.png"
 
 # Screen setup
 info = pygame.display.Info()

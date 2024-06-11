@@ -39,15 +39,15 @@ class Enemy(Entity):
 
     def import_graphics(self, name, scale_factor=1.0):
         self.animations = {'idle': [], 'move': [], 'attack': []}
-        main_path = f'./graphics/monsters/{name}/'
+        main_path = f'../graphics/monsters/{name}/'
         for animation in self.animations.keys():
             animation_frames = import_folder(main_path + animation)
             scaled_frames = [pygame.transform.scale(frame, 
-                              (int(frame.get_width() * scale_factor), 
-                               int(frame.get_height() * scale_factor))) 
-                             for frame in animation_frames]
+                                (int(frame.get_width() * scale_factor), 
+                                int(frame.get_height() * scale_factor))) 
+                                for frame in animation_frames]
             self.animations[animation] = scaled_frames
-
+            
     def get_player_distance_direction(self, player):
         enemy_vec = pygame.math.Vector2(self.rect.center)
         player_vec = pygame.math.Vector2(player.rect.center)
