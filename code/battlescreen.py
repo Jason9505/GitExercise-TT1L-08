@@ -152,8 +152,7 @@ class BattleScreen:
         self.skill_rect = pygame.Rect(self.ult_rect.right + 5, self.SCREEN_HEIGHT // 2 - self.skill_size // 2, self.skill_size, self.skill_size)
 
         self.tutorial_button_rect = pygame.Rect(20, 20, 150, 150)
-        self.exit_tutorial_button_rect = pygame.Rect(self.SCREEN_WIDTH - 120, 20, 100, 100)
-
+        
     def draw_background(self):
         self.screen.blit(self.background_image, (0, 0))
 
@@ -173,9 +172,25 @@ class BattleScreen:
         self.screen.blit(self.tutorial_button_image, self.tutorial_button_rect.topleft)
 
     def draw_tutorial_screen(self):
-        tutorial_x = (self.SCREEN_WIDTH - 600) // 2
-        tutorial_y = (self.SCREEN_HEIGHT - 400) // 2
+        # Center the tutorial image
+        tutorial_width = 600  # Width of the tutorial image
+        tutorial_height = 400  # Height of the tutorial image
+        tutorial_x = (self.SCREEN_WIDTH - tutorial_width) // 2
+        tutorial_y = (self.SCREEN_HEIGHT - tutorial_height) // 2
+
+        # Draw the tutorial image
         self.screen.blit(self.tutorial_image, (tutorial_x, tutorial_y))
+
+        # Calculate the position for the "Exit Tutorial" button
+        button_width = 100
+        button_height = 100
+        button_x = tutorial_x + (tutorial_width - button_width) // 2
+        button_y = tutorial_y + tutorial_height + 20  # 20 pixels below the tutorial image
+
+        # Update the button rect
+        self.exit_tutorial_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+
+        # Draw the "Exit Tutorial" button
         self.screen.blit(self.exit_tutorial_button_image, self.exit_tutorial_button_rect.topleft)
 
     def draw_health_bar(self):
