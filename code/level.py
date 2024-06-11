@@ -7,6 +7,7 @@ from support import *
 from random import choice
 from enemy import Enemy
 from npc import Npc
+from battlescreen import BattleScreen
 
 class Level:
     def __init__(self): 

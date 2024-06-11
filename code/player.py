@@ -8,8 +8,8 @@ class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
         self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
-        self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(0,-18) #try to figure out this number 
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = self.rect.inflate(0, -18)  # try to figure out this number
 
         # graphics setup
         self.import_player_assets()
@@ -31,10 +31,10 @@ class Player(Entity):
 
     def import_player_assets(self):
         character_path = './graphics/player/'
-        self.animations = {'up': [],'down': [],'left': [],'right': [],
-			'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[],
-			'right_attack':[],'left_attack':[],'up_attack':[],'down_attack':[]}
-        
+        self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
+                           'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],
+                           'right_attack': [], 'left_attack': [], 'up_attack': [], 'down_attack': []}
+
         for animation in self.animations.keys():
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
@@ -111,20 +111,20 @@ class Player(Entity):
             # Handle out-of-bounds frame index
             print("Frame index out of bounds:", self.frame_index)
 
-        self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
     def check_enemy_collision(self, enemies):
         for enemy in enemies:
             if self.rect.colliderect(enemy.rect) and self.attacking and not self.in_battle:
-                self.enter_battle_mode(enemy)
+                monster_name = enemy.monster_name  # Corrected to use enemy instead of monster
+                self.enter_battle_mode(enemy, monster_name)
                 return True
         return False
 
-    def enter_battle_mode(self, enemy):
+    def enter_battle_mode(self, enemy, monster_name):
         self.saved_position = self.rect.topleft
         self.in_battle = True
-        self.battle_screen = BattleScreen(player=self, enemy=enemy, enemy_name=enemy.name)
+        self.battle_screen = BattleScreen(player=self, enemy=enemy, enemy_name=monster_name)
         self.battle_screen.run()
         if self.battle_screen.enemy_hp <= 0:
             enemy.kill()
