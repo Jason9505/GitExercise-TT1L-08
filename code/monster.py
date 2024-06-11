@@ -12,39 +12,38 @@ class Monster(pygame.sprite.Sprite):
         self.spawn_area = spawn_area
         self.direction = 'down'
         self.speed = 2
+        self.last_update = pygame.time.get_ticks()
+        self.animation_interval = 200  # Example interval in milliseconds
 
     def move(self):
-        # Update the monster's position based on its own logic, not the character's position
         if self.direction == 'left':
-            self.x -= self.speed
+            self.rect.x -= self.speed
         elif self.direction == 'right':
-            self.x += self.speed
+            self.rect.x += self.speed
         elif self.direction == 'up':
-            self.y -= self.speed
+            self.rect.y -= self.speed
         elif self.direction == 'down':
-            self.y += self.speed
+            self.rect.y += self.speed
 
-        # Ensure the monster stays within the designated area
-        if self.x < self.area.left:
-            self.x = self.area.left
+        if self.rect.x < self.spawn_area.left:
+            self.rect.x = self.spawn_area.left
             self.direction = 'right'
-        elif self.x > self.area.right - FRAME_WIDTH:
-            self.x = self.area.right - FRAME_WIDTH
+        elif self.rect.x > self.spawn_area.right - self.rect.width:
+            self.rect.x = self.spawn_area.right - self.rect.width
             self.direction = 'left'
-        if self.y < self.area.top:
-            self.y = self.area.top
+        if self.rect.y < self.spawn_area.top:
+            self.rect.y = self.spawn_area.top
             self.direction = 'down'
-        elif self.y > self.area.bottom - FRAME_HEIGHT:
-            self.y = self.area.bottom - FRAME_HEIGHT
+        elif self.rect.y > self.spawn_area.bottom - self.rect.height:
+            self.rect.y = self.spawn_area.bottom - self.rect.height
             self.direction = 'up'
 
     def animate(self):
-        # Update animation frame
         now = pygame.time.get_ticks()
         if now - self.last_update > self.animation_interval:
             self.frame_index = (self.frame_index + 1) % len(self.frames[self.direction])
+            self.image = self.frames[self.direction][self.frame_index]
             self.last_update = now
 
     def draw(self, surface, camera):
-        # Draw the monster on the screen
-        surface.blit(self.frames[self.direction][self.frame_index], (self.x - camera.left, self.y - camera.top))
+        surface.blit(self.image, (self.rect.x - camera.left, self.rect.y - camera.top))

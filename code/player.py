@@ -9,7 +9,7 @@ class Player(Entity):
         super().__init__(groups)
         self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
-        self.hitbox = self.rect.inflate(0,-18) #try to figure out this number (dkaljsdlkajlksdjlkjaldjljaljdla)
+        self.hitbox = self.rect.inflate(0,-18) #try to figure out this number 
 
         # graphics setup
         self.import_player_assets()
@@ -22,6 +22,7 @@ class Player(Entity):
         self.attack_time = None
 
         self.obstacle_sprites = obstacle_sprites
+        self.direction = pygame.math.Vector2()
 
         # battle state
         self.in_battle = False
@@ -104,6 +105,10 @@ class Player(Entity):
             self.frame_index = 0
 
         # set the image
+        self.frame_index = int(self.frame_index) % len(animation)
+        # Debug print statements
+        print(f"Animating: frame_index = {self.frame_index}, animation_length = {len(animation)}")
+
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
@@ -117,7 +122,7 @@ class Player(Entity):
     def enter_battle_mode(self, enemy):
         self.saved_position = self.rect.topleft
         self.in_battle = True
-        self.battle_screen = BattleScreen(player=self, enemy=enemy)
+        self.battle_screen = BattleScreen(player=self, enemy=enemy, enemy_name=enemy.name)
         self.battle_screen.run()
         if self.battle_screen.enemy_hp <= 0:
             enemy.kill()

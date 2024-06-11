@@ -99,6 +99,8 @@ class Enemy(Entity):
                 self.can_attack = True
 
     def update(self):
+        if self.status == 'move':
+            self.move(self.speed)
         self.move(self.speed)
         self.animate()
         self.cooldown()
