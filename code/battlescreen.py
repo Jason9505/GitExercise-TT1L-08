@@ -20,24 +20,24 @@ class BattleScreen:
         pygame.display.set_caption("Battle Screen")
 
         # Load background image
-        self.background_image = pygame.image.load('../graphics/img/forest.jpeg').convert()
+        self.background_image = pygame.image.load('./graphics/img/forest.jpeg').convert()
         self.background_image = pygame.transform.scale(self.background_image, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
         # Character and Enemy images
-        self.character_image = pygame.image.load('../graphics/img/mc.png').convert_alpha()
+        self.character_image = pygame.image.load('./graphics/img/mc.png').convert_alpha()
         self.character_image = pygame.transform.scale(self.character_image, (300, 300))
 
-        self.enemy_image = pygame.image.load('../graphics/img/monster lvl 1 solo.png').convert_alpha()
+        self.enemy_image = pygame.image.load('./graphics/img/monster lvl 1 solo.png').convert_alpha()
         self.enemy_image = pygame.transform.scale(self.enemy_image, (300, 300))
 
         # Load attack button images
-        self.attack1_image = pygame.image.load('../graphics/img/weapon/sword1.png').convert_alpha()
+        self.attack1_image = pygame.image.load('./graphics/img/weapon/sword1.png').convert_alpha()
         self.attack1_image = pygame.transform.scale(self.attack1_image, (200, 200))
-        self.attack2_image = pygame.image.load('../graphics/img/weapon/spear.png').convert_alpha()
+        self.attack2_image = pygame.image.load('./graphics/img/weapon/spear.png').convert_alpha()
         self.attack2_image = pygame.transform.scale(self.attack2_image, (200, 200))
-        self.attack3_image = pygame.image.load('../graphics/img/weapon/scythe.png').convert_alpha()
+        self.attack3_image = pygame.image.load('./graphics/img/weapon/scythe.png').convert_alpha()
         self.attack3_image = pygame.transform.scale(self.attack3_image, (200, 200))
-        self.attack4_image = pygame.image.load('../graphics/img/weapon/catalyst.png').convert_alpha()
+        self.attack4_image = pygame.image.load('./graphics/img/weapon/catalyst.png').convert_alpha()
         self.attack4_image = pygame.transform.scale(self.attack4_image, (200, 200))
 
         # Define sizes for buttons
@@ -49,15 +49,15 @@ class BattleScreen:
         self.load_attack_images()
 
         # Load tutorial image
-        self.tutorial_image = pygame.image.load('../graphics/img/tutorial.jpg').convert_alpha()
+        self.tutorial_image = pygame.image.load('./graphics/img/tutorial.jpg').convert_alpha()
         self.tutorial_image = pygame.transform.scale(self.tutorial_image, (600, 400))
 
         # Load tutorial button image
-        self.tutorial_button_image = pygame.image.load('../graphics/img/tutorial button.png').convert_alpha()
+        self.tutorial_button_image = pygame.image.load('./graphics/img/tutorial button.png').convert_alpha()
         self.tutorial_button_image = pygame.transform.scale(self.tutorial_button_image, (150, 150))
 
         # Load exit tutorial button image
-        self.exit_tutorial_button_image = pygame.image.load('../graphics/img/return game.png').convert_alpha()
+        self.exit_tutorial_button_image = pygame.image.load('./graphics/img/return game.png').convert_alpha()
         self.exit_tutorial_button_image = pygame.transform.scale(self.exit_tutorial_button_image, (100, 100))
 
         # Player and Enemy HP
@@ -99,36 +99,36 @@ class BattleScreen:
         self.battle_over = False
 
         # Load and play background music
-        pygame.mixer.music.load('../graphics/img/battle-music.mp3')
+        pygame.mixer.music.load('./graphics/img/battle-music.mp3')
         pygame.mixer.music.play(-1)
 
     def load_attack_images(self):
-        self.attack1_basic_image = pygame.image.load('../graphics/img/weapon/sword basic.png').convert_alpha()
+        self.attack1_basic_image = pygame.image.load('./graphics/img/weapon/sword basic.png').convert_alpha()
         self.attack1_basic_image = pygame.transform.scale(self.attack1_basic_image, (self.basic_size, self.basic_size))
-        self.attack1_ult_image = pygame.image.load('../graphics/img/weapon/sword ult.png').convert_alpha()
+        self.attack1_ult_image = pygame.image.load('./graphics/img/weapon/sword ult.png').convert_alpha()
         self.attack1_ult_image = pygame.transform.scale(self.attack1_ult_image, (self.ult_size, self.ult_size))
-        self.attack1_skill_image = pygame.image.load('../graphics/img/weapon/sword skill.png').convert_alpha()
+        self.attack1_skill_image = pygame.image.load('./graphics/img/weapon/sword skill.png').convert_alpha()
         self.attack1_skill_image = pygame.transform.scale(self.attack1_skill_image, (self.skill_size, self.skill_size))
 
-        self.attack2_basic_image = pygame.image.load('../graphics/img/weapon/spear basic.png').convert_alpha()
+        self.attack2_basic_image = pygame.image.load('./graphics/img/weapon/spear basic.png').convert_alpha()
         self.attack2_basic_image = pygame.transform.scale(self.attack2_basic_image, (self.basic_size, self.basic_size))
-        self.attack2_ult_image = pygame.image.load('../graphics/img/weapon/spear ult.png').convert_alpha()
+        self.attack2_ult_image = pygame.image.load('./graphics/img/weapon/spear ult.png').convert_alpha()
         self.attack2_ult_image = pygame.transform.scale(self.attack2_ult_image, (self.ult_size, self.ult_size))
-        self.attack2_skill_image = pygame.image.load('../graphics/img/weapon/spear skill.png').convert_alpha()
+        self.attack2_skill_image = pygame.image.load('./graphics/img/weapon/spear skill.png').convert_alpha()
         self.attack2_skill_image = pygame.transform.scale(self.attack2_skill_image, (self.skill_size, self.skill_size))
 
-        self.attack3_basic_image = pygame.image.load('../graphics/img/weapon/scythe basic.png').convert_alpha()
+        self.attack3_basic_image = pygame.image.load('./graphics/img/weapon/scythe basic.png').convert_alpha()
         self.attack3_basic_image = pygame.transform.scale(self.attack3_basic_image, (self.basic_size, self.basic_size))
-        self.attack3_ult_image = pygame.image.load('../graphics/img/weapon/scythe ult.png').convert_alpha()
+        self.attack3_ult_image = pygame.image.load('./graphics/img/weapon/scythe ult.png').convert_alpha()
         self.attack3_ult_image = pygame.transform.scale(self.attack3_ult_image, (self.ult_size, self.ult_size))
-        self.attack3_skill_image = pygame.image.load('../graphics/img/weapon/scythe skill.png').convert_alpha()
+        self.attack3_skill_image = pygame.image.load('./graphics/img/weapon/scythe skill.png').convert_alpha()
         self.attack3_skill_image = pygame.transform.scale(self.attack3_skill_image, (self.skill_size, self.skill_size))
 
-        self.attack4_basic_image = pygame.image.load('../graphics/img/weapon/catalyst basic.png').convert_alpha()
+        self.attack4_basic_image = pygame.image.load('./graphics/img/weapon/catalyst basic.png').convert_alpha()
         self.attack4_basic_image = pygame.transform.scale(self.attack4_basic_image, (self.basic_size, self.basic_size))
-        self.attack4_ult_image = pygame.image.load('../graphics/img/weapon/catalyst ult.png').convert_alpha()
+        self.attack4_ult_image = pygame.image.load('./graphics/img/weapon/catalyst ult.png').convert_alpha()
         self.attack4_ult_image = pygame.transform.scale(self.attack4_ult_image, (self.ult_size, self.ult_size))
-        self.attack4_skill_image = pygame.image.load('../graphics/img/weapon/catalyst skill.png').convert_alpha()
+        self.attack4_skill_image = pygame.image.load('./graphics/img/weapon/catalyst skill.png').convert_alpha()
         self.attack4_skill_image = pygame.transform.scale(self.attack4_skill_image, (self.skill_size, self.skill_size))
 
     def define_button_areas(self):

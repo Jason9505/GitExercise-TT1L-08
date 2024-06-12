@@ -16,7 +16,7 @@ class Player(Entity):
         self.status = 'down'
 
         # movement
-        self.speed = 2
+        self.speed = 4
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None

@@ -17,7 +17,7 @@ class Enemy(Entity):
 
         # Movement
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(0, -10)
+        self.hitbox = self.rect.inflate(10, -20)
         self.obstacle_sprites = obstacle_sprites
 
         # Stats
@@ -39,7 +39,7 @@ class Enemy(Entity):
 
     def import_graphics(self, name, scale_factor=1.0):
         self.animations = {'idle': [], 'move': [], 'attack': []}
-        main_path = f'./graphics/monsters/{name}/'
+        main_path = f'../GitExercise-TT1L-08/graphics/monsters/{name}/'
         for animation in self.animations.keys():
             animation_frames = import_folder(main_path + animation)
             scaled_frames = [pygame.transform.scale(frame, 
@@ -47,6 +47,7 @@ class Enemy(Entity):
                                int(frame.get_height() * scale_factor))) 
                              for frame in animation_frames]
             self.animations[animation] = scaled_frames
+            print(animation_frames)
 
     def get_player_distance_direction(self, player):
         enemy_vec = pygame.math.Vector2(self.rect.center)
