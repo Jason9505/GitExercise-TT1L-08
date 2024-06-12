@@ -11,35 +11,35 @@ pygame.display.set_caption("Realm Redeemers: The Last Stand")
 
 black = (0,0,0)
 white = (255, 255, 255)
-options_bg = pygame.image.load("../graphics/img/options_bg.png")
+options_bg = pygame.image.load("../GitExercise-TT1L-08/graphics/img/options_bg.png")
 options_bg   = pygame.transform.scale(options_bg, (width, height))
 
 #load background music
-pygame.mixer.music.load("../audio/background_music.mp3")
+pygame.mixer.music.load("../GitExercise-TT1L-08/audio/background_music.mp3")
 pygame.mixer.music.set_volume(1)
 pygame.mixer.music.play(-1)
 
 #load sound effect
-sound_effect = pygame.mixer.Sound("../audio/sound_effect.wav")
+sound_effect = pygame.mixer.Sound("../GitExercise-TT1L-08/audio/sound_effect.wav")
 sound_effect.set_volume(0.3)
 
 #load background image
-background = pygame.image.load("../graphics/img/background.png")
+background = pygame.image.load("../GitExercise-TT1L-08/graphics/img/background.png")
 background = pygame.transform.scale(background, (width, height))
 
 #load game title
-title = pygame.image.load("../graphics/img/game_title.png")
+title = pygame.image.load("../GitExercise-TT1L-08/graphics/img/game_title.png")
 title_width = int(width * 0.6)
 title_height = int(height * 0.4)
 title = pygame.transform.scale(title, (title_width, title_height))
 
 #load button image
-start = pygame.image.load("../graphics/img/start_btn.png")
-exit = pygame.image.load("../graphics/img/exit_btn.png")
-options = pygame.image.load("../graphics/img/options_btn.png")
-start_animation = pygame.image.load("../graphics/img/start_an_btn.png")
-exit_animation = pygame.image.load("../graphics/img/exit_an_btn.png")
-options_animation = pygame.image.load("../graphics/img/options_an_btn.png")
+start = pygame.image.load("../GitExercise-TT1L-08/graphics/img/start_btn.png")
+exit = pygame.image.load("../GitExercise-TT1L-08/graphics/img/exit_btn.png")
+options = pygame.image.load("../GitExercise-TT1L-08/graphics/img/options_btn.png")
+start_animation = pygame.image.load("../GitExercise-TT1L-08/graphics/img/start_an_btn.png")
+exit_animation = pygame.image.load("../GitExercise-TT1L-08/graphics/img/exit_an_btn.png")
+options_animation = pygame.image.load("../GitExercise-TT1L-08/graphics/img/options_an_btn.png")
 
 #button class
 class Button():
@@ -149,8 +149,8 @@ while run:
         controls_text = font.render(f"Controls: {controls}", True, (255, 255, 255))
         screen.blit(controls_text, (width // 2 - controls_text.get_width() // 2, 500))
 
-        increase_sound_button = Button(width // 2 + 200, 290, pygame.image.load("../graphics/img/volume_up.png"), pygame.image.load("../graphics/img/volume_up.png"), 0.5)
-        decrease_sound_button = Button(width // 2 - 270, 290, pygame.image.load("../graphics/img/volume_down.png"), pygame.image.load("../graphics/img/volume_down.png"), 0.5)
+        increase_sound_button = Button(width // 2 + 200, 290, pygame.image.load("../GitExercise-TT1L-08/graphics/img/volume_up.png"), pygame.image.load("../GitExercise-TT1L-08/graphics/img/volume_up.png"), 0.5)
+        decrease_sound_button = Button(width // 2 - 270, 290, pygame.image.load("../GitExercise-TT1L-08/graphics/img/volume_down.png"), pygame.image.load("../GitExercise-TT1L-08/graphics/img/volume_down.png"), 0.5)
 
         increase_sound_button.draw()
         decrease_sound_button.draw()
