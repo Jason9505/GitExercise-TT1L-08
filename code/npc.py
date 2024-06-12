@@ -18,6 +18,6 @@ class Npc(Entity):
 
     def import_graphics(self,name):
         self.animations = {'idle':[]}
-        main_path = f'C:/Users/GF66/pygame_project/graphics/npc/{name}/'
+        main_path = f'C:/Users/GF66/pygame_project/GitExercise-TT1L-08/graphics/npc/{name}/'
         for animation in self.animations.keys():
             self.animations[animation] = import_folder(main_path + animation) # + animation
