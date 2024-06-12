@@ -14,11 +14,7 @@ WIDTH, HEIGHT = info.current_w, info.current_h
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption("Realm Redeemers: The Last Stand")
 
-<<<<<<< HEAD
 background_img_path = "../graphics/img/background.png"
-=======
-background_img_path = "../GitExercise-TT1L-08/graphics/img/background.png"
->>>>>>> f1d10b359ac4566b0e3d45ec4fc59367841fe72e
 background = pygame.image.load(background_img_path)
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 options_bg = pygame.image.load(options_bg_img_path)

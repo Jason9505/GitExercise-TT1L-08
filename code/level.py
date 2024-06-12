@@ -79,12 +79,12 @@ class Level:
                                 npc_name = 'angel_one'
                                 dialogues = [["Follow the path to the village to seek your purpose of this realm.", "Press w to go forward, press a to go left, press d to go right and press s to go backward.", 
                                               "Now, there is a monster in front of you.", "Press SPACE to fight with thr monster!"]]
-                                image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/angel_one/idle/0.png")
+                                image = pygame.image.load("../graphics/npc/angel_one/idle/0.png")
                                 name = 'Angel'
                             elif col == '998':
                                 npc_name = 'nurse'
                                 dialogues = [["You should know better than to face Zoltraak when you’re not even at your full potential."]]
-                                image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/nurse/idle/0.png")
+                                image = pygame.image.load("../graphics/npc/nurse/idle/0.png")
                                 name = 'Nurse'
                             elif col == '999':
                                 npc_name = 'geo'
@@ -92,12 +92,12 @@ class Level:
                                               "And so began the age of chaos. He and his army sweep the land.", "Burning down villages and basically destroying every land he steps on.", 
                                               "Some try to fight the demon lord but never return. Many choose to run away to seek for a safer place to hide but it’s no use.", "And now we’re the last ones standing but we’re not safe either.", 
                                               "Cause it’s only a matter of time before the demon lord found us and claim this realm once and for all."]]
-                                image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/geo/idle/0.png")
+                                image = pygame.image.load("../graphics/npc/geo/idle/0.png")
                                 name = 'Geopard'
                             else:
                                 npc_name = 'angel_two'
                                 dialogues = [["Are you ready?", "Lets defeat the final boss, Zoltraak!"], ["Congraturation!!", "You defeat the boss and save the world!"]]
-                                image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/angel_two/idle/0.png")
+                                image = pygame.image.load("../graphics/npc/angel_two/idle/0.png")
                                 name = 'Angel'
                             npc = Npc(npc_name, (x, y), [self.visible_sprites], dialogues, image, name)
                             self.npcs.append(npc)
@@ -204,7 +204,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
         # creating the floor
-        self.floor_surf = pygame.image.load('../GitExercise-TT1L-08/graphics/tilemap/ground.png').convert()
+        self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft = (0,0))
 
         # zoom 

@@ -106,8 +106,20 @@ class BattleScreen:
         self.battle_over = False
 
         # Load and play background music
-        pygame.mixer.music.load('./graphics/img/battle-music.mp3')
+        pygame.mixer.music.load(self.enemy_data['music'])
         pygame.mixer.music.play(-1)
+
+        # Load sound effects
+        self.damage_sound = pygame.mixer.Sound('../audio/oof.mp3')
+        self.enemy_damage_sound = pygame.mixer.Sound('../audio/slash.mp3')
+        self.healing_sound = pygame.mixer.Sound('../audio/heal.mp3')
+
+        # Shaking effect variables
+        self.shake_duration = 300  # Shake duration in milliseconds
+        self.shake_magnitude = 10  # Shake magnitude in pixels
+        self.shake_start_time = 0
+        self.shaking = False
+        self.shaking_entity = None
 
     def load_attack_images(self):
         self.attack1_basic_image = pygame.image.load('../graphics/img/weapon/sword basic.png').convert_alpha()
@@ -157,10 +169,24 @@ class BattleScreen:
         self.screen.blit(self.background_image, (0, 0))
 
     def draw_player(self):
-        self.screen.blit(self.character_image, (50, self.SCREEN_HEIGHT - 350))
+        # Position the player at the bottom left corner
+        self.player_rect = self.character_image.get_rect(bottomleft=(0, self.SCREEN_HEIGHT))
+        if self.shaking and self.shaking_entity == 'player':
+            shake_offset_x = random.randint(-self.shake_magnitude, self.shake_magnitude)
+            shake_offset_y = random.randint(-self.shake_magnitude, self.shake_magnitude)
+            self.player_rect.move_ip(shake_offset_x, shake_offset_y)
+        self.screen.blit(self.character_image, self.player_rect)
+        return self.player_rect
 
     def draw_enemy(self):
-        self.screen.blit(self.enemy_image, (self.SCREEN_WIDTH - 350, 50))
+        # Position the enemy at the top right corner
+        self.enemy_rect = self.enemy_image.get_rect(topright=(self.SCREEN_WIDTH, 20))
+        if self.shaking and self.shaking_entity == 'enemy':
+            shake_offset_x = random.randint(-self.shake_magnitude, self.shake_magnitude)
+            shake_offset_y = random.randint(-self.shake_magnitude, self.shake_magnitude)
+            self.enemy_rect.move_ip(shake_offset_x, shake_offset_y)
+        self.screen.blit(self.enemy_image, self.enemy_rect)
+        return self.enemy_rect
 
     def draw_attack_buttons(self):
         self.screen.blit(self.attack1_image, self.attack1_rect.topleft)
@@ -197,8 +223,10 @@ class BattleScreen:
         # Constants for health bar dimensions
         HEALTH_BAR_WIDTH = 300
         HEALTH_BAR_HEIGHT = 25
-        HEALTH_BAR_X = 50
-        HEALTH_BAR_Y = self.SCREEN_HEIGHT - 400
+
+        # Calculate the health bar position centered above the player image
+        HEALTH_BAR_X = self.player_rect.centerx - HEALTH_BAR_WIDTH // 2
+        HEALTH_BAR_Y = self.player_rect.top - HEALTH_BAR_HEIGHT + 1
 
         # Draw the background of the health bar
         pygame.draw.rect(self.screen, YELLOW, (HEALTH_BAR_X, HEALTH_BAR_Y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
@@ -211,8 +239,10 @@ class BattleScreen:
         # Constants for health bar dimensions
         HEALTH_BAR_WIDTH = 300
         HEALTH_BAR_HEIGHT = 25
-        HEALTH_BAR_X = self.SCREEN_WIDTH - 400
-        HEALTH_BAR_Y = 20
+
+        # Calculate the health bar position centered above the enemy image
+        HEALTH_BAR_X = self.enemy_rect.centerx - HEALTH_BAR_WIDTH // 2
+        HEALTH_BAR_Y = self.enemy_rect.top + 1  # Adjust this value to lower the health bar
 
         # Draw the background of the health bar
         pygame.draw.rect(self.screen, YELLOW, (HEALTH_BAR_X, HEALTH_BAR_Y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
@@ -325,7 +355,9 @@ class BattleScreen:
                 damage = random.randint(5, 15)
             self.enemy_hp -= damage
             self.enemy_damage_text = f"-{damage}"
+            self.shake_screen('enemy')
             self.enemy_damage_time = pygame.time.get_ticks()
+            pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
             self.points = min(self.points + 1, self.max_points)
             self.current_state = self.ENEMY_TURN
             self.enemy_attack_timer = pygame.time.get_ticks() + self.enemy_attack_delay
@@ -337,11 +369,13 @@ class BattleScreen:
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 2:
                     damage = random.randint(35, 60) + self.attack2_buff
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 3:
                     self.attack1_buff += random.randint(10, 20)
                     self.attack2_buff += random.randint(10, 20)
@@ -349,12 +383,15 @@ class BattleScreen:
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 4:
                     heal = random.randint(10, 30)
                     self.player_hp = min(self.player_hp + heal, self.max_player_hp)
                     self.player_healing_text = f"+{heal}"
                     self.player_healing_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.healing_sound)  # Play healing sound
                 self.points -= 1
+                self.shake_screen('enemy')
                 self.current_state = self.ENEMY_TURN
                 self.enemy_attack_timer = pygame.time.get_ticks() + self.enemy_attack_delay
 
@@ -365,11 +402,13 @@ class BattleScreen:
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 2:
                     damage = random.randint(60, 80) + self.attack2_buff
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 3:
                     self.attack1_buff += random.randint(5, 10)
                     self.attack2_buff += random.randint(5, 10)
@@ -377,15 +416,18 @@ class BattleScreen:
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 4:
                     heal = random.randint(30, 70)
                     self.player_hp = min(self.player_hp + heal, self.max_player_hp)
                     self.player_healing_text = f"+{heal}"
                     self.player_healing_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.healing_sound)  # Play healing sound
                 self.points -= 3
+                self.shake_screen('enemy')
                 self.current_state = self.ENEMY_TURN
                 self.enemy_attack_timer = pygame.time.get_ticks() + self.enemy_attack_delay
-        
+
         if self.enemy_hp <= 0:
             self.enemy_hp = 0
             self.battle_over = True
@@ -393,16 +435,27 @@ class BattleScreen:
             self.player_hp = 0
             self.battle_over = True
 
+    def shake_screen(self, entity):
+        self.shaking = True
+        self.shaking_entity = entity
+        self.shake_start_time = pygame.time.get_ticks()
+
     def update(self):
         current_time = pygame.time.get_ticks()
         if self.current_state == self.ENEMY_TURN:
             if current_time - self.enemy_attack_timer > self.enemy_attack_delay:
                 damage = random.randint(self.enemy_damage_range[0], self.enemy_damage_range[1])
+                pygame.mixer.Sound.play(self.damage_sound)  # Play player damage sound
+                self.shake_screen('player')
                 self.player_hp -= damage
                 self.player_damage_text = f"-{damage}"
                 self.player_damage_time = current_time
                 self.enemy_attack_timer = current_time
                 self.current_state = self.NORMAL
+
+        if self.shaking and current_time - self.shake_start_time > self.shake_duration:
+            self.shaking = False
+            self.shaking_entity = None
 
         if self.player_hp <= 0 or self.enemy_hp <= 0:
             self.battle_over = True
