@@ -25,7 +25,7 @@ class Npc(Entity):
 
     def import_graphics(self, name):
         self.animations = {'idle': []}
-        main_path = f'../GitExercise-TT1L-08/graphics/npc/{name}/'
+        main_path = f'../graphics/npc/{name}/'
         for animation in self.animations.keys():
             self.animations[animation] = import_folder(main_path + animation)
 

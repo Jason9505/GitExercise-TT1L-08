@@ -7,12 +7,7 @@ from support import *
 from random import choice
 from enemy import Enemy
 from npc import Npc
-from button import *
-import sys
-
-background_img_path = "../GitExercise-TT1L-08/graphics/img/background.png"
-background = pygame.image.load(background_img_path)
-background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+from battlescreen import BattleScreen
 
 class Level:
     def __init__(self): 
@@ -35,23 +30,18 @@ class Level:
         self.font = pygame.font.Font(None, 36)
         self.mouse_clicked = False
         self.e_key_pressed = False
-        self.pause = False
-
-        self.start_button = Button(700, 430, start, start_animation, 1)
-        self.options_button = Button(700, 550, options, options_animation, 1)
-        self.exit_button = Button(700, 670, exit, exit_animation, 1)
         
     def create_map(self):
         layouts = {
-            'boundary': import_csv_layout('../GitExercise-TT1L-08/map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('../GitExercise-TT1L-08/map/map_Grass.csv'),
-            'object': import_csv_layout('../GitExercise-TT1L-08./map/map_Objects.csv'),
-            'entities': import_csv_layout('../GitExercise-TT1L-08/map/map_Entities.csv'),
-            'npc': import_csv_layout('../GitExercise-TT1L-08/map/map_Npc.csv')
+            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('../map/map_Grass.csv'),
+            'object': import_csv_layout('../map/map_Objects.csv'),
+            'entities': import_csv_layout('../map/map_Entities.csv'),
+            'npc': import_csv_layout('../map/map_Npc.csv')
         }
         graphics = {
-            'grass': import_folder('../GitExercise-TT1L-08/graphics/Grass'),
-            'objects': import_folder('../GitExercise-TT1L-08/graphics/objects')
+            'grass': import_folder('../graphics/Grass'),
+            'objects': import_folder('../graphics/objects')
         }
 
         for style, layout in layouts.items():
@@ -75,43 +65,39 @@ class Level:
                                 self.player = Player((x, y), [self.visible_sprites], self.obstacle_sprites)
                             else:
                                 if col == '54':
-                                    monster_name = 'raccoon'
+                                    monster_name = 'monster lvl 1'
                                 elif col == '56':
-                                    monster_name = 'bamboo'
+                                    monster_name = 'monster lvl 2'
                                 elif col == '100':
-                                    monster_name = 'squid'
+                                    monster_name = 'boss'
                                 else:
-                                    monster_name = 'spirit'
+                                    monster_name = 'monster lvl 3'
                                 Enemy(monster_name, (x, y), [self.visible_sprites], self.obstacle_sprites)
 
                         if style == 'npc':
                             if col == '997':
                                 npc_name = 'angel_one'
-                                dialogues = [["Follow the path to the village to seek your purpose of this realm.", "Press w to go forward, press a to go left, press d to go right and press s to go backward.", 
-                                              "Now, there is a monster in front of you.", "Press SPACE to fight with thr monster!"]]
-                                image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/angel_one/idle/0.png")
+                                dialogues = [["Follow the path to the village to seek your purpose of this realm.", "Press w to go forward, press a to go left, press d to go right and press s to go backward.", ""]]
+                                image = pygame.image.load("../graphics/npc/angel_one/idle/0.png")
                                 name = 'Angel'
                             elif col == '998':
                                 npc_name = 'nurse'
                                 dialogues = [["You should know better than to face Zoltraak when you’re not even at your full potential."]]
-                                image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/nurse/idle/0.png")
+                                image = pygame.image.load("../graphics/npc/nurse/idle/0.png")
                                 name = 'Nurse'
                             elif col == '999':
                                 npc_name = 'geo'
-                                dialogues = [["There used to be almost an infinite amount village throughout this world.", "Everything changes when the Demon Lord, Zoltraak arise from the underworld. ", 
-                                              "And so began the age of chaos. He and his army sweep the land.", "Burning down villages and basically destroying every land he steps on.", 
-                                              "Some try to fight the demon lord but never return. Many choose to run away to seek for a safer place to hide but it’s no use.", "And now we’re the last ones standing but we’re not safe either.", 
-                                              "Cause it’s only a matter of time before the demon lord found us and claim this realm once and for all."]]
-                                image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/geo/idle/0.png")
+                                dialogues = [["LAlalalalalalala"]]
+                                image = pygame.image.load("../graphics/npc/geo/idle/0.png")
                                 name = 'Geopard'
                             else:
                                 npc_name = 'angel_two'
                                 dialogues = [["Are you ready?", "Lets defeat the final boss, Zoltraak!"], ["Congraturation!!", "You defeat the boss and save the world!"]]
-                                image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/angel_two/idle/0.png")
+                                image = pygame.image.load("../graphics/npc/angel_two/idle/0.png")
                                 name = 'Angel'
                             npc = Npc(npc_name, (x, y), [self.visible_sprites], dialogues, image, name)
                             self.npcs.append(npc)
-
+                              
     def run(self):
         # update and draw the game
         if not self.player.in_battle:
@@ -188,7 +174,7 @@ class Level:
         pygame.draw.rect(self.display_surface, (255, 255, 255), (dialogue_box_x, dialogue_box_y, dialogue_box_width, dialogue_box_height), 2)
 
         npc_image_x = dialogue_box_x + 5
-        npc_image_y = dialogue_box_y - self.active_npc.image.get_height() - 60
+        npc_image_y = dialogue_box_y - self.active_npc.image.get_height() - 30
         scaled_npc_image = pygame.transform.scale(self.active_npc.image, (self.active_npc.image.get_width() * 2, self.active_npc.image.get_height() * 2))
         self.display_surface.blit(scaled_npc_image, (npc_image_x, npc_image_y))
 
@@ -214,7 +200,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
         # creating the floor
-        self.floor_surf = pygame.image.load('../GitExercise-TT1L-08/graphics/tilemap/ground.png').convert()
+        self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft = (0,0))
 
         # zoom 

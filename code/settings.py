@@ -11,6 +11,14 @@ HEIGHT = SCREEN_HEIGHT
 FRAME_WIDTH = 64
 FRAME_HEIGHT = 64
 
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+YELLOW = (255, 255, 0)
+
 # enemy
 monster_data = {
 	'squid': {'health': 100,'exp':100,'damage':20,'attack_type': 'slash', 'attack_sound':'../audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30},
