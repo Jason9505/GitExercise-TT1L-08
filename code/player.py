@@ -16,7 +16,7 @@ class Player(Entity):
         self.status = 'down'
 
         # movement
-        self.speed = 2
+        self.speed = 10
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
@@ -30,7 +30,7 @@ class Player(Entity):
         self.saved_position = None
 
     def import_player_assets(self):
-        character_path = './graphics/player/'
+        character_path = '../graphics/player/'
         self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
                            'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],
                            'right_attack': [], 'left_attack': [], 'up_attack': [], 'down_attack': []}

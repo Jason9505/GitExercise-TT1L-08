@@ -63,8 +63,8 @@ class BattleScreen:
         # Player and Enemy HP
         self.player = player
         self.enemy = enemy
-        self.player_hp = 100
-        self.max_player_hp = 100
+        self.player_hp = 300
+        self.max_player_hp = 300
 
         # Font for displaying damage and points
         self.font = pygame.font.SysFont(None, 36)
