@@ -60,6 +60,15 @@ class BattleScreen:
         self.exit_tutorial_button_image = pygame.image.load('../graphics/img/return game.png').convert_alpha()
         self.exit_tutorial_button_image = pygame.transform.scale(self.exit_tutorial_button_image, (100, 100))
 
+        # Load game over images and sounds
+        self.player_death_sound = pygame.mixer.Sound('../audio/you died.mp3')  # Player death sound
+        self.enemy_death_sound = pygame.mixer.Sound('../audio/battle over.mp3')    # Enemy death sound
+        self.player_death_image = pygame.image.load('../graphics/img/you died.png').convert_alpha()
+        self.player_death_image = pygame.transform.scale(self.player_death_image, (600, 600))
+        self.enemy_death_image = pygame.image.load('../graphics/img/battle over.png').convert_alpha()
+        self.enemy_death_image = pygame.transform.scale(self.enemy_death_image, (600, 600))
+
+
         # Player and Enemy HP
         self.player = player
         self.enemy = enemy
@@ -431,9 +440,15 @@ class BattleScreen:
         if self.enemy_hp <= 0:
             self.enemy_hp = 0
             self.battle_over = True
+            self.current_state = self.battle_over
+            self.enemy_death_sound.play()
+            self.enemy_death_time = pygame.time.get_ticks()  # Record the time of death
         elif self.player_hp <= 0:
             self.player_hp = 0
             self.battle_over = True
+            self.current_state = self.battle_over
+            self.player_death_sound.play()
+            self.player_death_time = pygame.time.get_ticks()  # Record the time of death
 
     def shake_screen(self, entity):
         self.shaking = True
@@ -503,7 +518,20 @@ class BattleScreen:
                 self.screen.blit(self.attack4_skill_image, self.skill_rect.topleft)
         elif self.current_state == self.TUTORIAL:
             self.draw_tutorial_screen()
+        elif self.battle_over:
+            self.show_battle_over_screen()
 
+    def show_battle_over_screen(self):
+        current_time = pygame.time.get_ticks()
+        delay_time = 6000  # 2 seconds delay
+
+        if current_time - self.enemy_death_time < delay_time:
+            if self.player_hp <= 0:
+                self.screen.blit(self.player_death_image, ((self.SCREEN_WIDTH - 600) // 2, (self.SCREEN_HEIGHT - 600) // 2))
+            elif self.enemy_hp <= 0:
+                self.screen.blit(self.enemy_death_image, ((self.SCREEN_WIDTH - 600) // 2, (self.SCREEN_HEIGHT - 600) // 2))
+        else:
+            self.battle_over = True
 
     def run(self):
         while not self.battle_over:
@@ -517,6 +545,8 @@ class BattleScreen:
             
             # Add a small delay to control the frame rate
             pygame.time.delay(30)
+
+        self.show_battle_over_screen()
 
         # Stop music and quit Pygame
         pygame.mixer.music.stop()
