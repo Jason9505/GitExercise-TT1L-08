@@ -3,24 +3,10 @@ import sys
 import time
 from settings import *
 from level import Level
+from button import *
 
 # Initialize pygame
 pygame.init()
-
-# Load assets
-background_music_path = "../audio/background_music.mp3"
-sound_effect_path = "../audio/sound_effect.wav"
-background_img_path = "../graphics/img/background.png"
-options_bg_img_path = "../graphics/img/options_bg.png"
-game_title_img_path = "../graphics/img/game_title.png"
-start_btn_img_path = "../graphics/img/start_btn.png"
-exit_btn_img_path = "../graphics/img/exit_btn.png"
-options_btn_img_path = "../graphics/img/options_btn.png"
-start_an_btn_img_path = "../graphics/img/start_an_btn.png"
-exit_an_btn_img_path = "../graphics/img/exit_an_btn.png"
-options_an_btn_img_path = "../graphics/img/options_an_btn.png"
-volume_up_img_path = "../graphics/img/volume_up.png"
-volume_down_img_path = "../graphics/img/volume_down.png"
 
 # Screen setup
 info = pygame.display.Info()
@@ -28,27 +14,15 @@ WIDTH, HEIGHT = info.current_w, info.current_h
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption("Realm Redeemers: The Last Stand")
 
-# Colors
-black = (0, 0, 0)
-white = (255, 255, 255)
-
-# Load images
+background_img_path = "../graphics/img/background.png"
 background = pygame.image.load(background_img_path)
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 options_bg = pygame.image.load(options_bg_img_path)
 options_bg = pygame.transform.scale(options_bg, (WIDTH, HEIGHT))
-title = pygame.image.load(game_title_img_path)
-title_width = int(WIDTH * 0.6)
-title_height = int(HEIGHT * 0.4)
-title = pygame.transform.scale(title, (title_width, title_height))
 
-# Load button images
-start = pygame.image.load(start_btn_img_path)
-exit = pygame.image.load(exit_btn_img_path)
-options = pygame.image.load(options_btn_img_path)
-start_animation = pygame.image.load(start_an_btn_img_path)
-exit_animation = pygame.image.load(exit_an_btn_img_path)
-options_animation = pygame.image.load(options_an_btn_img_path)
+# Colors
+black = (0, 0, 0)
+white = (255, 255, 255)
 
 # Load audio
 pygame.mixer.music.load(background_music_path)
@@ -56,26 +30,6 @@ pygame.mixer.music.set_volume(1)
 pygame.mixer.music.play(-1)
 sound_effect = pygame.mixer.Sound(sound_effect_path)
 sound_effect.set_volume(0.3)
-
-# Button class
-class Button:
-    def __init__(self, x, y, image, hover_image, scale):
-        self.base_image = pygame.transform.scale(image, (int(image.get_width() * scale), int(image.get_height() * scale)))
-        self.hover_image = pygame.transform.scale(hover_image, (int(hover_image.get_width() * scale), int(hover_image.get_height() * scale)))
-        self.rect = self.base_image.get_rect(topleft=(x, y))
-        self.image = self.base_image
-
-    def draw(self, screen):
-        screen.blit(self.image, (self.rect.x, self.rect.y))
-
-    def update(self, pos):
-        if self.rect.collidepoint(pos):
-            self.image = self.hover_image
-        else:
-            self.image = self.base_image
-
-    def clicked(self, pos):
-        return self.rect.collidepoint(pos)
 
 # Main Game class
 class Game:
@@ -160,7 +114,7 @@ class Game:
 
     def update_typing(self):
         current_time = pygame.time.get_ticks()
-        if current_time - self.typing_start_time >= 50:  # Adjust typing speed here
+        if current_time - self.typing_start_time >= 40:  # Adjust typing speed here
             if self.typing_index < len(self.typing_text):
                 self.typing_index += 1
                 self.typing_start_time = current_time
@@ -188,6 +142,7 @@ class Game:
         elif self.current_page == "game":
             self.screen.fill((80, 167, 232))
             self.level.run()
+            
 
     def draw_options(self):
         font = pygame.font.SysFont(None, 60)
@@ -204,5 +159,5 @@ class Game:
 
 if __name__ == '__main__':
     game = Game()
-    game.set_typing_text_position(WIDTH // 2 - 450, HEIGHT // 2)  # Adjust this to set position
+    game.set_typing_text_position(WIDTH // 2 - 400, HEIGHT // 2)  # Adjust this to set position
     game.run()
