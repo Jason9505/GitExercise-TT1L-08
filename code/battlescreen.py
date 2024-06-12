@@ -1,345 +1,471 @@
 import pygame
 import sys
 import random
+from settings import *
 
-# Initialize Pygame
-pygame.init()
 
-# Colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-YELLOW = (255, 255, 0)
 
-# Create main screen in full screen mode
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
-pygame.display.set_caption("Battle Screen")
+class BattleScreen:
+    def __init__(self, player, enemy, enemy_name):
+        pygame.init()
+        # Create main screen in full screen mode
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.SCREEN_WIDTH, self.SCREEN_HEIGHT = self.screen.get_size()
+        pygame.display.set_caption("Battle Screen")
 
-# Load background image
-background_image = pygame.image.load('../graphics/img/forest.jpeg').convert()
-background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        # Load background image
+        self.background_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/forest.jpeg').convert()
+        self.background_image = pygame.transform.scale(self.background_image, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
-# Character and Enemy images
-character_image = pygame.image.load('../graphics/img/mc.png').convert_alpha()
-character_image = pygame.transform.scale(character_image, (200, 300))  # Increase size
+        # Character and Enemy images
+        self.character_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/mc.png').convert_alpha()
+        self.character_image = pygame.transform.scale(self.character_image, (300, 300))
 
-enemy_image = pygame.image.load('../graphics/img/monster lvl 1 solo.png').convert_alpha()  # Adjust the path
-enemy_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
-enemylvl2_image = pygame.image.load('../graphics/img/monster lvl 3 solo.png').convert_alpha()  # Adjust the path
-enemylvl2_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
-enemylvl3_image = pygame.image.load('../graphics/img/monster lvl 4 solo.png').convert_alpha()  # Adjust the path
-enemylvl3_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
-enemyboss_image = pygame.image.load('../graphics/img/final boss.png').convert_alpha()  # Adjust the path
-enemyboss_image = pygame.transform.scale(enemy_image, (200, 300))  # Increase size
+        # Load enemy data
+        self.enemy_name = enemy_name
+        self.enemy_data = monster_data[self.enemy_name]
+        self.enemy_image = pygame.image.load(self.enemy_data['image']).convert_alpha()
+        self.enemy_image = pygame.transform.scale(self.enemy_image, (300, 300))
+        self.enemy_hp = self.enemy_data['health']
+        self.max_enemy_hp = self.enemy_data['health']
+        self.enemy_damage_range = self.enemy_data['damage']
 
-# Load attack button images
-attack1_image = pygame.image.load('../graphics/img/weapon/sword1.png').convert_alpha()
-attack1_image = pygame.transform.scale(attack1_image, (150, 100))  # Increase size
-attack2_image = pygame.image.load('../graphics/img/weapon/spear.png').convert_alpha()
-attack2_image = pygame.transform.scale(attack2_image, (150, 100))  # Increase size
-attack3_image = pygame.image.load('../graphics/img/weapon/scythe.png').convert_alpha()
-attack3_image = pygame.transform.scale(attack3_image, (150, 100))  # Increase size
-attack4_image = pygame.image.load('../graphics/img/weapon/catalyst.png').convert_alpha()
-attack4_image = pygame.transform.scale(attack4_image, (150, 100))  # Increase size
+        # Load attack button images
+        self.attack1_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/sword1.png').convert_alpha()
+        self.attack1_image = pygame.transform.scale(self.attack1_image, (200, 200))
+        self.attack2_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/scythe.png').convert_alpha()
+        self.attack2_image = pygame.transform.scale(self.attack2_image, (200, 200))
+        self.attack3_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/spear.png').convert_alpha()
+        self.attack3_image = pygame.transform.scale(self.attack3_image, (200, 200))
+        self.attack4_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/catalyst.png').convert_alpha()
+        self.attack4_image = pygame.transform.scale(self.attack4_image, (200, 200))
 
-# Define sizes for buttons
-basic_size = 100  # Size of basic buttons
-skill_size = 150  # Size of skill buttons
-ult_size = 200  # Size of ult buttons
+        # Define sizes for buttons
+        self.basic_size = 200
+        self.skill_size = 300
+        self.ult_size = 400
 
-# Load attack option images for each attack type with different sizes
-attack1_basic_image = pygame.image.load('../graphics/img/weapon/sword basic.png').convert_alpha()
-attack1_basic_image = pygame.transform.scale(attack1_basic_image, (basic_size, basic_size))
-attack1_ult_image = pygame.image.load('../graphics/img/weapon/sword ult.png').convert_alpha()
-attack1_ult_image = pygame.transform.scale(attack1_ult_image, (ult_size, ult_size))
-attack1_skill_image = pygame.image.load('../graphics/img/weapon/sword skill.png').convert_alpha()
-attack1_skill_image = pygame.transform.scale(attack1_skill_image, (skill_size, skill_size))
+        # Load attack option images for each attack type with different sizes
+        self.load_attack_images()
 
-attack2_basic_image = pygame.image.load('../graphics/img/weapon/spear basic.png').convert_alpha()
-attack2_basic_image = pygame.transform.scale(attack2_basic_image, (basic_size, basic_size))
-attack2_ult_image = pygame.image.load('../graphics/img/weapon/spear ult.png').convert_alpha()
-attack2_ult_image = pygame.transform.scale(attack2_ult_image, (ult_size, ult_size))
-attack2_skill_image = pygame.image.load('../graphics/img/weapon/spear skill.png').convert_alpha()
-attack2_skill_image = pygame.transform.scale(attack2_skill_image, (skill_size, skill_size))
+        # Load tutorial image
+        self.tutorial_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/tutorial.png').convert_alpha()
+        self.tutorial_image = pygame.transform.scale(self.tutorial_image, (600, 600))
 
-attack3_basic_image = pygame.image.load('../graphics/img/weapon/scythe basic.png').convert_alpha()
-attack3_basic_image = pygame.transform.scale(attack3_basic_image, (basic_size, basic_size))
-attack3_ult_image = pygame.image.load('../graphics/img/weapon/scythe ult.png').convert_alpha()
-attack3_ult_image = pygame.transform.scale(attack3_ult_image, (ult_size, ult_size))
-attack3_skill_image = pygame.image.load('../graphics/img/weapon/scythe skill.png').convert_alpha()
-attack3_skill_image = pygame.transform.scale(attack3_skill_image, (skill_size, skill_size))
+        # Load tutorial button image
+        self.tutorial_button_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/tutorial button.png').convert_alpha()
+        self.tutorial_button_image = pygame.transform.scale(self.tutorial_button_image, (150, 150))
 
-attack4_basic_image = pygame.image.load('../graphics/img/weapon/catalyst basic.png').convert_alpha()
-attack4_basic_image = pygame.transform.scale(attack4_basic_image, (basic_size, basic_size))
-attack4_ult_image = pygame.image.load('../graphics/img/weapon/catalyst ult.png').convert_alpha()
-attack4_ult_image = pygame.transform.scale(attack4_ult_image, (ult_size, ult_size))
-attack4_skill_image = pygame.image.load('../graphics/img/weapon/catalyst skill.png').convert_alpha()
-attack4_skill_image = pygame.transform.scale(attack4_skill_image, (skill_size, skill_size))
+        # Load exit tutorial button image
+        self.exit_tutorial_button_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/return game.png').convert_alpha()
+        self.exit_tutorial_button_image = pygame.transform.scale(self.exit_tutorial_button_image, (100, 100))
 
-# Load tutorial image
-tutorial_image = pygame.image.load('../graphics/img/tutorial.jpg').convert_alpha()  # Adjust the path
-tutorial_image = pygame.transform.scale(tutorial_image, (600, 400))  # Adjust size as needed
+        # Player and Enemy HP
+        self.player = player
+        self.enemy = enemy
+        self.player_hp = 300
+        self.max_player_hp = 300
 
-# Load tutorial button image
-tutorial_button_image = pygame.image.load('../graphics/img/tutorial button.png').convert_alpha()  # Adjust the path
-tutorial_button_image = pygame.transform.scale(tutorial_button_image, (150, 150))  # Adjust size as needed
+        # Font for displaying damage and points
+        self.font = pygame.font.SysFont(None, 36)
 
-# Load exit tutorial button image
-exit_tutorial_button_image = pygame.image.load('../graphics/img/return game.png').convert_alpha()  # Adjust the path
-exit_tutorial_button_image = pygame.transform.scale(exit_tutorial_button_image, (100, 100))  # Adjust size as needed
+        # Damage display variables
+        self.player_damage_text = ""
+        self.player_damage_time = 0
+        self.player_healing_text = ""
+        self.player_healing_time = 0
+        self.enemy_damage_text = ""
+        self.enemy_damage_time = 0
+        self.attack1_buff = 0
+        self.attack2_buff = 0
 
-# Player and Enemy HP
-player_hp = 100  # Overall health for player
-enemy_hp = 100
-max_player_hp = 100  # Maximum HP for player
+        # Game states
+        self.NORMAL = 0
+        self.ATTACK_SELECTION = 1
+        self.ENEMY_TURN = 2
+        self.TUTORIAL = 3
+        self.current_state = self.NORMAL
+        self.attack_state = ""
+        self.skill_state = ""
 
-# Font for displaying damage and points
-font = pygame.font.SysFont(None, 36)
+        # Selected attack type
+        self.selected_attack = None
 
-# Damage display variables
-player_damage_text = ""
-player_damage_time = 0
-enemy_damage_text = ""
-enemy_damage_time = 0
+        # Timers for delaying enemy attack
+        self.enemy_attack_timer = 0
+        self.enemy_attack_delay = 2000  # 2 seconds delay
 
-# Function to draw health bar
-def draw_health_bar(screen, x, y, current_hp, max_hp):
-    BAR_WIDTH = 100
-    BAR_HEIGHT = 10
-    fill = (current_hp / max_hp) * BAR_WIDTH
-    border = pygame.Rect(x, y, BAR_WIDTH, BAR_HEIGHT)
-    fill = pygame.Rect(x, y, fill, BAR_HEIGHT)
-    pygame.draw.rect(screen, GREEN, fill)  # Green for health bar
-    pygame.draw.rect(screen, BLACK, border, 2)
+        # Points system
+        self.points = 3
+        self.max_points = 5
 
-# Function to draw enemy health bar
-def draw_enemy_health_bar(screen, x, y, current_hp, max_hp):
-    BAR_WIDTH = 100
-    BAR_HEIGHT = 10
-    fill = (current_hp / max_hp) * BAR_WIDTH
-    border = pygame.Rect(x, y, BAR_WIDTH, BAR_HEIGHT)
-    fill = pygame.Rect(x, y, fill, BAR_HEIGHT)
-    pygame.draw.rect(screen, RED, fill)  # Red for enemy health bar
-    pygame.draw.rect(screen, BLACK, border, 2)
+        # Define button areas outside the main loop
+        self.define_button_areas()
 
-# Game states
-NORMAL = 0
-ATTACK_SELECTION = 1
-ENEMY_TURN = 2
-TUTORIAL = 3
-current_state = NORMAL
+        # Battle state
+        self.battle_over = False
 
-# Selected attack type
-selected_attack = None
+        # Load and play background music
+        pygame.mixer.music.load('./graphics/img/battle-music.mp3')
+        pygame.mixer.music.play(-1)
 
-# Timers for delaying enemy attack
-enemy_attack_timer = 0
-enemy_attack_delay = 2000  # 3 seconds delay
+    def load_attack_images(self):
+        self.attack1_basic_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/sword basic.png').convert_alpha()
+        self.attack1_basic_image = pygame.transform.scale(self.attack1_basic_image, (self.basic_size, self.basic_size))
+        self.attack1_ult_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/sword ult.png').convert_alpha()
+        self.attack1_ult_image = pygame.transform.scale(self.attack1_ult_image, (self.ult_size, self.ult_size))
+        self.attack1_skill_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/sword skill.png').convert_alpha()
+        self.attack1_skill_image = pygame.transform.scale(self.attack1_skill_image, (self.skill_size, self.skill_size))
 
-# Points system
-points = 3
-max_points = 5
+        self.attack2_basic_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/scythe basic.png').convert_alpha()
+        self.attack2_basic_image = pygame.transform.scale(self.attack2_basic_image, (self.basic_size, self.basic_size))
+        self.attack2_ult_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/scythe ult.png').convert_alpha()
+        self.attack2_ult_image = pygame.transform.scale(self.attack2_ult_image, (self.ult_size, self.ult_size))
+        self.attack2_skill_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/scythe skill.png').convert_alpha()
+        self.attack2_skill_image = pygame.transform.scale(self.attack2_skill_image, (self.skill_size, self.skill_size))
 
-# Function for enemy attack
-def enemy_attack():
-    global player_hp, player_damage_text, player_damage_time
-    damage = random.randint(5, 15)
-    player_hp -= damage
-    player_damage_text = f"-{damage}"
-    player_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
+        self.attack3_basic_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/spear basic.png').convert_alpha()
+        self.attack3_basic_image = pygame.transform.scale(self.attack3_basic_image, (self.basic_size, self.basic_size))
+        self.attack3_ult_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/spear ult.png').convert_alpha()
+        self.attack3_ult_image = pygame.transform.scale(self.attack3_ult_image, (self.ult_size, self.ult_size))
+        self.attack3_skill_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/spear skill.png').convert_alpha()
+        self.attack3_skill_image = pygame.transform.scale(self.attack3_skill_image, (self.skill_size, self.skill_size))
 
-# Function to end the game
-def end_game():
-    pygame.quit()
-    sys.exit()
+        self.attack4_basic_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/catalyst basic.png').convert_alpha()
+        self.attack4_basic_image = pygame.transform.scale(self.attack4_basic_image, (self.basic_size, self.basic_size))
+        self.attack4_ult_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/catalyst ult.png').convert_alpha()
+        self.attack4_ult_image = pygame.transform.scale(self.attack4_ult_image, (self.ult_size, self.ult_size))
+        self.attack4_skill_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/catalyst skill.png').convert_alpha()
+        self.attack4_skill_image = pygame.transform.scale(self.attack4_skill_image, (self.skill_size, self.skill_size))
 
-# Load and play background music
-pygame.mixer.music.load('../graphics/img/battle-music.mp3')  # Adjust the path to your music file
-pygame.mixer.music.play(-1)  # The -1 argument makes the music loop indefinitely
+    def define_button_areas(self):
+        self.attack1_rect = pygame.Rect(self.SCREEN_WIDTH // 2 - 300, self.SCREEN_HEIGHT - 150, 200, 200)
+        self.attack2_rect = pygame.Rect(self.SCREEN_WIDTH // 2 - 125, self.SCREEN_HEIGHT - 150, 200, 200)
+        self.attack3_rect = pygame.Rect(self.SCREEN_WIDTH // 2 + 50, self.SCREEN_HEIGHT - 150, 200, 200)
+        self.attack4_rect = pygame.Rect(self.SCREEN_WIDTH // 2 + 225, self.SCREEN_HEIGHT - 150, 200, 200)
 
-# Define button areas outside the main loop
-attack1_rect = pygame.Rect(SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT - 150, 150, 100)
-attack2_rect = pygame.Rect(SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT - 150, 150, 100)
-attack3_rect = pygame.Rect(SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT - 150, 150, 100)
-attack4_rect = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT - 150, 150, 100)
+        self.basic_rect = pygame.Rect(
+            self.SCREEN_WIDTH // 2 - (self.basic_size + self.skill_size + self.ult_size + 10) // 2,
+            self.SCREEN_HEIGHT // 2 - self.basic_size // 2, self.basic_size, self.basic_size
+        )
+        self.ult_rect = pygame.Rect(self.basic_rect.right + 5, self.SCREEN_HEIGHT // 2 - self.ult_size // 2, self.ult_size, self.ult_size)
+        self.skill_rect = pygame.Rect(self.ult_rect.right + 5, self.SCREEN_HEIGHT // 2 - self.skill_size // 2, self.skill_size, self.skill_size)
 
-basic_rect = pygame.Rect(
-    SCREEN_WIDTH // 2 - (basic_size + ult_size + skill_size + 10) // 2,
-    SCREEN_HEIGHT - 250, basic_size, basic_size)
-ult_rect = pygame.Rect(
-    SCREEN_WIDTH // 2 - (ult_size + skill_size + 10) // 2 + basic_size + 5,
-    SCREEN_HEIGHT - 250, ult_size, ult_size)
-skill_rect = pygame.Rect(
-    SCREEN_WIDTH // 2 + (ult_size - skill_size) // 2 + 5,
-    SCREEN_HEIGHT - 250, skill_size, skill_size)
-    
-tutorial_button_rect = pygame.Rect(20, 20, 150, 150)
-exit_tutorial_button_rect = pygame.Rect(SCREEN_WIDTH - 120, 20, 100, 100)
+        self.tutorial_button_rect = pygame.Rect(20, 20, 150, 150)
+        
+    def draw_background(self):
+        self.screen.blit(self.background_image, (0, 0))
 
-# Main game loop
-while True:
-    for event in pygame.event.get():
+    def draw_player(self):
+        self.screen.blit(self.character_image, (50, self.SCREEN_HEIGHT - 350))
+
+    def draw_enemy(self):
+        self.screen.blit(self.enemy_image, (self.SCREEN_WIDTH - 350, 50))
+
+    def draw_attack_buttons(self):
+        self.screen.blit(self.attack1_image, self.attack1_rect.topleft)
+        self.screen.blit(self.attack2_image, self.attack2_rect.topleft)
+        self.screen.blit(self.attack3_image, self.attack3_rect.topleft)
+        self.screen.blit(self.attack4_image, self.attack4_rect.topleft)
+
+    def draw_tutorial_button(self):
+        self.screen.blit(self.tutorial_button_image, self.tutorial_button_rect.topleft)
+
+    def draw_tutorial_screen(self):
+        # Center the tutorial image
+        tutorial_width = 600  # Width of the tutorial image
+        tutorial_height = 400  # Height of the tutorial image
+        tutorial_x = (self.SCREEN_WIDTH - tutorial_width) // 2
+        tutorial_y = (self.SCREEN_HEIGHT - tutorial_height) // 2
+
+        # Draw the tutorial image
+        self.screen.blit(self.tutorial_image, (tutorial_x, tutorial_y))
+
+        # Calculate the position for the "Exit Tutorial" button
+        button_width = 100
+        button_height = 100
+        button_x = tutorial_x + (tutorial_width - button_width) // 2
+        button_y = tutorial_y + tutorial_height + 20  # 20 pixels below the tutorial image
+
+        # Update the button rect
+        self.exit_tutorial_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+
+        # Draw the "Exit Tutorial" button
+        self.screen.blit(self.exit_tutorial_button_image, self.exit_tutorial_button_rect.topleft)
+
+    def draw_health_bar(self):
+        # Constants for health bar dimensions
+        HEALTH_BAR_WIDTH = 300
+        HEALTH_BAR_HEIGHT = 25
+        HEALTH_BAR_X = 50
+        HEALTH_BAR_Y = self.SCREEN_HEIGHT - 400
+
+        # Draw the background of the health bar
+        pygame.draw.rect(self.screen, YELLOW, (HEALTH_BAR_X, HEALTH_BAR_Y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
+        
+        # Draw the current health
+        current_health_width = HEALTH_BAR_WIDTH * (self.player_hp / self.max_player_hp)
+        pygame.draw.rect(self.screen, GREEN, (HEALTH_BAR_X, HEALTH_BAR_Y, current_health_width, HEALTH_BAR_HEIGHT))
+
+    def draw_enemy_health_bar(self):
+        # Constants for health bar dimensions
+        HEALTH_BAR_WIDTH = 300
+        HEALTH_BAR_HEIGHT = 25
+        HEALTH_BAR_X = self.SCREEN_WIDTH - 400
+        HEALTH_BAR_Y = 20
+
+        # Draw the background of the health bar
+        pygame.draw.rect(self.screen, YELLOW, (HEALTH_BAR_X, HEALTH_BAR_Y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
+        
+        # Draw the current health
+        current_health_width = HEALTH_BAR_WIDTH * (self.enemy_hp / self.max_enemy_hp)
+        pygame.draw.rect(self.screen, RED, (HEALTH_BAR_X, HEALTH_BAR_Y, current_health_width, HEALTH_BAR_HEIGHT))
+
+
+    def draw_points_indicator(self):
+        points_text = self.font.render(f"Points: {self.points}", True, YELLOW)
+        self.screen.blit(points_text, (self.SCREEN_WIDTH - 200, self.SCREEN_HEIGHT - 50))
+
+    def display_damage_text(self, text, x, y):
+        damage_surface = self.font.render(text, True, RED)
+        self.screen.blit(damage_surface, (x, y))
+
+    def display_healing_text(self, text, x, y):
+        healing_surface = self.font.render(text, True, GREEN)
+        self.screen.blit(healing_surface, (x, y))
+
+    def handle_event(self, event):
         if event.type == pygame.QUIT:
-            end_game()
+            self.battle_over = True
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                end_game()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  # Left mouse button
-                mouse_pos = event.pos
-                if current_state == NORMAL:
-                    if attack1_rect.collidepoint(mouse_pos):
-                        selected_attack = "attack1"
-                        current_state = ATTACK_SELECTION
-                    elif attack2_rect.collidepoint(mouse_pos):
-                        selected_attack = "attack2"
-                        current_state = ATTACK_SELECTION
-                    elif attack3_rect.collidepoint(mouse_pos):
-                        selected_attack = "attack3"
-                        current_state = ATTACK_SELECTION
-                    elif attack4_rect.collidepoint(mouse_pos):
-                        selected_attack = "attack4"
-                        current_state = ATTACK_SELECTION
-                    elif tutorial_button_rect.collidepoint(mouse_pos):
-                        current_state = TUTORIAL
-                elif current_state == ATTACK_SELECTION:
-                    if basic_rect.collidepoint(mouse_pos):
-                        if selected_attack == "attack1":
-                            damage = random.randint(10, 20)
-                        elif selected_attack == "attack2":
-                            damage = random.randint(15, 25)
-                        elif selected_attack == "attack3":
-                            damage = random.randint(20, 30)
-                        elif selected_attack == "attack4":
-                            damage = random.randint(5, 15)
-                        enemy_hp -= damage
-                        enemy_damage_text = f"-{damage}"
-                        enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
-                        points = min(points + 1, max_points)  # Increase points, maxing out at max_points
-                        current_state = ENEMY_TURN
-                        enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay  # Set timer for enemy attack
-                    elif skill_rect.collidepoint(mouse_pos):
-                        if points >= 1:
-                            if selected_attack == "attack1":
-                                damage = random.randint(30, 50)
-                                enemy_hp -= damage
-                                enemy_damage_text = f"-{damage}"
-                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
-                            elif selected_attack == "attack2":
-                                damage = random.randint(35, 55)
-                                enemy_hp -= damage
-                                enemy_damage_text = f"-{damage}"
-                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
-                            elif selected_attack == "attack3":
-                                damage = random.randint(40, 60)
-                                enemy_hp -= damage
-                                enemy_damage_text = f"-{damage}"
-                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
-                            elif selected_attack == "attack4":
-                                heal = random.randint(10, 20)
-                                player_hp = min(player_hp + heal, max_player_hp)
-                                player_damage_text = f"+{heal}"
-                                player_damage_time = pygame.time.get_ticks()  # Record the time when healed
-                            points -= 1  # Decrease points by 1
-                            current_state = ENEMY_TURN
-                            enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay  # Set timer for enemy attack
-                    elif ult_rect.collidepoint(mouse_pos):
-                        if points >= 3:
-                            if selected_attack == "attack1":
-                                damage = random.randint(50, 70)
-                                enemy_hp -= damage
-                                enemy_damage_text = f"-{damage}"
-                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
-                            elif selected_attack == "attack2":
-                                damage = random.randint(55, 75)
-                                enemy_hp -= damage
-                                enemy_damage_text = f"-{damage}"
-                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
-                            elif selected_attack == "attack3":
-                                damage = random.randint(60, 80)
-                                enemy_hp -= damage
-                                enemy_damage_text = f"-{damage}"
-                                enemy_damage_time = pygame.time.get_ticks()  # Record the time when damage is dealt
-                            elif selected_attack == "attack4":
-                                heal = random.randint(20, 40)
-                                player_hp = min(player_hp + heal, max_player_hp)
-                                player_damage_text = f"+{heal}"
-                                player_damage_time = pygame.time.get_ticks()  # Record the time when healed
-                            points -= 3  # Decrease points by 3
-                            current_state = ENEMY_TURN
-                            enemy_attack_timer = pygame.time.get_ticks() + enemy_attack_delay  # Set timer for enemy attack
-                elif current_state == TUTORIAL:
-                    if exit_tutorial_button_rect.collidepoint(mouse_pos):
-                        current_state = NORMAL
+            if event.key == pygame.K_j:
+                if self.skill_state != "basic":
+                    self.skill_state = "basic"
+            elif event.key == pygame.K_i:
+                if self.skill_state!= "ult":
+                    self.skill_state = "ult"
+            elif event.key == pygame.K_u:
+                if self.skill_state!= "skill":
+                    self.skill_state = "skill"
+            if self.skill_state != "":
+                self.attack(self.skill_state)
+            elif event.key == pygame.K_1:
+                if self.attack_state != 1:
+                    self.attack_state = 1
+                    self.current_state = self.ATTACK_SELECTION
+            elif event.key == pygame.K_2:
+                if self.attack_state != 2:
+                    self.attack_state = 2
+                    self.current_state = self.ATTACK_SELECTION
+            elif event.key == pygame.K_3:
+                if self.attack_state != 3:
+                    self.attack_state = 3
+                    self.current_state = self.ATTACK_SELECTION
+            elif event.key == pygame.K_4:
+                if self.attack_state != 4:
+                    self.attack_state = 4
+                    self.current_state = self.ATTACK_SELECTION
+            if self.attack_state != "":
+                self.selected_attack = self.attack_state
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_j:
+                self.skill_state = ""
+            elif event.key == pygame.K_i:
+                self.skill_state = ""
+            elif event.key == pygame.K_u:
+                self.skill_state = ""
+            elif event.key == pygame.K_1:
+                self.attack_state = ""
+            elif event.key == pygame.K_2:
+                self.attack_state = ""
+            elif event.key == pygame.K_3:
+                self.attack_state = ""
+            elif event.key == pygame.K_4:
+                self.attack_state = ""
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mouse_pos = pygame.mouse.get_pos()
+            if self.current_state == self.NORMAL:
+                if self.attack1_rect.collidepoint(mouse_pos):
+                    self.selected_attack = 1
+                    self.current_state = self.ATTACK_SELECTION
+                elif self.attack2_rect.collidepoint(mouse_pos):
+                    self.selected_attack = 2
+                    self.current_state = self.ATTACK_SELECTION
+                elif self.attack3_rect.collidepoint(mouse_pos):
+                    self.selected_attack = 3
+                    self.current_state = self.ATTACK_SELECTION
+                elif self.attack4_rect.collidepoint(mouse_pos):
+                    self.selected_attack = 4
+                    self.current_state = self.ATTACK_SELECTION
+                elif self.tutorial_button_rect.collidepoint(mouse_pos):
+                    self.current_state = self.TUTORIAL
+            elif self.current_state == self.ATTACK_SELECTION:
+                if self.basic_rect.collidepoint(mouse_pos):
+                    self.attack('basic')
+                elif self.ult_rect.collidepoint(mouse_pos):
+                    self.attack('ult')
+                elif self.skill_rect.collidepoint(mouse_pos):
+                    self.attack('skill')
+            elif self.current_state == self.TUTORIAL:
+                if self.exit_tutorial_button_rect.collidepoint(mouse_pos):
+                    self.current_state = self.NORMAL
 
-    # Check if player or monster is dead
-    if player_hp <= 0 or enemy_hp <= 0:
-        end_game()
+    def attack(self, attack_type):
+        self.calculate_damage(attack_type)
 
-    # Clear the screen and draw the background
-    screen.blit(background_image, (0, 0))
+    def calculate_damage(self, attack_type):
+        if attack_type == "basic":
+            if self.selected_attack == 1:
+                damage = random.randint(10, 20) + self.attack1_buff
+            elif self.selected_attack == 2:
+                damage = random.randint(15, 25) + self.attack2_buff
+            elif self.selected_attack == 3:
+                damage = random.randint(10, 20)
+            elif self.selected_attack == 4:
+                damage = random.randint(5, 15)
+            self.enemy_hp -= damage
+            self.enemy_damage_text = f"-{damage}"
+            self.enemy_damage_time = pygame.time.get_ticks()
+            self.points = min(self.points + 1, self.max_points)
+            self.current_state = self.ENEMY_TURN
+            self.enemy_attack_timer = pygame.time.get_ticks() + self.enemy_attack_delay
 
-    # Draw the character and enemy images
-    screen.blit(character_image, (50, SCREEN_HEIGHT - character_image.get_height() - 50))  # Adjusted for positioning
-    screen.blit(enemy_image, (SCREEN_WIDTH - enemy_image.get_width() - 50, 50))  # Adjusted for positioning
+        elif attack_type == "skill":
+            if self.points >= 1:
+                if self.selected_attack == 1:
+                    damage = random.randint(30, 50) + self.attack1_buff
+                    self.enemy_hp -= damage
+                    self.enemy_damage_text = f"-{damage}"
+                    self.enemy_damage_time = pygame.time.get_ticks()
+                elif self.selected_attack == 2:
+                    damage = random.randint(35, 60) + self.attack2_buff
+                    self.enemy_hp -= damage
+                    self.enemy_damage_text = f"-{damage}"
+                    self.enemy_damage_time = pygame.time.get_ticks()
+                elif self.selected_attack == 3:
+                    self.attack1_buff += random.randint(10, 20)
+                    self.attack2_buff += random.randint(10, 20)
+                    damage = 0
+                    self.enemy_hp -= damage
+                    self.enemy_damage_text = f"-{damage}"
+                    self.enemy_damage_time = pygame.time.get_ticks()
+                elif self.selected_attack == 4:
+                    heal = random.randint(10, 30)
+                    self.player_hp = min(self.player_hp + heal, self.max_player_hp)
+                    self.player_healing_text = f"+{heal}"
+                    self.player_healing_time = pygame.time.get_ticks()
+                self.points -= 1
+                self.current_state = self.ENEMY_TURN
+                self.enemy_attack_timer = pygame.time.get_ticks() + self.enemy_attack_delay
 
-    # Draw attack buttons
-    screen.blit(attack1_image, attack1_rect)
-    screen.blit(attack2_image, attack2_rect)
-    screen.blit(attack3_image, attack3_rect)
-    screen.blit(attack4_image, attack4_rect)
+        elif attack_type == "ult":
+            if self.points >= 3:
+                if self.selected_attack == 1:
+                    damage = random.randint(50, 70) + self.attack1_buff
+                    self.enemy_hp -= damage
+                    self.enemy_damage_text = f"-{damage}"
+                    self.enemy_damage_time = pygame.time.get_ticks()
+                elif self.selected_attack == 2:
+                    damage = random.randint(60, 80) + self.attack2_buff
+                    self.enemy_hp -= damage
+                    self.enemy_damage_text = f"-{damage}"
+                    self.enemy_damage_time = pygame.time.get_ticks()
+                elif self.selected_attack == 3:
+                    self.attack1_buff += random.randint(5, 10)
+                    self.attack2_buff += random.randint(5, 10)
+                    damage = 0
+                    self.enemy_hp -= damage
+                    self.enemy_damage_text = f"-{damage}"
+                    self.enemy_damage_time = pygame.time.get_ticks()
+                elif self.selected_attack == 4:
+                    heal = random.randint(30, 70)
+                    self.player_hp = min(self.player_hp + heal, self.max_player_hp)
+                    self.player_healing_text = f"+{heal}"
+                    self.player_healing_time = pygame.time.get_ticks()
+                self.points -= 3
+                self.current_state = self.ENEMY_TURN
+                self.enemy_attack_timer = pygame.time.get_ticks() + self.enemy_attack_delay
+        
+        if self.enemy_hp <= 0:
+            self.enemy_hp = 0
+            self.battle_over = True
+        elif self.player_hp <= 0:
+            self.player_hp = 0
+            self.battle_over = True
 
-    # Draw tutorial button
-    screen.blit(tutorial_button_image, tutorial_button_rect)
+    def update(self):
+        current_time = pygame.time.get_ticks()
+        if self.current_state == self.ENEMY_TURN:
+            if current_time - self.enemy_attack_timer > self.enemy_attack_delay:
+                damage = random.randint(self.enemy_damage_range[0], self.enemy_damage_range[1])
+                self.player_hp -= damage
+                self.player_damage_text = f"-{damage}"
+                self.player_damage_time = current_time
+                self.enemy_attack_timer = current_time
+                self.current_state = self.NORMAL
 
-    # Draw player and enemy health bars
-    draw_health_bar(screen, 50, SCREEN_HEIGHT - character_image.get_height() - 60, player_hp, max_player_hp)  # Adjusted for positioning
-    draw_enemy_health_bar(screen, SCREEN_WIDTH - enemy_image.get_width() - 50, 30, enemy_hp, 100)  # Adjusted for positioning
+        if self.player_hp <= 0 or self.enemy_hp <= 0:
+            self.battle_over = True
 
-    # Draw damage text for player and enemy
-    current_time = pygame.time.get_ticks()
-    if current_time - player_damage_time < 1000:  # Display player damage for 1 second
-        player_damage_surface = font.render(player_damage_text, True, RED)
-        screen.blit(player_damage_surface, (50, SCREEN_HEIGHT - character_image.get_height() - 90))  # Adjusted for positioning
-    if current_time - enemy_damage_time < 1000:  # Display enemy damage for 1 second
-        enemy_damage_surface = font.render(enemy_damage_text, True, RED)
-        screen.blit(enemy_damage_surface, (SCREEN_WIDTH - enemy_image.get_width() - 50, 10))  # Adjusted for positioning
+    def draw(self):
+        # Draw the background first to keep it unchanged
+        self.draw_background()
+        
+        # Draw other elements on top of the background
+        self.draw_player()
+        self.draw_enemy()
+        self.draw_health_bar()
+        self.draw_enemy_health_bar()
+        self.draw_points_indicator()
+        self.draw_tutorial_button()
 
-    # Handle enemy turn
-    if current_state == ENEMY_TURN and pygame.time.get_ticks() >= enemy_attack_timer:
-        enemy_attack()
-        current_state = NORMAL
+        # Display damage texts if applicable
+        if self.player_damage_text and pygame.time.get_ticks() - self.player_damage_time < 1000:
+            self.display_damage_text(self.player_damage_text, 150, 400)
+        if self.player_healing_text and pygame.time.get_ticks() - self.player_healing_time < 1000:
+            self.display_healing_text(self.player_healing_text, 150, 400)
+        if self.enemy_damage_text and pygame.time.get_ticks() - self.enemy_damage_time < 1000:
+            self.display_damage_text(self.enemy_damage_text, self.SCREEN_WIDTH - 400, 50)
 
-    # Draw points text
-    points_surface = font.render(f"Points: {points}/{max_points}", True, YELLOW)
-    screen.blit(points_surface, (SCREEN_WIDTH - 150, SCREEN_HEIGHT - 50))
+        # Depending on the current state, draw different elements
+        if self.current_state == self.NORMAL:
+            self.draw_attack_buttons()
+        elif self.current_state == self.ATTACK_SELECTION:
+            # Instead of filling the screen with black, just keep the existing background
+            if self.selected_attack == 1:
+                self.screen.blit(self.attack1_basic_image, self.basic_rect.topleft)
+                self.screen.blit(self.attack1_ult_image, self.ult_rect.topleft)
+                self.screen.blit(self.attack1_skill_image, self.skill_rect.topleft)
+            elif self.selected_attack == 2:
+                self.screen.blit(self.attack2_basic_image, self.basic_rect.topleft)
+                self.screen.blit(self.attack2_ult_image, self.ult_rect.topleft)
+                self.screen.blit(self.attack2_skill_image, self.skill_rect.topleft)
+            elif self.selected_attack == 3:
+                self.screen.blit(self.attack3_basic_image, self.basic_rect.topleft)
+                self.screen.blit(self.attack3_ult_image, self.ult_rect.topleft)
+                self.screen.blit(self.attack3_skill_image, self.skill_rect.topleft)
+            elif self.selected_attack == 4:
+                self.screen.blit(self.attack4_basic_image, self.basic_rect.topleft)
+                self.screen.blit(self.attack4_ult_image, self.ult_rect.topleft)
+                self.screen.blit(self.attack4_skill_image, self.skill_rect.topleft)
+        elif self.current_state == self.TUTORIAL:
+            self.draw_tutorial_screen()
 
-    # Draw attack selection options
-    if current_state == ATTACK_SELECTION:
-        if selected_attack == "attack1":
-            screen.blit(attack1_basic_image, basic_rect)
-            screen.blit(attack1_ult_image, ult_rect)
-            screen.blit(attack1_skill_image, skill_rect)
-        elif selected_attack == "attack2":
-            screen.blit(attack2_basic_image, basic_rect)
-            screen.blit(attack2_ult_image, ult_rect)
-            screen.blit(attack2_skill_image, skill_rect)
-        elif selected_attack == "attack3":
-            screen.blit(attack3_basic_image, basic_rect)
-            screen.blit(attack3_ult_image, ult_rect)
-            screen.blit(attack3_skill_image, skill_rect)
-        elif selected_attack == "attack4":
-            screen.blit(attack4_basic_image, basic_rect)
-            screen.blit(attack4_ult_image, ult_rect)
-            screen.blit(attack4_skill_image, skill_rect)
 
-    # Draw tutorial screen
-    if current_state == TUTORIAL:
-        screen.blit(tutorial_image, ((SCREEN_WIDTH - tutorial_image.get_width()) // 2, (SCREEN_HEIGHT - tutorial_image.get_height()) // 2))
-        screen.blit(exit_tutorial_button_image, exit_tutorial_button_rect)
+    def run(self):
+        while not self.battle_over:
+            for event in pygame.event.get():
+                self.handle_event(event)
 
-    # Update the display
-    pygame.display.update()
+            self.update()
+            self.draw()
+            
+            pygame.display.flip()  # Update the display
+            
+            # Add a small delay to control the frame rate
+            pygame.time.delay(30)
+
+        # Stop music and quit Pygame
+        pygame.mixer.music.stop()
+        
+
