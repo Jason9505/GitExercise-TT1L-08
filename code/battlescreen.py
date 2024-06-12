@@ -106,7 +106,7 @@ class BattleScreen:
         self.battle_over = False
 
         # Load and play background music
-        pygame.mixer.music.load('../graphics/img/battle-music.mp3')
+        pygame.mixer.music.load('./graphics/img/battle-music.mp3')
         pygame.mixer.music.play(-1)
 
     def load_attack_images(self):
