@@ -13,10 +13,6 @@ class BattleScreen:
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = self.screen.get_size()
         pygame.display.set_caption("Battle Screen")
 
-        # Load background image
-        self.background_image = pygame.image.load('../graphics/img/forest.jpeg').convert()
-        self.background_image = pygame.transform.scale(self.background_image, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-
         # Character and Enemy images
         self.character_image = pygame.image.load('../graphics/img/mc.png').convert_alpha()
         self.character_image = pygame.transform.scale(self.character_image, (300, 300))
@@ -29,6 +25,9 @@ class BattleScreen:
         self.enemy_hp = self.enemy_data['health']
         self.max_enemy_hp = self.enemy_data['health']
         self.enemy_damage_range = self.enemy_data['damage']
+        # Load background image
+        self.background_image = pygame.image.load(self.enemy_data['background_image']).convert()
+        self.background_image = pygame.transform.scale(self.background_image, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
         # Load attack button images
         self.attack1_image = pygame.image.load('../graphics/img/weapon/sword1.png').convert_alpha()
@@ -72,8 +71,8 @@ class BattleScreen:
         # Player and Enemy HP
         self.player = player
         self.enemy = enemy
-        self.player_hp = 300
-        self.max_player_hp = 300
+        self.player_hp = 500
+        self.max_player_hp = 500
 
         # Font for displaying damage and points
         self.font = pygame.font.SysFont(None, 36)
@@ -122,6 +121,7 @@ class BattleScreen:
         self.damage_sound = pygame.mixer.Sound('../audio/oof.mp3')
         self.enemy_damage_sound = pygame.mixer.Sound('../audio/slash.mp3')
         self.healing_sound = pygame.mixer.Sound('../audio/heal.mp3')
+        self.buff_sound = pygame.mixer.Sound('../audio/buff.mp3')
 
         # Shaking effect variables
         self.shake_duration = 300  # Shake duration in milliseconds
@@ -386,15 +386,15 @@ class BattleScreen:
                     self.enemy_damage_time = pygame.time.get_ticks()
                     pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 3:
-                    self.attack1_buff += random.randint(10, 20)
-                    self.attack2_buff += random.randint(10, 20)
+                    self.attack1_buff += random.randint(50, 70)
+                    self.attack2_buff += random.randint(50, 70)
                     damage = 0
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
-                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
+                    pygame.mixer.Sound.play(self.buff_sound)  # Play enemy damage sound
                 elif self.selected_attack == 4:
-                    heal = random.randint(10, 30)
+                    heal = random.randint(100, 300)
                     self.player_hp = min(self.player_hp + heal, self.max_player_hp)
                     self.player_healing_text = f"+{heal}"
                     self.player_healing_time = pygame.time.get_ticks()
@@ -419,15 +419,15 @@ class BattleScreen:
                     self.enemy_damage_time = pygame.time.get_ticks()
                     pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 3:
-                    self.attack1_buff += random.randint(5, 10)
-                    self.attack2_buff += random.randint(5, 10)
+                    self.attack1_buff += random.randint(70, 100)
+                    self.attack2_buff += random.randint(70, 100)
                     damage = 0
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
-                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
+                    pygame.mixer.Sound.play(self.buff_sound)  # Play enemy damage sound
                 elif self.selected_attack == 4:
-                    heal = random.randint(30, 70)
+                    heal = random.randint(300, 500)
                     self.player_hp = min(self.player_hp + heal, self.max_player_hp)
                     self.player_healing_text = f"+{heal}"
                     self.player_healing_time = pygame.time.get_ticks()
@@ -521,11 +521,20 @@ class BattleScreen:
         elif self.battle_over:
             self.show_battle_over_screen()
 
-    def show_battle_over_screen(self):
-        current_time = pygame.time.get_ticks()
-        delay_time = 6000  # 2 seconds delay
+        # Draw the game over screen if the battle is over
+        if self.battle_over:
+            if self.player_hp <= 0:
+                self.screen.blit(self.player_death_image, (self.SCREEN_WIDTH//2 - 300, self.SCREEN_HEIGHT//2 - 300))
+            elif self.enemy_hp <= 0:
+                self.screen.blit(self.enemy_death_image, (self.SCREEN_WIDTH//2 - 300, self.SCREEN_HEIGHT//2 - 300))
 
-        if current_time - self.enemy_death_time < delay_time:
+
+    def show_battle_over_screen(self):
+
+        current_time = pygame.time.get_ticks()
+        delay_time = 6000  # 6 seconds delay
+
+        if current_time - self.enemy_death_timer < delay_time:
             if self.player_hp <= 0:
                 self.screen.blit(self.player_death_image, ((self.SCREEN_WIDTH - 600) // 2, (self.SCREEN_HEIGHT - 600) // 2))
             elif self.enemy_hp <= 0:
@@ -545,10 +554,3 @@ class BattleScreen:
             
             # Add a small delay to control the frame rate
             pygame.time.delay(30)
-
-        self.show_battle_over_screen()
-
-        # Stop music and quit Pygame
-        pygame.mixer.music.stop()
-        
-
