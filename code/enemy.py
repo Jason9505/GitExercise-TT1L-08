@@ -39,7 +39,7 @@ class Enemy(Entity):
 
     def import_graphics(self, name, scale_factor=1.0):
         self.animations = {'idle': [], 'move': [], 'attack': []}
-        main_path = f'../GitExercise-TT1L-08/graphics/monsters/{name}/'
+        main_path = f'../data/monsters/{name}/'
         for animation in self.animations.keys():
             animation_frames = import_folder(main_path + animation)
             scaled_frames = [pygame.transform.scale(frame, 

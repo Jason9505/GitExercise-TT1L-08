@@ -11,17 +11,17 @@ class GameClearScreen:
         pygame.display.set_caption("Game Clear Screen")
 
         # Load background image
-        self.background_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/options_bg.png').convert()
+        self.background_image = pygame.image.load('../data/background/options_bg.png').convert()
         self.background_image = pygame.transform.scale(self.background_image, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
         # Load game clear image
-        self.game_clear_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/game clear.png').convert_alpha()
+        self.game_clear_image = pygame.image.load('../data/graphics text/game clear.png').convert_alpha()
         self.game_clear_image = pygame.transform.scale(self.game_clear_image, (600, 600))
 
         # Load exit button images
-        self.exit_button = pygame.image.load('../GitExercise-TT1L-08/graphics/img/exit_btn.png').convert_alpha()
+        self.exit_button = pygame.image.load('../data/button/exit_btn.png').convert_alpha()
         self.exit_button = pygame.transform.scale(self.exit_button, (400, 200))
-        self.exit_animation_button = pygame.image.load('../GitExercise-TT1L-08/graphics/img/exit_an_btn.png').convert_alpha()
+        self.exit_animation_button = pygame.image.load('../data/button/exit_an_btn.png').convert_alpha()
         self.exit_animation_button = pygame.transform.scale(self.exit_animation_button, (400, 200))
 
         # Calculate positions
