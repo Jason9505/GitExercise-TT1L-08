@@ -78,12 +78,13 @@ class Level:
                             if col == '997':
                                 npc_name = 'angel_one'
                                 dialogues = [["Follow the path to the village to seek your purpose of this realm.", "Press w to go forward, press a to go left, press d to go right and press s to go backward.", 
+                                              "There are a lot skill u can use, every skill have different effect.", "Left-top have a tutorial to guide how to use the skill when you fighting", "HINT: Fourth skill can heal youself.", 
                                               "Now, there is a monster in front of you.", "Press SPACE to fight with thr monster!"]]
                                 image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/angel_one/idle/0.png")
                                 name = 'Angel'
                             elif col == '998':
                                 npc_name = 'nurse'
-                                dialogues = [["You should know better than to face Zoltraak when you’re not even at your full potential."]]
+                                dialogues = [["You should know better than to face Zoltraak when you’re not even at your full potential.", "Try your best and defeat it!"]]
                                 image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/nurse/idle/0.png")
                                 name = 'Nurse'
                             elif col == '999':
@@ -91,12 +92,13 @@ class Level:
                                 dialogues = [["There used to be almost an infinite amount village throughout this world.", "Everything changes when the Demon Lord, Zoltraak arise from the underworld. ", 
                                               "And so began the age of chaos. He and his army sweep the land.", "Burning down villages and basically destroying every land he steps on.", 
                                               "Some try to fight the demon lord but never return. Many choose to run away to seek for a safer place to hide but it’s no use.", "And now we’re the last ones standing but we’re not safe either.", 
-                                              "Cause it’s only a matter of time before the demon lord found us and claim this realm once and for all."]]
+                                              "Cause it’s only a matter of time before the demon lord found us and claim this realm once and for all."], ["You are the one can be defeat the Demon.",
+                                              "Please save the world. We will never forgive you, traveller."]]
                                 image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/geo/idle/0.png")
                                 name = 'Geopard'
                             else:
                                 npc_name = 'angel_two'
-                                dialogues = [["Are you ready?", "Lets defeat the final boss, Zoltraak!"], ["Congraturation!!", "You defeat the boss and save the world!"]]
+                                dialogues = [["Are you ready?", "It's time to fight", "Use your skill wisely to kill it!", "Lets defeat the final boss, Zoltraak!"], ["Congraturation!!", "You defeat the boss and save the world!"]]
                                 image = pygame.image.load("../GitExercise-TT1L-08/graphics/npc/angel_two/idle/0.png")
                                 name = 'Angel'
                             npc = Npc(npc_name, (x, y), [self.visible_sprites], dialogues, image, name)
@@ -182,8 +184,8 @@ class Level:
         scaled_npc_image = pygame.transform.scale(self.active_npc.image, (self.active_npc.image.get_width() * 2, self.active_npc.image.get_height() * 2))
         self.display_surface.blit(scaled_npc_image, (npc_image_x, npc_image_y))
 
-        npc_name_x = npc_image_x + scaled_npc_image.get_width() - 20
-        npc_name_y = npc_image_y + 90
+        npc_name_x = npc_image_x + scaled_npc_image.get_width() - 5
+        npc_name_y = npc_image_y + 30
         self.draw_text(self.display_surface, self.active_npc.name, (npc_name_x, npc_name_y), self.font, (0, 0, 0), len(self.active_npc.name))
 
         draw_text = dialogue_text[:self.text_position]
