@@ -30,6 +30,14 @@ class Level:
         self.font = pygame.font.Font(None, 36)
         self.mouse_clicked = False
         self.e_key_pressed = False
+
+        # pause variables
+        self.paused = False
+        self.pause_font = pygame.font.Font(None, 74)
+        self.pause_text = self.pause_font.render("Paused", True, (255, 255, 255))
+        self.pause_rect = self.pause_text.get_rect(center=(self.display_surface.get_width() / 2, self.display_surface.get_height() / 2))
+        self.ESCAPE_key_pressed = False
+
         
     def create_map(self):
         layouts = {
@@ -105,46 +113,59 @@ class Level:
                             self.npcs.append(npc)
                               
     def run(self):
-        # update and draw the game
-        if not self.player.in_battle:
-            self.visible_sprites.custom_draw(self.player)
-            self.visible_sprites.update()
-            self.visible_sprites.enemy_update(self.player)
-            debug(self.player.status)
-            self.player.check_enemy_collision([sprite for sprite in self.visible_sprites if isinstance(sprite, Enemy)])
-        else:
-            self.player.battle_screen.run()
-            if self.player.battle_screen.battle_over:
-                self.player.exit_battle_mode()
 
-        # Handle dialogue
+        #Handle pause functionally
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_e] and not self.e_key_pressed:
-            self.e_key_pressed = True
-            if not self.show_dialogue:
-                for npc in self.npcs:
-                    if npc.rect.colliderect(self.player.rect):
-                        self.active_npc = npc
-                        self.show_dialogue = True
-                        self.active_npc.dialogue_index = 0
-                        self.text_position = 0
-                        break
+        if keys[pygame.K_ESCAPE] and not self.esc_key_pressed:
+            self.esc_key_pressed = True
+            self.paused = not self.paused
+        elif not keys[pygame.K_ESCAPE]:
+            self.esc_key_pressed = False
+
+        if not self.paused:
+            # update and draw the game
+            if not self.player.in_battle:
+                self.visible_sprites.custom_draw(self.player)
+                self.visible_sprites.update()
+                self.visible_sprites.enemy_update(self.player)
+                debug(self.player.status)
+                self.player.check_enemy_collision([sprite for sprite in self.visible_sprites if isinstance(sprite, Enemy)])
             else:
-                self.next_dialogue_text()
-        elif not keys[pygame.K_e]:
-            self.e_key_pressed = False
+                self.player.battle_screen.run()
+                if self.player.battle_screen.battle_over:
+                    self.player.exit_battle_mode()
 
-        self.handle_dialogue()
-
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Left mouse button
-                    self.next_dialogue_text()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
-                    self.e_key_pressed = True
+            # Handle dialogue
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_e] and not self.e_key_pressed:
+                self.e_key_pressed = True
+                if not self.show_dialogue:
+                    for npc in self.npcs:
+                        if npc.rect.colliderect(self.player.rect):
+                            self.active_npc = npc
+                            self.show_dialogue = True
+                            self.active_npc.dialogue_index = 0
+                            self.text_position = 0
+                            break
                 else:
-                    self.e_key_pressed = False
+                    self.next_dialogue_text()
+            elif not keys[pygame.K_e]:
+                self.e_key_pressed = False
+
+            self.handle_dialogue()
+        else:
+            #Draw paused screen
+            self.draw_pause_screen()
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:  # Left mouse button
+                        self.next_dialogue_text()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_e:
+                        self.e_key_pressed = True
+                    else:
+                        self.e_key_pressed = False
     
     def next_dialogue_text(self):
         if self.show_dialogue and self.active_npc:
@@ -194,6 +215,10 @@ class Level:
     def draw_text(self, surface, text, position, font, color, max_length):
         text_surface = font.render(text[:max_length], True, color)
         surface.blit(text_surface, position)
+
+    def draw_pause_screen(self):
+        self.display_surface.fill((0, 0, 0))
+        self.display_surface.blit(self.pause_text, self.pause_rect)
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
