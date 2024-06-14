@@ -13,12 +13,8 @@ class BattleScreen:
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = self.screen.get_size()
         pygame.display.set_caption("Battle Screen")
 
-        # Load background image
-        self.background_image = pygame.image.load('../graphics/img/forest.jpeg').convert()
-        self.background_image = pygame.transform.scale(self.background_image, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-
         # Character and Enemy images
-        self.character_image = pygame.image.load('../graphics/img/mc.png').convert_alpha()
+        self.character_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/mc.png').convert_alpha()
         self.character_image = pygame.transform.scale(self.character_image, (300, 300))
 
         # Load enemy data
@@ -29,15 +25,18 @@ class BattleScreen:
         self.enemy_hp = self.enemy_data['health']
         self.max_enemy_hp = self.enemy_data['health']
         self.enemy_damage_range = self.enemy_data['damage']
+        # Load background image
+        self.background_image = pygame.image.load(self.enemy_data['background_image']).convert()
+        self.background_image = pygame.transform.scale(self.background_image, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
         # Load attack button images
-        self.attack1_image = pygame.image.load('../graphics/img/weapon/sword1.png').convert_alpha()
+        self.attack1_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/sword1.png').convert_alpha()
         self.attack1_image = pygame.transform.scale(self.attack1_image, (200, 200))
-        self.attack2_image = pygame.image.load('../graphics/img/weapon/scythe.png').convert_alpha()
+        self.attack2_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/scythe.png').convert_alpha()
         self.attack2_image = pygame.transform.scale(self.attack2_image, (200, 200))
-        self.attack3_image = pygame.image.load('../graphics/img/weapon/spear.png').convert_alpha()
+        self.attack3_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/spear.png').convert_alpha()
         self.attack3_image = pygame.transform.scale(self.attack3_image, (200, 200))
-        self.attack4_image = pygame.image.load('../graphics/img/weapon/catalyst.png').convert_alpha()
+        self.attack4_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/catalyst.png').convert_alpha()
         self.attack4_image = pygame.transform.scale(self.attack4_image, (200, 200))
 
         # Define sizes for buttons
@@ -49,22 +48,31 @@ class BattleScreen:
         self.load_attack_images()
 
         # Load tutorial image
-        self.tutorial_image = pygame.image.load('../graphics/img/tutorial.png').convert_alpha()
+        self.tutorial_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/tutorial.png').convert_alpha()
         self.tutorial_image = pygame.transform.scale(self.tutorial_image, (600, 600))
 
         # Load tutorial button image
-        self.tutorial_button_image = pygame.image.load('../graphics/img/tutorial button.png').convert_alpha()
+        self.tutorial_button_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/tutorial button.png').convert_alpha()
         self.tutorial_button_image = pygame.transform.scale(self.tutorial_button_image, (150, 150))
 
         # Load exit tutorial button image
-        self.exit_tutorial_button_image = pygame.image.load('../graphics/img/return game.png').convert_alpha()
+        self.exit_tutorial_button_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/return game.png').convert_alpha()
         self.exit_tutorial_button_image = pygame.transform.scale(self.exit_tutorial_button_image, (100, 100))
+
+        # Load game over images and sounds
+        self.player_death_sound = pygame.mixer.Sound('../GitExercise-TT1L-08/audio/you died.mp3')  # Player death sound
+        self.enemy_death_sound = pygame.mixer.Sound('../GitExercise-TT1L-08/audio/battle over.mp3')    # Enemy death sound
+        self.player_death_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/you died.png').convert_alpha()
+        self.player_death_image = pygame.transform.scale(self.player_death_image, (600, 600))
+        self.enemy_death_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/battle over.png').convert_alpha()
+        self.enemy_death_image = pygame.transform.scale(self.enemy_death_image, (600, 600))
+
 
         # Player and Enemy HP
         self.player = player
         self.enemy = enemy
-        self.player_hp = 300
-        self.max_player_hp = 300
+        self.player_hp = 500
+        self.max_player_hp = 500
 
         # Font for displaying damage and points
         self.font = pygame.font.SysFont(None, 36)
@@ -106,36 +114,49 @@ class BattleScreen:
         self.battle_over = False
 
         # Load and play background music
-        pygame.mixer.music.load('./graphics/img/battle-music.mp3')
+        pygame.mixer.music.load(self.enemy_data['music'])
         pygame.mixer.music.play(-1)
 
+        # Load sound effects
+        self.damage_sound = pygame.mixer.Sound('../GitExercise-TT1L-08/audio/oof.mp3')
+        self.enemy_damage_sound = pygame.mixer.Sound('../GitExercise-TT1L-08/audio/slash.mp3')
+        self.healing_sound = pygame.mixer.Sound('../GitExercise-TT1L-08/audio/heal.mp3')
+        self.buff_sound = pygame.mixer.Sound('../GitExercise-TT1L-08/audio/buff.mp3')
+
+        # Shaking effect variables
+        self.shake_duration = 300  # Shake duration in milliseconds
+        self.shake_magnitude = 10  # Shake magnitude in pixels
+        self.shake_start_time = 0
+        self.shaking = False
+        self.shaking_entity = None
+
     def load_attack_images(self):
-        self.attack1_basic_image = pygame.image.load('../graphics/img/weapon/sword basic.png').convert_alpha()
+        self.attack1_basic_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/sword basic.png').convert_alpha()
         self.attack1_basic_image = pygame.transform.scale(self.attack1_basic_image, (self.basic_size, self.basic_size))
-        self.attack1_ult_image = pygame.image.load('../graphics/img/weapon/sword ult.png').convert_alpha()
+        self.attack1_ult_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/sword ult.png').convert_alpha()
         self.attack1_ult_image = pygame.transform.scale(self.attack1_ult_image, (self.ult_size, self.ult_size))
-        self.attack1_skill_image = pygame.image.load('../graphics/img/weapon/sword skill.png').convert_alpha()
+        self.attack1_skill_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/sword skill.png').convert_alpha()
         self.attack1_skill_image = pygame.transform.scale(self.attack1_skill_image, (self.skill_size, self.skill_size))
 
-        self.attack2_basic_image = pygame.image.load('../graphics/img/weapon/scythe basic.png').convert_alpha()
+        self.attack2_basic_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/scythe basic.png').convert_alpha()
         self.attack2_basic_image = pygame.transform.scale(self.attack2_basic_image, (self.basic_size, self.basic_size))
-        self.attack2_ult_image = pygame.image.load('../graphics/img/weapon/scythe ult.png').convert_alpha()
+        self.attack2_ult_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/scythe ult.png').convert_alpha()
         self.attack2_ult_image = pygame.transform.scale(self.attack2_ult_image, (self.ult_size, self.ult_size))
-        self.attack2_skill_image = pygame.image.load('../graphics/img/weapon/scythe skill.png').convert_alpha()
+        self.attack2_skill_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/scythe skill.png').convert_alpha()
         self.attack2_skill_image = pygame.transform.scale(self.attack2_skill_image, (self.skill_size, self.skill_size))
 
-        self.attack3_basic_image = pygame.image.load('../graphics/img/weapon/spear basic.png').convert_alpha()
+        self.attack3_basic_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/spear basic.png').convert_alpha()
         self.attack3_basic_image = pygame.transform.scale(self.attack3_basic_image, (self.basic_size, self.basic_size))
-        self.attack3_ult_image = pygame.image.load('../graphics/img/weapon/spear ult.png').convert_alpha()
+        self.attack3_ult_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/spear ult.png').convert_alpha()
         self.attack3_ult_image = pygame.transform.scale(self.attack3_ult_image, (self.ult_size, self.ult_size))
-        self.attack3_skill_image = pygame.image.load('../graphics/img/weapon/spear skill.png').convert_alpha()
+        self.attack3_skill_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/spear skill.png').convert_alpha()
         self.attack3_skill_image = pygame.transform.scale(self.attack3_skill_image, (self.skill_size, self.skill_size))
 
-        self.attack4_basic_image = pygame.image.load('../graphics/img/weapon/catalyst basic.png').convert_alpha()
+        self.attack4_basic_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/catalyst basic.png').convert_alpha()
         self.attack4_basic_image = pygame.transform.scale(self.attack4_basic_image, (self.basic_size, self.basic_size))
-        self.attack4_ult_image = pygame.image.load('../graphics/img/weapon/catalyst ult.png').convert_alpha()
+        self.attack4_ult_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/catalyst ult.png').convert_alpha()
         self.attack4_ult_image = pygame.transform.scale(self.attack4_ult_image, (self.ult_size, self.ult_size))
-        self.attack4_skill_image = pygame.image.load('../graphics/img/weapon/catalyst skill.png').convert_alpha()
+        self.attack4_skill_image = pygame.image.load('../GitExercise-TT1L-08/graphics/img/weapon/catalyst skill.png').convert_alpha()
         self.attack4_skill_image = pygame.transform.scale(self.attack4_skill_image, (self.skill_size, self.skill_size))
 
     def define_button_areas(self):
@@ -157,10 +178,24 @@ class BattleScreen:
         self.screen.blit(self.background_image, (0, 0))
 
     def draw_player(self):
-        self.screen.blit(self.character_image, (50, self.SCREEN_HEIGHT - 350))
+        # Position the player at the bottom left corner
+        self.player_rect = self.character_image.get_rect(bottomleft=(0, self.SCREEN_HEIGHT))
+        if self.shaking and self.shaking_entity == 'player':
+            shake_offset_x = random.randint(-self.shake_magnitude, self.shake_magnitude)
+            shake_offset_y = random.randint(-self.shake_magnitude, self.shake_magnitude)
+            self.player_rect.move_ip(shake_offset_x, shake_offset_y)
+        self.screen.blit(self.character_image, self.player_rect)
+        return self.player_rect
 
     def draw_enemy(self):
-        self.screen.blit(self.enemy_image, (self.SCREEN_WIDTH - 350, 50))
+        # Position the enemy at the top right corner
+        self.enemy_rect = self.enemy_image.get_rect(topright=(self.SCREEN_WIDTH, 20))
+        if self.shaking and self.shaking_entity == 'enemy':
+            shake_offset_x = random.randint(-self.shake_magnitude, self.shake_magnitude)
+            shake_offset_y = random.randint(-self.shake_magnitude, self.shake_magnitude)
+            self.enemy_rect.move_ip(shake_offset_x, shake_offset_y)
+        self.screen.blit(self.enemy_image, self.enemy_rect)
+        return self.enemy_rect
 
     def draw_attack_buttons(self):
         self.screen.blit(self.attack1_image, self.attack1_rect.topleft)
@@ -197,8 +232,10 @@ class BattleScreen:
         # Constants for health bar dimensions
         HEALTH_BAR_WIDTH = 300
         HEALTH_BAR_HEIGHT = 25
-        HEALTH_BAR_X = 50
-        HEALTH_BAR_Y = self.SCREEN_HEIGHT - 400
+
+        # Calculate the health bar position centered above the player image
+        HEALTH_BAR_X = self.player_rect.centerx - HEALTH_BAR_WIDTH // 2
+        HEALTH_BAR_Y = self.player_rect.top - HEALTH_BAR_HEIGHT + 1
 
         # Draw the background of the health bar
         pygame.draw.rect(self.screen, YELLOW, (HEALTH_BAR_X, HEALTH_BAR_Y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
@@ -211,8 +248,10 @@ class BattleScreen:
         # Constants for health bar dimensions
         HEALTH_BAR_WIDTH = 300
         HEALTH_BAR_HEIGHT = 25
-        HEALTH_BAR_X = self.SCREEN_WIDTH - 400
-        HEALTH_BAR_Y = 20
+
+        # Calculate the health bar position centered above the enemy image
+        HEALTH_BAR_X = self.enemy_rect.centerx - HEALTH_BAR_WIDTH // 2
+        HEALTH_BAR_Y = self.enemy_rect.top + 1  # Adjust this value to lower the health bar
 
         # Draw the background of the health bar
         pygame.draw.rect(self.screen, YELLOW, (HEALTH_BAR_X, HEALTH_BAR_Y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
@@ -325,7 +364,9 @@ class BattleScreen:
                 damage = random.randint(5, 15)
             self.enemy_hp -= damage
             self.enemy_damage_text = f"-{damage}"
+            self.shake_screen('enemy')
             self.enemy_damage_time = pygame.time.get_ticks()
+            pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
             self.points = min(self.points + 1, self.max_points)
             self.current_state = self.ENEMY_TURN
             self.enemy_attack_timer = pygame.time.get_ticks() + self.enemy_attack_delay
@@ -337,24 +378,29 @@ class BattleScreen:
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 2:
                     damage = random.randint(35, 60) + self.attack2_buff
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 3:
-                    self.attack1_buff += random.randint(10, 20)
-                    self.attack2_buff += random.randint(10, 20)
+                    self.attack1_buff += random.randint(50, 70)
+                    self.attack2_buff += random.randint(50, 70)
                     damage = 0
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.buff_sound)  # Play enemy damage sound
                 elif self.selected_attack == 4:
-                    heal = random.randint(10, 30)
+                    heal = random.randint(100, 300)
                     self.player_hp = min(self.player_hp + heal, self.max_player_hp)
                     self.player_healing_text = f"+{heal}"
                     self.player_healing_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.healing_sound)  # Play healing sound
                 self.points -= 1
+                self.shake_screen('enemy')
                 self.current_state = self.ENEMY_TURN
                 self.enemy_attack_timer = pygame.time.get_ticks() + self.enemy_attack_delay
 
@@ -365,44 +411,66 @@ class BattleScreen:
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 2:
                     damage = random.randint(60, 80) + self.attack2_buff
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.enemy_damage_sound)  # Play enemy damage sound
                 elif self.selected_attack == 3:
-                    self.attack1_buff += random.randint(5, 10)
-                    self.attack2_buff += random.randint(5, 10)
+                    self.attack1_buff += random.randint(70, 100)
+                    self.attack2_buff += random.randint(70, 100)
                     damage = 0
                     self.enemy_hp -= damage
                     self.enemy_damage_text = f"-{damage}"
                     self.enemy_damage_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.buff_sound)  # Play enemy damage sound
                 elif self.selected_attack == 4:
-                    heal = random.randint(30, 70)
+                    heal = random.randint(300, 500)
                     self.player_hp = min(self.player_hp + heal, self.max_player_hp)
                     self.player_healing_text = f"+{heal}"
                     self.player_healing_time = pygame.time.get_ticks()
+                    pygame.mixer.Sound.play(self.healing_sound)  # Play healing sound
                 self.points -= 3
+                self.shake_screen('enemy')
                 self.current_state = self.ENEMY_TURN
                 self.enemy_attack_timer = pygame.time.get_ticks() + self.enemy_attack_delay
-        
+
         if self.enemy_hp <= 0:
             self.enemy_hp = 0
             self.battle_over = True
+            self.current_state = self.battle_over
+            self.enemy_death_sound.play()
+            self.enemy_death_time = pygame.time.get_ticks()  # Record the time of death
         elif self.player_hp <= 0:
             self.player_hp = 0
             self.battle_over = True
+            self.current_state = self.battle_over
+            self.player_death_sound.play()
+            self.player_death_time = pygame.time.get_ticks()  # Record the time of death
+
+    def shake_screen(self, entity):
+        self.shaking = True
+        self.shaking_entity = entity
+        self.shake_start_time = pygame.time.get_ticks()
 
     def update(self):
         current_time = pygame.time.get_ticks()
         if self.current_state == self.ENEMY_TURN:
             if current_time - self.enemy_attack_timer > self.enemy_attack_delay:
                 damage = random.randint(self.enemy_damage_range[0], self.enemy_damage_range[1])
+                pygame.mixer.Sound.play(self.damage_sound)  # Play player damage sound
+                self.shake_screen('player')
                 self.player_hp -= damage
                 self.player_damage_text = f"-{damage}"
                 self.player_damage_time = current_time
                 self.enemy_attack_timer = current_time
                 self.current_state = self.NORMAL
+
+        if self.shaking and current_time - self.shake_start_time > self.shake_duration:
+            self.shaking = False
+            self.shaking_entity = None
 
         if self.player_hp <= 0 or self.enemy_hp <= 0:
             self.battle_over = True
@@ -450,7 +518,29 @@ class BattleScreen:
                 self.screen.blit(self.attack4_skill_image, self.skill_rect.topleft)
         elif self.current_state == self.TUTORIAL:
             self.draw_tutorial_screen()
+        elif self.battle_over:
+            self.show_battle_over_screen()
 
+        # Draw the game over screen if the battle is over
+        if self.battle_over:
+            if self.player_hp <= 0:
+                self.screen.blit(self.player_death_image, (self.SCREEN_WIDTH//2 - 300, self.SCREEN_HEIGHT//2 - 300))
+            elif self.enemy_hp <= 0:
+                self.screen.blit(self.enemy_death_image, (self.SCREEN_WIDTH//2 - 300, self.SCREEN_HEIGHT//2 - 300))
+
+
+    def show_battle_over_screen(self):
+
+        current_time = pygame.time.get_ticks()
+        delay_time = 6000  # 6 seconds delay
+
+        if current_time - self.enemy_death_timer < delay_time:
+            if self.player_hp <= 0:
+                self.screen.blit(self.player_death_image, ((self.SCREEN_WIDTH - 600) // 2, (self.SCREEN_HEIGHT - 600) // 2))
+            elif self.enemy_hp <= 0:
+                self.screen.blit(self.enemy_death_image, ((self.SCREEN_WIDTH - 600) // 2, (self.SCREEN_HEIGHT - 600) // 2))
+        else:
+            self.battle_over = True
 
     def run(self):
         while not self.battle_over:
@@ -464,8 +554,3 @@ class BattleScreen:
             
             # Add a small delay to control the frame rate
             pygame.time.delay(30)
-
-        # Stop music and quit Pygame
-        pygame.mixer.music.stop()
-        
-

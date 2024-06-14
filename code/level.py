@@ -178,7 +178,7 @@ class Level:
         pygame.draw.rect(self.display_surface, (255, 255, 255), (dialogue_box_x, dialogue_box_y, dialogue_box_width, dialogue_box_height), 2)
 
         npc_image_x = dialogue_box_x + 5
-        npc_image_y = dialogue_box_y - self.active_npc.image.get_height() - 60
+        npc_image_y = dialogue_box_y - self.active_npc.image.get_height() - 30
         scaled_npc_image = pygame.transform.scale(self.active_npc.image, (self.active_npc.image.get_width() * 2, self.active_npc.image.get_height() * 2))
         self.display_surface.blit(scaled_npc_image, (npc_image_x, npc_image_y))
 

@@ -34,7 +34,10 @@ sound_effect.set_volume(0.3)
 # Main Game class
 class Game:
     def __init__(self):
-        self.screen = screen
+        # general setup
+        pygame.init()
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption('Realm Redeemers: The Last Stand')
         self.clock = pygame.time.Clock()
         self.level = Level()
         self.current_page = "menu"
@@ -159,5 +162,5 @@ class Game:
 
 if __name__ == '__main__':
     game = Game()
-    game.set_typing_text_position(WIDTH // 2 - 400, HEIGHT // 2)  # Adjust this to set position
+    game.set_typing_text_position(WIDTH // 2 - 500, HEIGHT // 2)  # Adjust this to set position
     game.run()

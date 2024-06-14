@@ -1,8 +1,10 @@
+
 import pygame
 from settings import *
 from support import import_folder
 from entity import Entity
 from battlescreen import BattleScreen
+from gameclearscreen import GameClearScreen
 
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites):
@@ -28,6 +30,7 @@ class Player(Entity):
         self.in_battle = False
         self.battle_screen = None
         self.saved_position = None
+        self.defeated_boss = False
 
     def import_player_assets(self):
         character_path = '../GitExercise-TT1L-08/graphics/player/'
@@ -127,6 +130,8 @@ class Player(Entity):
         self.battle_screen = BattleScreen(player=self, enemy=enemy, enemy_name=monster_name)
         self.battle_screen.run()
         if self.battle_screen.enemy_hp <= 0:
+            if monster_name == 'boss':
+                self.defeated_boss = True
             enemy.kill()
         self.exit_battle_mode()
 
@@ -134,6 +139,10 @@ class Player(Entity):
         self.in_battle = False
         self.rect.topleft = self.saved_position
         self.battle_screen = None
+        if self.defeated_boss:
+            self.defeated_boss = False
+            game_clear_screen = GameClearScreen()
+            game_clear_screen.run()
 
     def update(self):
         if not self.in_battle:

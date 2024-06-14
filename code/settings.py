@@ -21,10 +21,10 @@ YELLOW = (255, 255, 0)
 
 # enemy
 monster_data = {
-	'monster lvl 1': {'health': 100,'exp':100,'damage':(10, 20),'image': '../GitExercise-TT1L-08/graphics/monsters/monster lvl 1/monster lvl 1 solo.png', 'attack_type': 'slash', 'attack_sound':'../audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30},
-	'monster lvl 2': {'health': 300,'exp':250,'damage':(20, 30),'image': '../GitExercise-TT1L-08/graphics/monsters/monster lvl 2/monster lvl 2 solo.png','attack_type': 'claw',  'attack_sound':'../audio/attack/claw.wav','speed': 2, 'resistance': 3, 'attack_radius': 1, 'notice_radius': 1},
-	'boss': {'health': 900,'exp':110,'damage':(50, 70),'image': '../GitExercise-TT1L-08/graphics/monsters/boss/final boss.png','attack_type': 'thunder', 'attack_sound':'../audio/attack/fireball.wav', 'speed': 4, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30},
-	'monster lvl 3': {'health': 700,'exp':120,'damage':(30, 50),'image': '../GitExercise-TT1L-08/graphics/monsters/monster lvl 3/monster lvl 3 solo.png','attack_type': 'leaf_attack', 'attack_sound':'../audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30}
+	'monster lvl 1': {'health': 100,'exp':100,'damage':(10, 20),'image': '../GitExercise-TT1L-08/graphics/monsters/monster lvl 1/monster lvl 1 solo.png', 'attack_type': 'slash', 'music': '../GitExercise-TT1L-08/audio/battle-music.mp3', 'background_image': '../GitExercise-TT1L-08/graphics/img/forest.jpeg', 'attack_sound':'../GitExercise-TT1L-08/audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30},
+	'monster lvl 2': {'health': 300,'exp':250,'damage':(20, 30),'image': '../GitExercise-TT1L-08/graphics/monsters/monster lvl 2/monster lvl 2 solo.png','attack_type': 'claw','music': '../GitExercise-TT1L-08/audio/battle-music.mp3', 'background_image': '../GitExercise-TT1L-08/graphics/img/forest.jpeg','attack_sound':'../GitExercise-TT1L-08/audio/attack/claw.wav','speed': 2, 'resistance': 3, 'attack_radius': 1, 'notice_radius': 1},
+	'boss': {'health': 800,'exp':110,'damage':(50, 70),'image': '../GitExercise-TT1L-08/graphics/monsters/boss/final boss.png','attack_type': 'thunder', 'music': '../GitExercise-TT1L-08/audio/boss theme.mp3', 'background_image': '../GitExercise-TT1L-08/graphics/img/desert.jpeg', 'attack_sound':'../GitExercise-TT1L-08/audio/attack/fireball.wav', 'speed': 4, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30},
+	'monster lvl 3': {'health': 700,'exp':120,'damage':(30, 50),'image': '../GitExercise-TT1L-08/graphics/monsters/monster lvl 3/monster lvl 3 solo.png','attack_type': 'leaf_attack', 'music': '../GitExercise-TT1L-08/audio/battle-music.mp3', 'background_image': '../GitExercise-TT1L-08/graphics/img/forest.jpeg', 'attack_sound':'../GitExercise-TT1L-08/audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30}
     }
 
 
