@@ -69,7 +69,6 @@ class Player(Entity):
             if keys[pygame.K_SPACE]:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
-                print('attack')
 
     def get_status(self):
         # idle status
