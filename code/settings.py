@@ -21,27 +21,13 @@ YELLOW = (255, 255, 0)
 
 # enemy
 monster_data = {
-	'monster lvl 1': {'health': 100,'exp':100,'damage':(10, 20),'image': '../graphics/monsters/monster lvl 1/monster lvl 1 solo.png', 'attack_type': 'slash', 'attack_sound':'../audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30},
-	'monster lvl 2': {'health': 300,'exp':250,'damage':(20, 30),'image': '../graphics/monsters/monster lvl 2/monster lvl 2 solo.png','attack_type': 'claw',  'attack_sound':'../audio/attack/claw.wav','speed': 2, 'resistance': 3, 'attack_radius': 1, 'notice_radius': 1},
-	'boss': {'health': 900,'exp':110,'damage':(50, 70),'image': '../graphics/monsters/boss/final boss.png','attack_type': 'thunder', 'attack_sound':'../audio/attack/fireball.wav', 'speed': 4, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30},
-	'monster lvl 3': {'health': 700,'exp':120,'damage':(30, 50),'image': '../graphics/monsters/monster lvl 3/monster lvl 3 solo.png','attack_type': 'leaf_attack', 'attack_sound':'../audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30}
+	'monster lvl 1': {'health': 100,'exp':100,'damage':(10, 20),'image': '../GitExercise-TT1L-08/graphics/monsters/monster lvl 1/monster lvl 1 solo.png', 'attack_type': 'slash', 'attack_sound':'../audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30},
+	'monster lvl 2': {'health': 300,'exp':250,'damage':(20, 30),'image': '../GitExercise-TT1L-08/graphics/monsters/monster lvl 2/monster lvl 2 solo.png','attack_type': 'claw',  'attack_sound':'../audio/attack/claw.wav','speed': 2, 'resistance': 3, 'attack_radius': 1, 'notice_radius': 1},
+	'boss': {'health': 900,'exp':110,'damage':(50, 70),'image': '../GitExercise-TT1L-08/graphics/monsters/boss/final boss.png','attack_type': 'thunder', 'attack_sound':'../audio/attack/fireball.wav', 'speed': 4, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30},
+	'monster lvl 3': {'health': 700,'exp':120,'damage':(30, 50),'image': '../GitExercise-TT1L-08/graphics/monsters/monster lvl 3/monster lvl 3 solo.png','attack_type': 'leaf_attack', 'attack_sound':'../audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 30, 'notice_radius': 30}
     }
 
 
-<<<<<<< HEAD
-background_music_path = "../audio/background_music.mp3"
-sound_effect_path = "../audio/sound_effect.wav"
-options_bg_img_path = "../graphics/img/options_bg.png"
-game_title_img_path = "../graphics/img/game_title.png"
-start_btn_img_path = "../graphics/img/start_btn.png"
-exit_btn_img_path = "../graphics/img/exit_btn.png"
-options_btn_img_path = "../graphics/img/options_btn.png"
-start_an_btn_img_path = "../graphics/img/start_an_btn.png"
-exit_an_btn_img_path = "../graphics/img/exit_an_btn.png"
-options_an_btn_img_path = "../graphics/img/options_an_btn.png"
-volume_up_img_path = "../graphics/img/volume_up.png"
-volume_down_img_path = "../graphics/img/volume_down.png"
-=======
 background_music_path = "../GitExercise-TT1L-08/audio/background_music.mp3"
 sound_effect_path = "../GitExercise-TT1L-08/audio/sound_effect.wav"
 options_bg_img_path = "../GitExercise-TT1L-08/graphics/img/options_bg.png"
@@ -54,7 +40,6 @@ exit_an_btn_img_path = "../GitExercise-TT1L-08/graphics/img/exit_an_btn.png"
 options_an_btn_img_path = "../GitExercise-TT1L-08/graphics/img/options_an_btn.png"
 volume_up_img_path = "../GitExercise-TT1L-08/graphics/img/volume_up.png"
 volume_down_img_path = "../GitExercise-TT1L-08/graphics/img/volume_down.png"
->>>>>>> f1d10b359ac4566b0e3d45ec4fc59367841fe72e
 
 start = pygame.image.load(start_btn_img_path)
 exit = pygame.image.load(exit_btn_img_path)

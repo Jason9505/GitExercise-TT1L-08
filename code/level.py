@@ -33,15 +33,15 @@ class Level:
         
     def create_map(self):
         layouts = {
-            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('../map/map_Grass.csv'),
-            'object': import_csv_layout('../map/map_Objects.csv'),
-            'entities': import_csv_layout('../map/map_Entities.csv'),
-            'npc': import_csv_layout('../map/map_Npc.csv')
+            'boundary': import_csv_layout('../GitExercise-TT1L-08/map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('../GitExercise-TT1L-08/map/map_Grass.csv'),
+            'object': import_csv_layout('../GitExercise-TT1L-08/map/map_Objects.csv'),
+            'entities': import_csv_layout('../GitExercise-TT1L-08/map/map_Entities.csv'),
+            'npc': import_csv_layout('../GitExercise-TT1L-08/map/map_Npc.csv')
         }
         graphics = {
-            'grass': import_folder('../graphics/Grass'),
-            'objects': import_folder('../graphics/objects')
+            'grass': import_folder('../GitExercise-TT1L-08/graphics/Grass'),
+            'objects': import_folder('../GitExercise-TT1L-08/graphics/objects')
         }
 
         for style, layout in layouts.items():
@@ -178,7 +178,7 @@ class Level:
         pygame.draw.rect(self.display_surface, (255, 255, 255), (dialogue_box_x, dialogue_box_y, dialogue_box_width, dialogue_box_height), 2)
 
         npc_image_x = dialogue_box_x + 5
-        npc_image_y = dialogue_box_y - self.active_npc.image.get_height() - 30
+        npc_image_y = dialogue_box_y - self.active_npc.image.get_height() - 60
         scaled_npc_image = pygame.transform.scale(self.active_npc.image, (self.active_npc.image.get_width() * 2, self.active_npc.image.get_height() * 2))
         self.display_surface.blit(scaled_npc_image, (npc_image_x, npc_image_y))
 
